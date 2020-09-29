@@ -1,15 +1,22 @@
 # Objektumvezérelt rendszerek tervezése
 
-## Csapat név
+## KetyerePorontyok
 
 ### Tagok
-Név1
-...
+Tóth Botond
+Péter Roland
+Terhes Balázs
+Szkocsovszki Zsolt
 
 ### Választott projekt
-...
+Sport-nyomonkövető alkalmazás
 
 ### Implementációs nyelv + keretrendszerek
+#Backend:
+	- Spring Boot (Java)
+#Frontend:
+	- React Native (Typescript)
+	- Expo
 
 ## Határidők
 * OVRT-P1-projektterv - október 13. 23:59
