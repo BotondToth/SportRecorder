@@ -20,6 +20,7 @@ public class UserServiceImpl implements UserService {
         if (userByEmail != null) {
             throw new EmailAddressTakenException();
         }
-        return userMongoRepository.save(new User(userToRegister));
+        User debugUser = new User(userToRegister.getEmail(), userToRegister.getPassword());
+        return userMongoRepository.save(debugUser);
     }
 }
