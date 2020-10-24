@@ -1,0 +1,36 @@
+[{
+  "_id": {
+    "$oid": "5f93713d083635323d6c5bbb"
+  },
+  "email": "pista@gmail.com",
+  "password": "$2a$10$HAAbTTHKq.CnTf6gx/RXPu7G6u7etdxzNBhzlcKGte2BuhixVxVB6",
+  "_class": "com.sporttracking.sporttracking.data.ApplicationUser"
+},{
+  "_id": {
+    "$oid": "5f93715d083635323d6c5bbc"
+  },
+  "email": "jani@yahoo.com",
+  "password": "$2a$10$fwL3/yFVcNFZpPCdJUidiOEVemK7JcKoi/C6T3XvNS9.hvrdqYgjG",
+  "_class": "com.sporttracking.sporttracking.data.ApplicationUser"
+},{
+  "_id": {
+    "$oid": "5f937190083635323d6c5bbd"
+  },
+  "email": "eszti@gmail.com",
+  "password": "$2a$10$ym1XgvqwVxS4Lnkyk3zqg.O6KyF9XL75U85tMoj4ynnFHDaYXzn9m",
+  "_class": "com.sporttracking.sporttracking.data.ApplicationUser"
+},{
+  "_id": {
+    "$oid": "5f9371cf083635323d6c5bbe"
+  },
+  "email": "zsofi@freemail.com",
+  "password": "$2a$10$0toBW8lVAuFDClyce5dX0OtNvyW4U4jE/1GC9k7U9ahs.d260PEn2",
+  "_class": "com.sporttracking.sporttracking.data.ApplicationUser"
+},{
+  "_id": {
+    "$oid": "5f9371ed083635323d6c5bbf"
+  },
+  "email": "gabi@gmail.com",
+  "password": "$2a$10$Av0Yq/FqqDeNxfYY02Lf2ucpg7fH2U748waayUvhOOxFPRSPNWd5y",
+  "_class": "com.sporttracking.sporttracking.data.ApplicationUser"
+}]
