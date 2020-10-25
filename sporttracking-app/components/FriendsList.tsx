@@ -1,17 +1,33 @@
-import React from 'react';
-import { Avatar, Button, Card, Divider, List, ListItem, Text } from '@ui-kitten/components';
+import React, { useState } from 'react';
+import { Avatar, Button, Card, Divider, Icon, List, ListItem, Text } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
 import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
 
 export const FriendsList = ({ navigation }: Props) => {
-    const getFriendsOfUser = (user: any) => {
-        return new Array(10).fill({
-            title: 'Friend',
-        });
+    const getFriends = () => {
+        let friendList = [];
+        for (let i = 1; i <= 10; i++) {
+            friendList.push({
+                title: 'Friend',
+                id: i,
+            });
+        }
+        return friendList;
+    }
+
+    const [friends, setFriends] = useState(getFriends());
+
+    const unfollowFriend = (id: number) => {
+        setFriends(friends.filter(friend => friend.id !== id))
     };
 
-    const renderUnfollowButton = () => (
-        <Button size='tiny'>Unfollow</Button>
+    const renderUnfollowButton = (id: number) => (
+        <Button
+            size='tiny'
+            onPress={() => unfollowFriend(id)}
+        >
+            Unfollow
+        </Button>
     );
 
     const renderProfilePicture = (props: any) => (
@@ -20,13 +36,14 @@ export const FriendsList = ({ navigation }: Props) => {
             style={[props.style, { tintColor: null }]}
             source={require('../assets/default_profile_picture.png')}
         />
+        //<Icon {...props} name='person'/> // TODO: make Icon work and use it instead of Avatar
     );
 
     const renderListItem = ({ item, index } : any) => (
         <ListItem
-            title={`${item.title} ${index + 1}`}
+            title={`${item.title} ${item.id}`}
             accessoryLeft={renderProfilePicture}
-            accessoryRight={renderUnfollowButton}
+            accessoryRight={() => renderUnfollowButton(item.id)}
         />
     );
 
@@ -43,7 +60,7 @@ export const FriendsList = ({ navigation }: Props) => {
         >
             <List
                 style={styles.container}
-                data={getFriendsOfUser(null)}
+                data={friends}
                 ItemSeparatorComponent={Divider}
                 renderItem={renderListItem}
             />
