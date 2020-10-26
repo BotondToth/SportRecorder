@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new EmailAddressTakenException();
         }
         userToRegister.setPassword(bCryptPasswordEncoder.encode(userToRegister.getPassword()));
-        ApplicationUser debugUser = new ApplicationUser(userToRegister.getEmail(), userToRegister.getPassword());
+        ApplicationUser debugUser = new ApplicationUser(userToRegister);
         return userMongoRepository.save(debugUser);
     }
 
