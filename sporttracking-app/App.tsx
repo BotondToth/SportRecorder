@@ -6,7 +6,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { LoginForm } from './components/LoginForm';
 import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
-import { FriendsList } from './components/FriendsList';
 import { HomePage } from './components/HomePage';
 
 const Stack = createStackNavigator();

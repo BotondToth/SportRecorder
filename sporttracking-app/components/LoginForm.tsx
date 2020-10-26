@@ -45,10 +45,10 @@ export const LoginForm = ({ navigation }: Props) => {
 		return expression.test(String(email).toLowerCase());
 	};
 
-	const loginUser = async (userToRegister: object) => {
+	const loginUser = async (userToLogin: object) => {
 
 		axios
-			.post('http://localhost:8080/login', userToRegister)
+			.post('http://localhost:8080/login', userToLogin)
 			.then((res) => {
 				saveData(res.headers.authorization);
 				setLoginFailed(false);
@@ -137,34 +137,34 @@ export const LoginForm = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
 	topContainer: {
 		flexDirection: 'row',
-		justifyContent: 'space-between'
+		justifyContent: 'space-between',
 	},
 	card: {
 		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'center',
 		backgroundColor: 'white',
-		borderWidth: 0
+		borderWidth: 0,
 	},
 	footerContainer: {
 		flexDirection: 'row',
-		justifyContent: 'flex-end'
+		justifyContent: 'flex-end',
 	},
 	footerControl: {
-		marginHorizontal: 2
+		marginHorizontal: 2,
 	},
 	field: {
-		marginBottom: 20
+		marginBottom: 20,
 	},
 	registerLink: {
 		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'flex-end',
 		paddingBottom: 20,
-		backgroundColor: 'white'
+		backgroundColor: 'white',
 	},
 	errorMessage: {
 		color: 'red',
-		textAlign: 'center'
+		textAlign: 'center',
 	},
 });
