@@ -38,7 +38,7 @@ export const RegisterForm = ({ navigation }: Props) => {
 	const isRegisterButtonDisabled = (): boolean => {
 		return (
 			!validateEmail() || !validateFullName() || !validateSex() ||
-			!validateHeight || !validateWeight || !validatePassword() || !validateRepeatedPassword()
+			!validateHeight() || !validateWeight() || !validatePassword() || !validateRepeatedPassword()
 		);
 	};
 
@@ -49,7 +49,7 @@ export const RegisterForm = ({ navigation }: Props) => {
 	};
 
 	const validateFullName = (): boolean => {
-		return fullName !== undefined && fullName.length > 0;
+		return !!fullName && fullName.length > 0;
 	};
 
 	const validateWeight = (): boolean => {
@@ -61,11 +61,11 @@ export const RegisterForm = ({ navigation }: Props) => {
 	};
 
 	const validateSex = (): boolean => {
-		return sex !== undefined && (sex === 0 || sex === 1);
+		return sex === 0 || sex === 1;
 	};
 
 	const validatePassword = (): boolean => {
-		return password !== undefined && password.length >= minPassLength;
+		return !!password && password.length >= minPassLength;
 	};
 
 	const validateRepeatedPassword = (): boolean => {
