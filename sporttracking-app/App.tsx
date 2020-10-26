@@ -7,37 +7,38 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { LoginForm } from './components/LoginForm';
 import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
 import { FriendsList } from './components/FriendsList';
+import { HomePage } from './components/HomePage';
 
 const Stack = createStackNavigator();
 
 const Register = ({ navigation }: Props) => {
-  return (
-      <RegisterForm navigation={navigation}/>
-  );
+	return (
+		<RegisterForm navigation={navigation} />
+	);
 };
 
 const Login = ({ navigation }: Props) => {
-  return (
-      <LoginForm navigation={navigation}/>
-  )
+	return (
+		<LoginForm navigation={navigation} />
+	)
 };
 
-const Friends = ({ navigation }: Props) => {
-  return (
-      <FriendsList navigation={navigation}/>
-  )
+const Home = ({ navigation }: Props) => {
+	return (
+		<HomePage navigation={navigation} />
+	)
 };
 
 export default function App() {
-  return (
-      <ApplicationProvider {...eva} theme={eva.light}>
-          <NavigationContainer>
-              <Stack.Navigator>
-                  <Stack.Screen name="Login" component={Login} />
-                  <Stack.Screen name="Register" component={Register} />
-                  <Stack.Screen name="My Friends" component={Friends} />
-              </Stack.Navigator>
-          </NavigationContainer>
-      </ApplicationProvider>
-  );
+	return (
+		<ApplicationProvider {...eva} theme={eva.light}>
+			<NavigationContainer>
+				<Stack.Navigator>
+					<Stack.Screen name="Login" component={Login} />
+					<Stack.Screen name="Register" component={Register} />
+					<Stack.Screen name="Home" children={Home} />
+				</Stack.Navigator>
+			</NavigationContainer>
+		</ApplicationProvider>
+	);
 }
