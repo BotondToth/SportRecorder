@@ -69,11 +69,11 @@ export const FriendsList = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
     container: {
         maxHeight: 400,
-        width: 700
+        width: 700,
     },
     card: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
-    }
+        justifyContent: 'center',
+    },
 });

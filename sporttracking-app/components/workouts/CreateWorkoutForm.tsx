@@ -129,7 +129,7 @@ export const CreateWorkoutForm = (props: any) => {
                 value={calories}
                 label="Burnt calories"
                 placeholder="The calories you burnt during your workout"
-                caption="You should ad the calories you burnt here"
+                caption="You should add the calories you burnt here"
                 secureTextEntry={false}
                 onChangeText={(nextValue) => setCalories(nextValue)}
             />
@@ -140,24 +140,24 @@ export const CreateWorkoutForm = (props: any) => {
 const styles = StyleSheet.create({
     topContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
     },
     card: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     footerContainer: {
         flexDirection: 'row',
-        justifyContent: 'flex-end'
+        justifyContent: 'flex-end',
     },
     footerControl: {
-        marginHorizontal: 2
+        marginHorizontal: 2,
     },
     field: {
-        marginBottom: 20
+        marginBottom: 20,
     },
     backdrop: {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)'
-    }
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
 });

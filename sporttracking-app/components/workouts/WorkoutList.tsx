@@ -136,19 +136,19 @@ export const WorkoutList = () => {
 
 const styles = StyleSheet.create({
     modal: {
-        width: '75%'
+        width: '75%',
     },
     backdrop: {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     footerContainer: {
         flexDirection: 'row',
-        justifyContent: 'flex-end'
+        justifyContent: 'flex-end',
     },
     footerControl: {
-        marginHorizontal: 2
+        marginHorizontal: 2,
     },
     lowerLine: {
-        marginBottom: 20
+        marginBottom: 20,
     }
 });

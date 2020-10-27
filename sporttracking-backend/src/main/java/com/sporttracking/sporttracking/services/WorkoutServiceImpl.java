@@ -24,17 +24,17 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public List<Workout> getWorkoutsForUser(final HttpHeaders headers) {
-        final ApplicationUser user = getTokenFromHeader(headers);
+        final ApplicationUser user = getUserFromHeader(headers);
         return workoutMongoRepository.findAllByUserId(user.getId());
     }
 
     @Override
     public Workout saveWorkout(final WorkoutDTO workoutDTO, final HttpHeaders headers) {
-        final ApplicationUser user = getTokenFromHeader(headers);
+        final ApplicationUser user = getUserFromHeader(headers);
         return workoutMongoRepository.save(new Workout(workoutDTO, user.getId()));
     }
 
-    private ApplicationUser getTokenFromHeader(final HttpHeaders headers) {
+    private ApplicationUser getUserFromHeader(final HttpHeaders headers) {
         final String token = Objects.requireNonNull(headers.get("authorization")).get(0);
         return userMongoRepository.findByEmail(JWTAuthorizationFilter.getUserFromToken(token));
     }
