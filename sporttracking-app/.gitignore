@@ -11,7 +11,7 @@ Created by https://www.toptal.com/developers/gitignore/api/macos,windows,intelli
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
-
+.idea/*
 # Generated files
 .idea/**/contentModel.xml
 
