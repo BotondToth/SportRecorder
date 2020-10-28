@@ -18,7 +18,7 @@ export const CreateWorkoutForm = (props: any) => {
     const [selectedIndex, setSelectedIndex] = useState(new IndexPath(0));
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const workoutType = data[selectedIndex.row];
+    const type = data[selectedIndex.row];
     const [duration, setDuration] = useState('0');
     const [distance, setDistance] = useState('0');
     const [calories, setCalories] = useState('0');
@@ -27,7 +27,7 @@ export const CreateWorkoutForm = (props: any) => {
         const workout = {
             title,
             description,
-            workoutType,
+            type,
             duration: parseInt(duration),
             distance: parseInt(distance),
             calories: parseInt(calories)
@@ -98,7 +98,7 @@ export const CreateWorkoutForm = (props: any) => {
                 placeholder="The type of your workout"
                 caption="You should select the type of workout here"
                 style={styles.field}
-                value={workoutType}
+                value={type}
                 selectedIndex={selectedIndex}
                 // @ts-ignore
                 onSelect={(index) => setSelectedIndex(index)}
