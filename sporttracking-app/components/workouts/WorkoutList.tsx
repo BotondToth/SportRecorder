@@ -34,6 +34,23 @@ export const WorkoutList = () => {
             });
     };
 
+    const deleteWorkout = async (workoutId : string) : Promise<any> => {
+        const token = await AsyncStorage.getItem('access-token');
+        let config = {
+            headers: {
+                Authorization: token
+            }
+        };
+
+        return await axios
+            .delete(`http://localhost:8080/workout/${workoutId}`, config)
+            .then((res) => {
+                return res.data;
+            }).catch(err => {
+                console.log(err); 
+            });
+    }
+
     const renderIcon = (props: any) => (
         <Icon {...props} name="person-done-outline" />
     );
@@ -79,6 +96,17 @@ export const WorkoutList = () => {
 
     const WorkoutDetailFooter = (props: any) => (
         <View {...props} style={[props.style, styles.footerContainer]}>
+            <Button
+                style={styles.deleteButton}
+                size="small"
+                onPress={async () => {
+                    await deleteWorkout(workoutInDetail.id)
+                    setWorkoutInDetail(undefined)
+                    setData(await getWorkouts())
+                }}
+            >
+                Delete
+            </Button>
             <Button
                 style={styles.footerControl}
                 size="small"
@@ -204,5 +232,10 @@ const styles = StyleSheet.create({
     addWorkoutButton: {
         padding: 10,
         width: 200
+    },
+    deleteButton: {
+        marginHorizontal: 5,
+        backgroundColor: 'red',
+        borderColor: 'red',
     },
 });
