@@ -39,7 +39,6 @@ export const CreateWorkoutForm = (props: any) => {
             }
         };
 
-        props.onFinish();
         await axios
             .post('http://localhost:8080/workout', workout, config)
             .then(props.onFinish());
@@ -160,4 +159,5 @@ const styles = StyleSheet.create({
     backdrop: {
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
+
 });

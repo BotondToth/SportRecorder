@@ -12,10 +12,12 @@ import {
 import { StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
+import { CreateWorkoutForm } from "./CreateWorkoutForm";
 
 export const WorkoutList = () => {
     const [workoutInDetail, setWorkoutInDetail] = useState(undefined);
     const [data, setData] = useState([]);
+    const [workoutFormVisible, setWorkoutFormVisible] = useState(false);
 
     const getWorkouts = async (): Promise<any> => {
         const token = await AsyncStorage.getItem('access-token');
@@ -36,15 +38,24 @@ export const WorkoutList = () => {
         <Icon {...props} name="person-done-outline" />
     );
 
-    // @ts-ignore
-    useEffect(async () => {
+    useEffect( () => {
         const fetchData = async () => {
-            const result = await getWorkouts();
-            setData(result);
+            const token = await AsyncStorage.getItem('access-token');
+            let config = {
+                headers: {
+                    Authorization: token
+                }
+            };
+
+            await axios
+              .get('http://localhost:8080/workouts', config)
+              .then((res) => {
+                  setData(res.data);
+              });
         };
 
         fetchData();
-    }, [setData]);
+    }, []);
 
     const onWorkOutPress = (workout: any) => {
         setWorkoutInDetail(workout);
@@ -80,6 +91,35 @@ export const WorkoutList = () => {
 
     return (
         <>
+            <View style={styles.workoutHeader}>
+                {workoutFormVisible && (
+                  <Modal
+                    style={styles.modal}
+                    visible={workoutFormVisible}
+                    backdropStyle={styles.backdrop}
+                    onBackdropPress={() => {
+                        setWorkoutFormVisible(false)
+                    } }
+                  >
+                      <CreateWorkoutForm
+                        onFinish={async () => {
+                            setWorkoutFormVisible(false)
+                            setData(await getWorkouts())
+                        }}
+                      />
+                  </Modal>
+                )}
+                <Text category="h5" style={styles.workoutTitle}>
+                    Workout history
+                </Text>
+                <Button
+                  style={styles.addWorkoutButton}
+                  size="small"
+                  onPress={() => setWorkoutFormVisible(true)}
+                >
+                    Add new workout
+                </Button>
+            </View>
             {workoutInDetail && (
                 <Modal
                     style={styles.modal}
@@ -150,5 +190,19 @@ const styles = StyleSheet.create({
     },
     lowerLine: {
         marginBottom: 20,
-    }
+    },
+    workoutHeader: {
+        backgroundColor: 'white',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingBottom: 30
+    },
+    workoutTitle: {
+        padding: 15,
+        backgroundColor: 'white'
+    },
+    addWorkoutButton: {
+        padding: 10,
+        width: 200
+    },
 });
