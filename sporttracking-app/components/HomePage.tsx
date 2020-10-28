@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
 import {
     Text,
@@ -12,7 +12,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FriendsList } from './FriendsList';
 import { WorkoutList } from './workouts/WorkoutList';
-import { CreateWorkoutForm } from './workouts/CreateWorkoutForm';
 
 export const HomePage = ({ navigation }: Props) => {
     const { Navigator, Screen } = createBottomTabNavigator();
@@ -44,34 +43,9 @@ export const HomePage = ({ navigation }: Props) => {
     };
 
     const HomeScreen = () => {
-        const [workoutFormVisible, setWorkoutFormVisible] = useState(false);
 
         return (
             <>
-                <View style={styles.workoutHeader}>
-                    {workoutFormVisible && (
-                        <Modal
-                            style={styles.modal}
-                            visible={workoutFormVisible}
-                            backdropStyle={styles.backdrop}
-                            onBackdropPress={() => setWorkoutFormVisible(false)}
-                        >
-                            <CreateWorkoutForm
-                                onFinish={() => setWorkoutFormVisible(false)}
-                            />
-                        </Modal>
-                    )}
-                    <Text category="h5" style={styles.workoutTitle}>
-                        Workout history
-                    </Text>
-                    <Button
-                        style={styles.addWorkoutButton}
-                        size="small"
-                        onPress={() => setWorkoutFormVisible(true)}
-                    >
-                        Add new workout
-                    </Button>
-                </View>
                 <WorkoutList />
             </>
         );
@@ -128,20 +102,11 @@ const styles = StyleSheet.create({
         padding: 15,
         backgroundColor: 'white'
     },
-    addWorkoutButton: {
-        padding: 10,
-        width: 200
-    },
     modal: {
         width: 500
     },
     backdrop: {
         backgroundColor: 'rgba(0, 0, 0, 0.5)'
     },
-    workoutHeader: {
-        backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingBottom: 30
-    }
+
 });
