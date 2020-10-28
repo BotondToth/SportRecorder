@@ -37,7 +37,8 @@ export default function App() {
 					setLoggedIn(true);
 				}
 				setLoading(false);
-			});
+			})
+			.catch(console.log);
 	}, []);
 
 	const authContext = {

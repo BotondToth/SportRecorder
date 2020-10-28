@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import {
-    Text,
-    Button,
-    List,
-    Divider,
-    Card,
-    ListItem,
-    Modal,
-    Icon
+	Text,
+	Button,
+	List,
+	Divider,
+	Card,
+	ListItem,
+	Modal,
+	Icon,
+	Spinner
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -15,24 +16,31 @@ import axios from 'axios';
 import { CreateWorkoutForm } from "./CreateWorkoutForm";
 
 export const WorkoutList = () => {
-    const [workoutInDetail, setWorkoutInDetail] = useState(undefined);
-    const [data, setData] = useState([]);
-    const [workoutFormVisible, setWorkoutFormVisible] = useState(false);
+	const [workoutInDetail, setWorkoutInDetail] = useState(undefined);
+	const [data, setData] = useState([]);
+	const [workoutFormVisible, setWorkoutFormVisible] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 
-    const getWorkouts = async (): Promise<any> => {
-        const token = await AsyncStorage.getItem('access-token');
-        let config = {
-            headers: {
-                Authorization: token
-            }
-        };
+	const getWorkouts = async () => {
+		setIsLoading(true);
+		const token = await AsyncStorage.getItem('access-token');
+		let config = {
+			headers: {
+				Authorization: token
+			}
+		};
 
-        return await axios
-            .get('http://localhost:8080/workouts', config)
-            .then((res) => {
-                return res.data;
-            });
-    };
+		await axios
+			.get('http://localhost:8080/workouts', config)
+			.then((res) => {
+				setIsLoading(false);
+				setData(res.data);
+			})
+			.catch(error => {
+				setIsLoading(false);
+				console.log(error);
+			});
+	};
 
     const deleteWorkout = async (workoutId : string) : Promise<any> => {
         const token = await AsyncStorage.getItem('access-token');
@@ -55,44 +63,30 @@ export const WorkoutList = () => {
         <Icon {...props} name="person-done-outline" />
     );
 
-    useEffect( () => {
-        const fetchData = async () => {
-            const token = await AsyncStorage.getItem('access-token');
-            let config = {
-                headers: {
-                    Authorization: token
-                }
-            };
+	useEffect(() => {
+		// TODO: it runs every time when bottom tab changes
+		getWorkouts();
+	}, []);
 
-            await axios
-              .get('http://localhost:8080/workouts', config)
-              .then((res) => {
-                  setData(res.data);
-              });
-        };
+	const onWorkOutPress = (workout: any) => {
+		setWorkoutInDetail(workout);
+	};
 
-        fetchData();
-    }, []);
+	// @ts-ignore
+	const renderItem = ({ item }) => (
+		<ListItem
+			title={item.title}
+			description={item.description}
+			accessoryLeft={renderIcon}
+			onPress={() => onWorkOutPress(item)}
+		/>
+	);
 
-    const onWorkOutPress = (workout: any) => {
-        setWorkoutInDetail(workout);
-    };
-
-    // @ts-ignore
-    const renderItem = ({ item }) => (
-        <ListItem
-            title={`${item.title}`}
-            description={`${item.description}`}
-            accessoryLeft={renderIcon}
-            onPress={() => onWorkOutPress(item)}
-        />
-    );
-
-    const WorkoutDetailHeader = (props: any) => (
-        <View {...props}>
-            <Text category="h6">Workout Details</Text>
-        </View>
-    );
+	const WorkoutDetailHeader = (props: any) => (
+		<View {...props}>
+			<Text category="h6">Workout Details</Text>
+		</View>
+	);
 
     const WorkoutDetailFooter = (props: any) => (
         <View {...props} style={[props.style, styles.footerContainer]}>
@@ -114,92 +108,100 @@ export const WorkoutList = () => {
             >
                 Close
             </Button>
-        </View>
-    );
+		</View>
+	);
 
-    return (
-        <>
-            <View style={styles.workoutHeader}>
-                {workoutFormVisible && (
-                  <Modal
-                    style={styles.modal}
-                    visible={workoutFormVisible}
-                    backdropStyle={styles.backdrop}
-                    onBackdropPress={() => {
-                        setWorkoutFormVisible(false)
-                    } }
-                  >
-                      <CreateWorkoutForm
-                        onFinish={async () => {
-                            setWorkoutFormVisible(false)
-                            setData(await getWorkouts())
-                        }}
-                      />
-                  </Modal>
-                )}
-                <Text category="h5" style={styles.workoutTitle}>
-                    Workout history
+	return (
+		<>
+			<View style={styles.workoutHeader}>
+				{workoutFormVisible && (
+					<Modal
+						style={styles.modal}
+						visible={workoutFormVisible}
+						backdropStyle={styles.backdrop}
+						onBackdropPress={() => {
+							setWorkoutFormVisible(false);
+						}}
+					>
+						<CreateWorkoutForm
+							onFinish={async () => {
+								setWorkoutFormVisible(false);
+								getWorkouts();
+							}}
+						/>
+					</Modal>
+				)}
+				<Text category="h5" style={styles.workoutTitle}>
+					Workout history
                 </Text>
-                <Button
-                  style={styles.addWorkoutButton}
-                  size="small"
-                  onPress={() => setWorkoutFormVisible(true)}
-                >
-                    Add new workout
+				<Button
+					style={styles.addWorkoutButton}
+					size="small"
+					onPress={() => setWorkoutFormVisible(true)}
+				>
+					Add new workout
                 </Button>
-            </View>
-            {workoutInDetail && (
-                <Modal
-                    style={styles.modal}
-                    visible={!!workoutInDetail}
-                    backdropStyle={styles.backdrop}
-                    onBackdropPress={() => setWorkoutInDetail(undefined)}
-                >
-                    <Card
-                        status="primary"
-                        disabled={true}
-                        header={WorkoutDetailHeader}
-                        footer={WorkoutDetailFooter}
-                    >
-                        <Text category="s1">Title</Text>
-                        <Text style={styles.lowerLine}>
-                            {workoutInDetail.title}
+			</View>
+			{workoutInDetail && (
+				<Modal
+					style={styles.modal}
+					visible={!!workoutInDetail}
+					backdropStyle={styles.backdrop}
+					onBackdropPress={() => setWorkoutInDetail(undefined)}
+				>
+					<Card
+						status="primary"
+						disabled={true}
+						header={WorkoutDetailHeader}
+						footer={WorkoutDetailFooter}
+					>
+						<Text category="s1">Title</Text>
+						<Text style={styles.lowerLine}>
+							{workoutInDetail.title}
+						</Text>
+
+						<Text category="s1">Description</Text>
+						<Text style={styles.lowerLine}>
+							{workoutInDetail.description}
+						</Text>
+
+						<Text category="s1">Type</Text>
+						<Text style={styles.lowerLine}>
+							{workoutInDetail.type}
+						</Text>
+
+						<Text category="s1">Duration</Text>
+						<Text style={styles.lowerLine}>
+							{workoutInDetail.duration}
+						</Text>
+
+						<Text category="s1">Distance</Text>
+						<Text style={styles.lowerLine}>
+							{workoutInDetail.distance} km
                         </Text>
 
-                        <Text category="s1">Description</Text>
-                        <Text style={styles.lowerLine}>
-                            {workoutInDetail.description}
+						<Text category="s1">Calories</Text>
+						<Text style={styles.lowerLine}>
+							{workoutInDetail.calories} kcal
                         </Text>
-
-                        <Text category="s1">Type</Text>
-                        <Text style={styles.lowerLine}>
-                            {workoutInDetail.type}
-                        </Text>
-
-                        <Text category="s1">Duration</Text>
-                        <Text style={styles.lowerLine}>
-                            {workoutInDetail.duration}
-                        </Text>
-
-                        <Text category="s1">Distance</Text>
-                        <Text style={styles.lowerLine}>
-                            {workoutInDetail.distance} km
-                        </Text>
-
-                        <Text category="s1">Calories</Text>
-                        <Text style={styles.lowerLine}>
-                            {workoutInDetail.calories} kcal
-                        </Text>
-                    </Card>
-                </Modal>
-            )}
-            <List
-                data={data}
-                ItemSeparatorComponent={Divider}
-                renderItem={renderItem}
-            />
-        </>
-    );
+					</Card>
+				</Modal>
+			)}
+			{isLoading
+				? <View style={{
+					flex: 1,
+					justifyContent: 'center',
+					alignItems: 'center'
+				}}>
+					<Spinner size='giant' />
+				</View>
+				: <List
+					data={data}
+					ItemSeparatorComponent={Divider}
+					renderItem={renderItem}
+				/>}
+		</>
+	);
 };
 
 const styles = StyleSheet.create({
@@ -232,10 +234,5 @@ const styles = StyleSheet.create({
     addWorkoutButton: {
         padding: 10,
         width: 200
-    },
-    deleteButton: {
-        marginHorizontal: 5,
-        backgroundColor: 'red',
-        borderColor: 'red',
     },
 });

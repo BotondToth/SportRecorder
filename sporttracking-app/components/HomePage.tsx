@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
 import {
 	Text,
@@ -12,7 +12,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FriendsList } from './FriendsList';
 import { WorkoutList } from './workouts/WorkoutList';
-import { CreateWorkoutForm } from './workouts/CreateWorkoutForm';
 import { AuthorizationContext } from '../AuthorizationContext';
 
 export const HomePage = ({ navigation }: Props) => {
@@ -27,7 +26,7 @@ export const HomePage = ({ navigation }: Props) => {
 
 	useEffect(() => {
 		navigation.setOptions({
-			headerRight: (props: any) => (
+			headerRight: () => (
 				<Button
 					style={styles.logOutButton}
 					size='small'
@@ -36,16 +35,16 @@ export const HomePage = ({ navigation }: Props) => {
 				>Logout</Button>
 			),
 		});
-	});
+	}, []);
 
-    const HomeScreen = () => {
+	const Friends = () => {
+		return <FriendsList />;
+	};
 
-        return (
-            <>
-                <WorkoutList />
-            </>
-        );
-    };
+
+	const WorkoutScreen = () => {
+		return <WorkoutList />;
+	};
 
 	const StatScreen = () => {
 		return (
@@ -65,11 +64,12 @@ export const HomePage = ({ navigation }: Props) => {
 		<BottomNavigation
 			selectedIndex={state.index}
 			onSelect={(index) => {
-				navigation.navigate(state.routeNames[index]);
+				if (index !== state.index)
+					navigation.navigate(state.routeNames[index]);
 			}}
 		>
 			<BottomNavigationTab title="Friends" />
-			<BottomNavigationTab title="Track workout" />
+			<BottomNavigationTab title="Add workout" />
 			<BottomNavigationTab title="Statistics" />
 		</BottomNavigation>
 
@@ -80,7 +80,7 @@ export const HomePage = ({ navigation }: Props) => {
 		<>
 			<Navigator tabBar={(props: any) => <BottomNav {...props} />}>
 				<Screen name="Friends" component={Friends} />
-				<Screen name="TrackWorkout" component={HomeScreen} />
+				<Screen name="AddWorkout" component={WorkoutScreen} />
 				<Screen name="Stats" component={StatScreen} />
 			</Navigator>
 		</>
@@ -88,21 +88,21 @@ export const HomePage = ({ navigation }: Props) => {
 };
 
 const styles = StyleSheet.create({
-    headerStyle: {
-        marginLeft: 25
-    },
-    logoutButton: {
-        marginLeft: 20
-    },
-    workoutTitle: {
-        padding: 15,
-        backgroundColor: 'white'
-    },
-    modal: {
-        width: 500
-    },
-    backdrop: {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)'
-    },
+	headerStyle: {
+		marginLeft: 25,
+	},
+	logOutButton: {
+		marginHorizontal: 10,
+	},
+	workoutTitle: {
+		padding: 15,
+		backgroundColor: 'white',
+	},
+	modal: {
+		width: 500,
+	},
+	backdrop: {
+		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+	},
 
 });

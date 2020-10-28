@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Text, Card, Button, Input } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
@@ -83,14 +83,6 @@ export const LoginForm = ({ navigation }: Props) => {
 			>Login</Button>
 		</View>
 	);
-
-
-
-	const clearInput = () => {
-		setEmail('');
-		setPassword('');
-	};
-
 
 	return (
 		<>
