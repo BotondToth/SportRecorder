@@ -41,7 +41,7 @@ export const CreateWorkoutForm = (props: any) => {
 
         await axios
             .post('http://localhost:8080/workout', workout, config)
-            .then(props.onFinish());
+            .then(() => props.onFinish());
     };
 
     const Header = (props: any) => (
