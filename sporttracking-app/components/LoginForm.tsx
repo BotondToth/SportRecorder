@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, Card, Button, Input } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
 import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
 import axios from 'axios';
+import { AuthorizationContext } from '../AuthorizationContext';
 
 const RegisterLinkFooter = ({ navigation }: Props) => {
 	return (
@@ -24,6 +25,7 @@ export const LoginForm = ({ navigation }: Props) => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [loginFailed, setLoginFailed] = useState(false);
+	const { signIn } = useContext(AuthorizationContext);
 
 	const saveData = async (token: string) => {
 		try {
@@ -52,8 +54,7 @@ export const LoginForm = ({ navigation }: Props) => {
 			.then((res) => {
 				saveData(res.headers.authorization);
 				setLoginFailed(false);
-				clearInput();
-				navigation.navigate('Home');
+				signIn();
 			})
 			.catch((err) => {
 				console.log(err);
@@ -83,15 +84,7 @@ export const LoginForm = ({ navigation }: Props) => {
 		</View>
 	);
 
-	useEffect(() => {
-		AsyncStorage.getItem('access-token')
-			.then((value) => {
-				if (value) {
-					clearInput();
-					navigation.navigate('Home');
-				}
-			});
-	});
+
 
 	const clearInput = () => {
 		setEmail('');
