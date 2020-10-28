@@ -10,8 +10,10 @@ import com.sporttracking.sporttracking.repositories.WorkoutMongoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+import java.util.Objects;
 
-import java.util.*;
 
 @Service
 public class WorkoutServiceImpl implements WorkoutService {
@@ -32,7 +34,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     public Optional<Workout> getWorkoutForUser(String trainingId, HttpHeaders headers) throws ResourceNotFoundException {
         final ApplicationUser user = getUserFromHeader(headers);
         Optional<Workout> workout =  workoutMongoRepository.findByIdAndUserId(trainingId, user.getId());
-        if(workout.isEmpty()) {
+        if (workout.isEmpty()) {
             throw new ResourceNotFoundException();
         }
 
@@ -46,17 +48,14 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public Map<String, Boolean> deleteWorkout(String trainingId, HttpHeaders headers) throws ResourceNotFoundException {
+    public boolean deleteWorkout(String trainingId, HttpHeaders headers) throws ResourceNotFoundException {
         final ApplicationUser user = getUserFromHeader(headers);
 
-        if(workoutMongoRepository.findByIdAndUserId(trainingId, user.getId()).isEmpty()) {
+        if (workoutMongoRepository.findByIdAndUserId(trainingId, user.getId()).isEmpty()) {
             throw new ResourceNotFoundException();
         }
         workoutMongoRepository.deleteById(trainingId);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
-
-        return response;
+        return true;
     }
 
     private ApplicationUser getUserFromHeader(final HttpHeaders headers) {

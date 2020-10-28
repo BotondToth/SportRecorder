@@ -34,7 +34,7 @@ public class WorkoutController implements BaseController {
     }
 
     @DeleteMapping("/workout/{id}")
-    public Map<String, Boolean> deleteWorkout(@PathVariable(value = "id") String trainingId, @RequestHeader HttpHeaders headers) throws ResourceNotFoundException {
+    public boolean deleteWorkout(@PathVariable(value = "id") String trainingId, @RequestHeader HttpHeaders headers) throws ResourceNotFoundException {
         return workoutService.deleteWorkout(trainingId, headers);
     }
 }

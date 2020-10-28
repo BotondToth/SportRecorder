@@ -15,7 +15,7 @@ public interface WorkoutService {
 
     Optional<Workout> getWorkoutForUser(String trainingId, HttpHeaders headers) throws ResourceNotFoundException;
 
-    Map<String, Boolean> deleteWorkout(String trainingId, HttpHeaders headers) throws ResourceNotFoundException;
+    boolean deleteWorkout(String trainingId, HttpHeaders headers) throws ResourceNotFoundException;
 
     Workout saveWorkout(WorkoutDTO workoutDTO, HttpHeaders headers);
 }
