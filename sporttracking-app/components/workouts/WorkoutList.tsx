@@ -42,26 +42,26 @@ export const WorkoutList = () => {
 			});
 	};
 
-    const deleteWorkout = async (workoutId : string) : Promise<any> => {
-        const token = await AsyncStorage.getItem('access-token');
-        let config = {
-            headers: {
-                Authorization: token
-            }
-        };
+	const deleteWorkout = async (workoutId: string): Promise<any> => {
+		const token = await AsyncStorage.getItem('access-token');
+		let config = {
+			headers: {
+				Authorization: token
+			}
+		};
 
-        return await axios
-            .delete(`http://localhost:8080/workout/${workoutId}`, config)
-            .then((res) => {
-                return res.data;
-            }).catch(err => {
-                console.log(err); 
-            });
-    }
+		return await axios
+			.delete(`http://localhost:8080/workout/${workoutId}`, config)
+			.then((res) => {
+				return res.data;
+			}).catch(err => {
+				console.log(err);
+			});
+	}
 
-    const renderIcon = (props: any) => (
-        <Icon {...props} name="person-done-outline" />
-    );
+	const renderIcon = (props: any) => (
+		<Icon {...props} name="person-done-outline" />
+	);
 
 	useEffect(() => {
 		// TODO: it runs every time when bottom tab changes
@@ -88,25 +88,25 @@ export const WorkoutList = () => {
 		</View>
 	);
 
-    const WorkoutDetailFooter = (props: any) => (
-        <View {...props} style={[props.style, styles.footerContainer]}>
-            <Button
-                style={styles.deleteButton}
-                size="small"
-                onPress={async () => {
-                    await deleteWorkout(workoutInDetail.id)
-                    setWorkoutInDetail(undefined)
-                    setData(await getWorkouts())
-                }}
-            >
-                Delete
+	const WorkoutDetailFooter = (props: any) => (
+		<View {...props} style={[props.style, styles.footerContainer]}>
+			<Button
+				style={styles.deleteButton}
+				size="small"
+				onPress={async () => {
+					await deleteWorkout(workoutInDetail.id)
+					setWorkoutInDetail(undefined)
+					getWorkouts()
+				}}
+			>
+				Delete
             </Button>
-            <Button
-                style={styles.footerControl}
-                size="small"
-                onPress={() => setWorkoutInDetail(undefined)}
-            >
-                Close
+			<Button
+				style={styles.footerControl}
+				size="small"
+				onPress={() => setWorkoutInDetail(undefined)}
+			>
+				Close
             </Button>
 		</View>
 	);
@@ -205,34 +205,39 @@ export const WorkoutList = () => {
 };
 
 const styles = StyleSheet.create({
-    modal: {
-        width: '75%',
-    },
-    backdrop: {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    footerContainer: {
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-    },
-    footerControl: {
-        marginHorizontal: 2,
-    },
-    lowerLine: {
-        marginBottom: 20,
-    },
-    workoutHeader: {
-        backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingBottom: 30
-    },
-    workoutTitle: {
-        padding: 15,
-        backgroundColor: 'white'
-    },
-    addWorkoutButton: {
-        padding: 10,
-        width: 200
-    },
+	modal: {
+		width: '75%',
+	},
+	backdrop: {
+		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+	},
+	footerContainer: {
+		flexDirection: 'row',
+		justifyContent: 'flex-end',
+	},
+	footerControl: {
+		marginHorizontal: 2,
+	},
+	lowerLine: {
+		marginBottom: 20,
+	},
+	workoutHeader: {
+		backgroundColor: 'white',
+		alignItems: 'center',
+		justifyContent: 'center',
+		paddingBottom: 30
+	},
+	workoutTitle: {
+		padding: 15,
+		backgroundColor: 'white'
+	},
+	addWorkoutButton: {
+		padding: 10,
+		width: 200
+	},
+	deleteButton: {
+		marginHorizontal: 5,
+		backgroundColor: 'red',
+		borderColor: 'red',
+	},
 });
