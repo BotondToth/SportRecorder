@@ -56,7 +56,7 @@ export default function App() {
 				<View style={{
 					flex: 1,
 					justifyContent: 'center',
-					alignItems: 'center'
+					alignItems: 'center',
 				}}>
 					<Spinner size='giant' />
 				</View>

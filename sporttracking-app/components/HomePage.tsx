@@ -32,7 +32,9 @@ export const HomePage = ({ navigation }: Props) => {
 					size='small'
 					status='basic'
 					onPress={logOut}
-				>Logout</Button>
+				>
+					Logout
+				</Button>
 			),
 		});
 	}, []);

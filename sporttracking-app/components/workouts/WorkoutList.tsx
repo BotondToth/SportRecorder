@@ -8,7 +8,7 @@ import {
 	ListItem,
 	Modal,
 	Icon,
-	Spinner
+	Spinner,
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -191,7 +191,7 @@ export const WorkoutList = () => {
 				? <View style={{
 					flex: 1,
 					justifyContent: 'center',
-					alignItems: 'center'
+					alignItems: 'center',
 				}}>
 					<Spinner size='giant' />
 				</View>
@@ -225,15 +225,15 @@ const styles = StyleSheet.create({
 		backgroundColor: 'white',
 		alignItems: 'center',
 		justifyContent: 'center',
-		paddingBottom: 30
+		paddingBottom: 30,
 	},
 	workoutTitle: {
 		padding: 15,
-		backgroundColor: 'white'
+		backgroundColor: 'white',
 	},
 	addWorkoutButton: {
 		padding: 10,
-		width: 200
+		width: 200,
 	},
 	deleteButton: {
 		marginHorizontal: 5,
