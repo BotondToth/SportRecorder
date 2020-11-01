@@ -10,9 +10,10 @@ import {
 	Text,
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
+import Friend from '../Interfaces/friend';
 
 const getFriends = () => {
-	let friendList = [];
+	let friendList: Friend[] = [];
 	for (let i = 1; i <= 10; i++) {
 		friendList.push({
 			title: 'Friend',
@@ -23,7 +24,7 @@ const getFriends = () => {
 };
 
 export const FriendsList = () => {
-	const [friends, setFriends] = useState<{ id: number, title: string }[]>([]);
+	const [friends, setFriends] = useState<Friend[]>([]);
 
 	useEffect(() => {
 		setFriends(getFriends());

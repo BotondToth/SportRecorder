@@ -14,10 +14,11 @@ import { StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import { CreateWorkoutForm } from "./CreateWorkoutForm";
+import Workout from '../../Interfaces/workout';
 
 export const WorkoutList = () => {
-	const [workoutInDetail, setWorkoutInDetail] = useState(undefined);
-	const [data, setData] = useState([]);
+	const [workoutInDetail, setWorkoutInDetail] = useState<Workout | undefined>(undefined);
+	const [data, setData] = useState<Workout[]>([]);
 	const [workoutFormVisible, setWorkoutFormVisible] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 
@@ -43,6 +44,7 @@ export const WorkoutList = () => {
 	};
 
 	const deleteWorkout = async (workoutId: string): Promise<any> => {
+
 		const token = await AsyncStorage.getItem('access-token');
 		let config = {
 			headers: {
@@ -50,7 +52,7 @@ export const WorkoutList = () => {
 			}
 		};
 		return await axios
-			.delete('http://localhost:8080/workout/' + workoutId, config)
+			.delete(`http://localhost:8080/workout/${workoutId}`, config)
 			.then((res) => {
 				return res.data;
 			}).catch(err => {
@@ -66,11 +68,11 @@ export const WorkoutList = () => {
 		getWorkouts();
 	}, []);
 
-	const onWorkOutPress = (workout: any) => {
+	const onWorkOutPress = (workout: Workout) => {
 		setWorkoutInDetail(workout);
 	};
 
-	const renderItem = ({ item }: any) => (
+	const renderItem = ({ item }: { item: Workout }) => (
 		<ListItem
 			title={item.title}
 			description={item.description}
@@ -91,7 +93,7 @@ export const WorkoutList = () => {
 				style={styles.deleteButton}
 				size="small"
 				onPress={async () => {
-					await deleteWorkout(workoutInDetail.id)
+					await deleteWorkout(workoutInDetail!.id)
 					setWorkoutInDetail(undefined)
 					getWorkouts()
 				}}
