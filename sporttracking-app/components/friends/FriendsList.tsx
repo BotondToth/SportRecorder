@@ -97,7 +97,7 @@ export const FriendsList = () => {
       .delete(`http://localhost:8080/friends?friendshipId=${id}`, config)
       .then(async () => {
         setAddNewFriendVisible(false);
-        getFriends();
+        await getFriends();
       });
   };
 

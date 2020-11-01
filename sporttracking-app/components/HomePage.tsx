@@ -5,6 +5,7 @@ import {
 	Button,
 	BottomNavigationTab,
 	BottomNavigation,
+	Icon,
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -38,22 +39,13 @@ export const HomePage = ({ navigation }: Props) => {
 		});
 	}, []);
 
-	const Friends = () => {
-		return <FriendsList />;
-	};
-
-
-	const WorkoutScreen = () => {
-		return <WorkoutList />;
-	};
-
 	const StatScreen = () => {
 		return (
 			<View
 				style={{
 					flex: 1,
 					justifyContent: 'center',
-					alignItems: 'center'
+					alignItems: 'center',
 				}}
 			>
 				<Text>Statistics!</Text>
@@ -61,7 +53,19 @@ export const HomePage = ({ navigation }: Props) => {
 		);
 	};
 
-	const BottomNav = ({ navigation, state }: any) => (
+	const FriendsIcon = (props: any) => {
+		return <Icon {...props} name='people-outline' />
+	}
+
+	const WorkoutsIcon = (props: any) => {
+		return <Icon {...props} name='navigation-2-outline' />
+	}
+
+	const StatsIcon = (props: any) => {
+		return <Icon {...props} name='options-2-outline' />
+	}
+
+	const BottomNav = ({ state, navigation }: any) => (
 		<BottomNavigation
 			selectedIndex={state.index}
 			onSelect={(index) => {
@@ -69,22 +73,18 @@ export const HomePage = ({ navigation }: Props) => {
 					navigation.navigate(state.routeNames[index]);
 			}}
 		>
-			<BottomNavigationTab title="Friends" />
-			<BottomNavigationTab title="Add workout" />
-			<BottomNavigationTab title="Statistics" />
+			<BottomNavigationTab title='Friends' icon={FriendsIcon} />
+			<BottomNavigationTab title='Workouts' icon={WorkoutsIcon} />
+			<BottomNavigationTab title='Statistics' icon={StatsIcon} />
 		</BottomNavigation>
-
-		//TODO: correct navigation animation
 	);
 
 	return (
-		<>
-			<Navigator tabBar={(props: any) => <BottomNav {...props} />}>
-				<Screen name="Friends" component={Friends} />
-				<Screen name="AddWorkout" component={WorkoutScreen} />
-				<Screen name="Stats" component={StatScreen} />
-			</Navigator>
-		</>
+		<Navigator tabBar={BottomNav}>
+			<Screen name='Friends' component={FriendsList} />
+			<Screen name='Workouts' component={WorkoutList} />
+			<Screen name='Stats' component={StatScreen} />
+		</Navigator>
 	);
 };
 
