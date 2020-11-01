@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	Avatar,
 	Button,
@@ -7,10 +7,9 @@ import {
 	Icon,
 	List,
 	ListItem,
-	Text
+	Text,
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
-import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
 
 const getFriends = () => {
 	let friendList = [];
@@ -24,7 +23,11 @@ const getFriends = () => {
 };
 
 export const FriendsList = () => {
-	const [friends, setFriends] = useState(getFriends());
+	const [friends, setFriends] = useState<{ id: number, title: string }[]>([]);
+
+	useEffect(() => {
+		setFriends(getFriends());
+	}, []);
 
 	const unfollowFriend = (id: number) => {
 		setFriends(friends.filter((friend) => friend.id !== id));

@@ -14,18 +14,6 @@ import { View } from 'react-native';
 
 const Stack = createStackNavigator();
 
-const Register = ({ navigation }: Props) => {
-	return <RegisterForm navigation={navigation} />;
-};
-
-const Login = ({ navigation }: Props) => {
-	return <LoginForm navigation={navigation} />;
-};
-
-const Home = ({ navigation }: Props) => {
-	return <HomePage navigation={navigation} />;
-};
-
 export default function App() {
 	const [loggedIn, setLoggedIn] = useState(false);
 	const [loading, setLoading] = useState(true);
@@ -73,11 +61,11 @@ export default function App() {
 							screenOptions={{ headerTitleAlign: 'center' }}
 						>
 							{loggedIn
-								? (<Stack.Screen name="Home" children={Home} />)
+								? (<Stack.Screen name="Home" children={HomePage} />)
 								: (
 									<>
-										<Stack.Screen name="Login" component={Login} />
-										<Stack.Screen name="Register" component={Register} />
+										<Stack.Screen name="Login" component={LoginForm} />
+										<Stack.Screen name="Register" component={RegisterForm} />
 									</>
 								)}
 						</Stack.Navigator>
