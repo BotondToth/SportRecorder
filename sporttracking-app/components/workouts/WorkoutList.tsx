@@ -49,9 +49,8 @@ export const WorkoutList = () => {
 				Authorization: token
 			}
 		};
-
 		return await axios
-			.delete(`http://localhost:8080/workout/${workoutId}`, config)
+			.delete('http://localhost:8080/workout/' + workoutId, config)
 			.then((res) => {
 				return res.data;
 			}).catch(err => {
@@ -64,7 +63,6 @@ export const WorkoutList = () => {
 	);
 
 	useEffect(() => {
-		// TODO: it runs every time when bottom tab changes
 		getWorkouts();
 	}, []);
 
@@ -72,8 +70,7 @@ export const WorkoutList = () => {
 		setWorkoutInDetail(workout);
 	};
 
-	// @ts-ignore
-	const renderItem = ({ item }) => (
+	const renderItem = ({ item }: any) => (
 		<ListItem
 			title={item.title}
 			description={item.description}

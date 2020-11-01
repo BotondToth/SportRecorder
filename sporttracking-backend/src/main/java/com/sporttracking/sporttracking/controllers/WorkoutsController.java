@@ -29,12 +29,12 @@ public class WorkoutsController implements BaseController {
     }
 
     @GetMapping("/workout/{id}")
-    public Optional<Workout> getWorkoutsForUser(@PathVariable(value = "id") String trainingId, @RequestHeader HttpHeaders headers) throws ResourceNotFoundException {
-        return workoutService.getWorkoutForUser(trainingId, headers);
+    public Optional<Workout> getWorkoutsForUser(@PathVariable(value = "id") String workoutId, @RequestHeader HttpHeaders headers) throws ResourceNotFoundException {
+        return workoutService.getWorkoutForUser(workoutId, headers);
     }
 
     @DeleteMapping("/workout/{id}")
-    public boolean deleteWorkout(@PathVariable(value = "id") String trainingId, @RequestHeader HttpHeaders headers) throws ResourceNotFoundException {
-        return workoutService.deleteWorkout(trainingId, headers);
+    public boolean deleteWorkout(@PathVariable(value = "id") String workoutId, @RequestHeader HttpHeaders headers) throws ResourceNotFoundException {
+        return workoutService.deleteWorkout(workoutId, headers);
     }
 }

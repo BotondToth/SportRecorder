@@ -47,7 +47,7 @@ export const CreateWorkoutForm = (props: any) => {
 	const Header = (props: any) => (
 		<View {...props}>
 			<Text category="h6">SportTracking</Text>
-			<Text category="s1"> Add new workout </Text>
+			<Text category="s1">Add new workout</Text>
 		</View>
 	);
 
@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'center',
+		textAlign: 'center',
 	},
 	footerContainer: {
 		flexDirection: 'row',
