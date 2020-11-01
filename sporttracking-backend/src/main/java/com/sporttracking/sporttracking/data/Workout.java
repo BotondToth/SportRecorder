@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -14,6 +15,9 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Workout {
     @Id
     private String id;
+    @Field
+    @DBRef
+    private ApplicationUser user;
     @Field
     private String userId;
     @Field
@@ -29,13 +33,14 @@ public class Workout {
     @Field
     private long calories;
 
-    public Workout(final WorkoutDTO workoutDTO, final String userId) {
+    public Workout(final WorkoutDTO workoutDTO, final ApplicationUser user) {
         this.title = workoutDTO.getTitle();
         this.description = workoutDTO.getDescription();
         this.type = workoutDTO.getType();
         this.calories = workoutDTO.getCalories();
         this.duration = workoutDTO.getDuration();
         this.distance = workoutDTO.getDistance();
-        this.userId = userId;
+        this.user = user;
+        this.userId = user.getId();
     }
 }

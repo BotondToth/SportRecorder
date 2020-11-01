@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-public class WorkoutController implements BaseController {
+public class WorkoutsController implements BaseController {
 
     @Autowired
     private WorkoutServiceImpl workoutService;
