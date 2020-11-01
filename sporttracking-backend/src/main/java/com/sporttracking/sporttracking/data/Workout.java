@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.Date;
+
 @Data
 @Document(collection = "Workouts")
 @NoArgsConstructor
@@ -30,6 +32,8 @@ public class Workout {
     private long distance;
     @Field
     private long calories;
+    @Field
+    private Date date;
 
     public Workout(final WorkoutDTO workoutDTO, final ApplicationUser user, long calorieBurnt) {
         this.title = workoutDTO.getTitle();

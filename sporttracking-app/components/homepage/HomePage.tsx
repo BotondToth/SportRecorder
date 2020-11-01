@@ -7,7 +7,7 @@ import {
   BottomNavigation,
   Icon,
 } from '@ui-kitten/components';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FriendsList } from '../friends/FriendsList';
@@ -59,9 +59,9 @@ export const HomePage = ({ navigation }: Props) => {
     </View>
   );
 
-  const FriendsIcon = (props: any) => <Icon {...props} name="people-outline" />;
-
-  const WorkoutsIcon = (props: any) => <Icon {...props} name="navigation-2-outline" />;
+	const FriendsIcon = (props: any) => {
+		return <Icon {...props} name='people-outline' />
+	}
 
   const StatsIcon = (props: any) => <Icon {...props} name="options-2-outline" />;
 
@@ -79,11 +79,25 @@ export const HomePage = ({ navigation }: Props) => {
     </BottomNavigation>
   );
 
-  return (
-    <Navigator tabBar={BottomNav}>
-      <Screen name="Friends" component={FriendsList} />
-      <Screen name="Workouts" component={WorkoutList} />
-      <Screen name="Stats" component={StatScreen} />
-    </Navigator>
-  );
+	const BottomNav = ({ state, navigation }: any) => (
+		<BottomNavigation
+			selectedIndex={state.index}
+			onSelect={(index) => {
+				if (index !== state.index)
+					navigation.navigate(state.routeNames[index]);
+			}}
+		>
+			<BottomNavigationTab title='Friends' icon={FriendsIcon} />
+			<BottomNavigationTab title='Workouts' icon={WorkoutsIcon} />
+			<BottomNavigationTab title='Statistics' icon={StatsIcon} />
+		</BottomNavigation>
+	);
+
+	return (
+		<Navigator tabBar={BottomNav} initialRouteName='Stats'>
+			<Screen name='Friends' component={FriendsList} />
+			<Screen name='Workouts' component={WorkoutList} />
+			<Screen name='Stats' component={StatisticsPage} />
+		</Navigator>
+	);
 };
