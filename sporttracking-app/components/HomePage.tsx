@@ -5,12 +5,11 @@ import {
 	Button,
 	BottomNavigationTab,
 	BottomNavigation,
-	Modal
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { FriendsList } from './FriendsList';
+import { FriendsList } from './friends/FriendsList';
 import { WorkoutList } from './workouts/WorkoutList';
 import { AuthorizationContext } from '../AuthorizationContext';
 
@@ -99,9 +98,6 @@ const styles = StyleSheet.create({
 	workoutTitle: {
 		padding: 15,
 		backgroundColor: 'white',
-	},
-	modal: {
-		width: 500,
 	},
 	backdrop: {
 		backgroundColor: 'rgba(0, 0, 0, 0.5)',

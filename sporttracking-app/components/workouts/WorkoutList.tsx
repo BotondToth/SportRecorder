@@ -14,10 +14,11 @@ import { StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import { CreateWorkoutForm } from "./CreateWorkoutForm";
+import { Workout } from "../../types";
 
 export const WorkoutList = () => {
-	const [workoutInDetail, setWorkoutInDetail] = useState(undefined);
-	const [data, setData] = useState([]);
+	const [workoutInDetail, setWorkoutInDetail] = useState<Workout>();
+	const [workouts, setWorkouts] = useState<Workout[]>([]);
 	const [workoutFormVisible, setWorkoutFormVisible] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 
@@ -34,7 +35,7 @@ export const WorkoutList = () => {
 			.get('http://localhost:8080/workouts', config)
 			.then((res) => {
 				setIsLoading(false);
-				setData(res.data);
+				setWorkouts(res.data);
 			})
 			.catch(error => {
 				setIsLoading(false);
@@ -94,6 +95,7 @@ export const WorkoutList = () => {
 				style={styles.deleteButton}
 				size="small"
 				onPress={async () => {
+					// @ts-ignore
 					await deleteWorkout(workoutInDetail.id)
 					setWorkoutInDetail(undefined)
 					getWorkouts()
@@ -107,7 +109,7 @@ export const WorkoutList = () => {
 				onPress={() => setWorkoutInDetail(undefined)}
 			>
 				Close
-            </Button>
+      </Button>
 		</View>
 	);
 
@@ -196,7 +198,7 @@ export const WorkoutList = () => {
 					<Spinner size='giant' />
 				</View>
 				: <List
-					data={data}
+					data={workouts}
 					ItemSeparatorComponent={Divider}
 					renderItem={renderItem}
 				/>}
