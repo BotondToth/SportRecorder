@@ -5,11 +5,11 @@ import com.sporttracking.sporttracking.filters.JWTAuthorizationFilter;
 import com.sporttracking.sporttracking.repositories.UserMongoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
-@Component("AuthUtility")
+@Service
 public class AuthUtility {
 
     @Autowired
