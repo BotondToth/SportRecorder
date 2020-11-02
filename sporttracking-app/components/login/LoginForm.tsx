@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
 import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
 import axios from 'axios';
-import { AuthorizationContext } from '../AuthorizationContext';
+import { AuthorizationContext } from '../../AuthorizationContext';
 
 const RegisterLinkFooter = ({ navigation }: Props) => {
 	return (

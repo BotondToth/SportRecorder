@@ -10,9 +10,8 @@ import {
 import { StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { FriendsList } from './friends/FriendsList';
-import { WorkoutList } from './workouts/WorkoutList';
-import { AuthorizationContext } from '../AuthorizationContext';
+import { FriendsList, WorkoutList } from '..';
+import { AuthorizationContext } from '../../AuthorizationContext';
 
 export const HomePage = ({ navigation }: Props) => {
 
@@ -102,5 +101,4 @@ const styles = StyleSheet.create({
 	backdrop: {
 		backgroundColor: 'rgba(0, 0, 0, 0.5)',
 	},
-
 });
