@@ -11,5 +11,4 @@ public class WorkoutDTO {
     private String type;
     private long duration;
     private long distance;
-    private long calories;
 }

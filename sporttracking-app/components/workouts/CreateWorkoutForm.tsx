@@ -21,7 +21,6 @@ export const CreateWorkoutForm = (props: any) => {
 	const type = data[selectedIndex.row];
 	const [duration, setDuration] = useState('0');
 	const [distance, setDistance] = useState('0');
-	const [calories, setCalories] = useState('0');
 
 	const onSubmit = async () => {
 		const workout = {
@@ -30,7 +29,6 @@ export const CreateWorkoutForm = (props: any) => {
 			type,
 			duration: parseInt(duration),
 			distance: parseInt(distance),
-			calories: parseInt(calories),
 		};
 		const token = await AsyncStorage.getItem('access-token');
 		let config = {
@@ -123,15 +121,6 @@ export const CreateWorkoutForm = (props: any) => {
 				secureTextEntry={false}
 				onChangeText={(nextValue) => setDistance(nextValue)}
 			/>
-			<Input
-				style={styles.field}
-				value={calories}
-				label="Burnt calories"
-				placeholder="The calories you burnt during your workout"
-				caption="You should add the calories you burnt here"
-				secureTextEntry={false}
-				onChangeText={(nextValue) => setCalories(nextValue)}
-			/>
 		</Card>
 	);
 };
@@ -146,6 +135,8 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		textAlign: 'center',
+		maxWidth: 400,
+		alignSelf: 'center',
 	},
 	footerContainer: {
 		flexDirection: 'row',

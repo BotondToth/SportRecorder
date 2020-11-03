@@ -33,11 +33,11 @@ public class Workout {
     @Field
     private long calories;
 
-    public Workout(final WorkoutDTO workoutDTO, final ApplicationUser user) {
+    public Workout(final WorkoutDTO workoutDTO, final ApplicationUser user, long calorieBurnt) {
         this.title = workoutDTO.getTitle();
         this.description = workoutDTO.getDescription();
         this.type = workoutDTO.getType();
-        this.calories = workoutDTO.getCalories();
+        this.calories = calorieBurnt;
         this.duration = workoutDTO.getDuration();
         this.distance = workoutDTO.getDistance();
         this.user = user;
