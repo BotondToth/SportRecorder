@@ -7,7 +7,7 @@ import { Props } from '@ui-kitten/components/devsupport/services/props/props.ser
 export const RegisterForm = ({ navigation }: Props) => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [repeatedPassword, setRepeatededPassword] = useState('');
+	const [repeatedPassword, setRepeatedPassword] = useState('');
 	const [fullName, setFullName] = useState('');
 	const [height, setHeight] = useState(0);
 	const [weight, setWeight] = useState(0);
@@ -197,7 +197,7 @@ export const RegisterForm = ({ navigation }: Props) => {
 						? ''
 						: 'Should match the password!'}
 					secureTextEntry={true}
-					onChangeText={(nextValue) => setRepeatededPassword(nextValue)}
+					onChangeText={(nextValue) => setRepeatedPassword(nextValue)}
 					onBlur={() => setRepeatedPasswordIsDirty(true)}
 				/>
 			</Card>

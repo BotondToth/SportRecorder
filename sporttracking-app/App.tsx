@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { RegisterForm } from './components/RegisterForm';
+import { RegisterForm, LoginForm, HomePage } from './components';
 import { ApplicationProvider, IconRegistry, Spinner } from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { LoginForm } from './components/LoginForm';
-import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
-import { HomePage } from './components/HomePage';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AuthorizationContext } from './AuthorizationContext';
