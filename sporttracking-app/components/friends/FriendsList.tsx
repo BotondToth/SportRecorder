@@ -6,7 +6,7 @@ import {
   Icon,
   List,
   ListItem, Modal, Spinner,
-  Text
+  Text,
 } from "@ui-kitten/components";
 import { StyleSheet, View } from 'react-native';
 import AsyncStorage from "@react-native-community/async-storage";
@@ -17,7 +17,7 @@ export const FriendsList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [friends, setFriends] = useState<Friend[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  const [addNewFriendVisible, setAddNewFriendVisible] = useState<boolean>(false);
+  const [addNewFriendCardVisible, setAddNewFriendCardVisible] = useState<boolean>(false);
 
   const getFriends = async () => {
     setIsLoading(true);
@@ -78,7 +78,7 @@ export const FriendsList = () => {
       <Button
         style={styles.footerControl}
         size="small"
-        onPress={() => setAddNewFriendVisible(false)}
+        onPress={() => setAddNewFriendCardVisible(false)}
       >
         Close
       </Button>
@@ -96,7 +96,7 @@ export const FriendsList = () => {
     await axios
       .delete(`http://localhost:8080/friends?friendshipId=${id}`, config)
       .then(async () => {
-        setAddNewFriendVisible(false);
+        setAddNewFriendCardVisible(false);
         await getFriends();
       });
   };
@@ -113,7 +113,7 @@ export const FriendsList = () => {
     await axios
       .post('http://localhost:8080/friends', friendDto, config)
       .then(() => {
-        setAddNewFriendVisible(false);
+        setAddNewFriendCardVisible(false);
         getFriends();
       })
   };
@@ -125,9 +125,7 @@ export const FriendsList = () => {
   );
 
   const renderUserActionButton = (id: string) => {
-    const isAlreadyFollowed = friends.filter(friend => {
-      return friend.friendId === id;
-    });
+    const isAlreadyFollowed = friends.filter(friend => friend.friendId === id);
 
     return (
       isAlreadyFollowed.length > 0 ? (
@@ -169,7 +167,7 @@ export const FriendsList = () => {
   const Header = (props: any) => (
     <View {...props}>
       <Text category="h6">My Friends</Text>
-      <Button appearance='ghost' style={styles.searchButton} size="small" accessoryLeft={renderSearchIcon} onPress={() => setAddNewFriendVisible(true)}/>
+      <Button appearance='ghost' style={styles.searchButton} size="small" accessoryLeft={renderSearchIcon} onPress={() => setAddNewFriendCardVisible(true)}/>
     </View>
   );
 
@@ -177,10 +175,10 @@ export const FriendsList = () => {
     <>
       <Modal
         style={styles.usersModal}
-        visible={addNewFriendVisible}
+        visible={addNewFriendCardVisible}
         backdropStyle={styles.backdrop}
         onBackdropPress={() => {
-          setAddNewFriendVisible(false);
+          setAddNewFriendCardVisible(false);
         }}
       >
         <Card
