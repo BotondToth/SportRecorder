@@ -3,29 +3,15 @@ import { Text, Card, Button, Input } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
 import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
-import axios from 'axios';
 import { AuthorizationContext } from '../../AuthorizationContext';
-
-const RegisterLinkFooter = ({ navigation }: Props) => {
-	return (
-		<View style={styles.registerLink}>
-			<Text>You don't have an account yet? Click</Text>
-			<Text
-				status="primary"
-				onPress={() => navigation.navigate('Register')}
-			>
-				here
-            </Text>
-		</View>
-	);
-};
+import { Client } from "../../api/Client";
 
 export const LoginForm = ({ navigation }: Props) => {
-
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [loginFailed, setLoginFailed] = useState(false);
 	const { signIn } = useContext(AuthorizationContext);
+	const client: Client = Client.getInstance();
 
 	const saveData = async (token: string) => {
 		try {
@@ -48,18 +34,15 @@ export const LoginForm = ({ navigation }: Props) => {
 	};
 
 	const loginUser = async (userToLogin: object) => {
-
-		axios
-			.post('http://localhost:8080/login', userToLogin)
-			.then((res) => {
-				saveData(res.headers.authorization);
-				setLoginFailed(false);
-				signIn();
-			})
-			.catch((err) => {
-				console.log(err);
-				setLoginFailed(true);
-			});
+		try {
+			const response = await client.sendRequest('login', userToLogin);
+			await saveData(response.headers.authorization);
+			setLoginFailed(false);
+			signIn();
+		} catch (e) {
+			console.log(e);
+			setLoginFailed(true);
+		}
 	};
 
 	const onSubmit = async () => {
@@ -83,6 +66,20 @@ export const LoginForm = ({ navigation }: Props) => {
 			>Login</Button>
 		</View>
 	);
+
+	const RegisterLinkFooter = ({ navigation }: Props) => {
+		return (
+			<View style={styles.registerLink}>
+				<Text>You don't have an account yet? Click</Text>
+				<Text
+					status="primary"
+					onPress={() => navigation.navigate('Register')}
+				>
+					here
+				</Text>
+			</View>
+		);
+	};
 
 	return (
 		<>

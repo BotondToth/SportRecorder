@@ -9,60 +9,31 @@ import {
   Text,
 } from "@ui-kitten/components";
 import { StyleSheet, View } from 'react-native';
-import AsyncStorage from "@react-native-community/async-storage";
-import axios from "axios";
 import { Friend, User } from "../../types";
+import { Client } from "../../api/Client";
 
 export const FriendsList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [friends, setFriends] = useState<Friend[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [addNewFriendCardVisible, setAddNewFriendCardVisible] = useState<boolean>(false);
+  const client: Client = Client.getInstance();
 
   const getFriends = async () => {
     setIsLoading(true);
-    const token = await AsyncStorage.getItem('access-token');
-    let config = {
-      headers: {
-        Authorization: token
-      }
-    };
-
-    await axios
-      .get('http://localhost:8080/friends', config)
-      .then((res) => {
-        setIsLoading(false);
-        setFriends(res.data);
-      })
-      .catch(error => {
-        setIsLoading(false);
-        console.log(error);
-      });
+    const response = await client.sendRequest('friends')
+    setIsLoading(false);
+    setFriends(response.data);
   };
 
   const getUsers = async () => {
     setIsLoading(true);
-    const token = await AsyncStorage.getItem('access-token');
-    let config = {
-      headers: {
-        Authorization: token
-      }
-    };
-
-    await axios
-      .get('http://localhost:8080/users', config)
-      .then((res) => {
-        setIsLoading(false);
-        setUsers(res.data);
-      })
-      .catch(error => {
-        setIsLoading(false);
-        console.log(error);
-      });
+    const response = await client.sendRequest('users');
+    setIsLoading(false);
+    setUsers(response.data);
   };
 
   useEffect(() => {
-    // TODO: it runs every time when bottom tab changes
     getFriends();
     getUsers();
   }, []);
@@ -86,36 +57,15 @@ export const FriendsList = () => {
   );
 
   const unfollowFriend = async (id: string) => {
-    const token = await AsyncStorage.getItem('access-token');
-    let config = {
-      headers: {
-        Authorization: token
-      }
-    };
-
-    await axios
-      .delete(`http://localhost:8080/friends?friendshipId=${id}`, config)
-      .then(async () => {
-        setAddNewFriendCardVisible(false);
-        await getFriends();
-      });
+    await client.sendRequest(`friends?friendshipId=${id}`, null, true);
+    await getFriends();
+    setAddNewFriendCardVisible(false);
   };
 
   const followFriend = async (id: string) => {
-    const friendDto = { friendId: id };
-    const token = await AsyncStorage.getItem('access-token');
-    let config = {
-      headers: {
-        Authorization: token
-      }
-    };
-
-    await axios
-      .post('http://localhost:8080/friends', friendDto, config)
-      .then(() => {
-        setAddNewFriendCardVisible(false);
-        getFriends();
-      })
+    await client.sendRequest('friends', { friendId: id });
+    await getFriends();
+    setAddNewFriendCardVisible(false);
   };
 
   const renderUnfollowButton = (id: string) => (
@@ -124,18 +74,20 @@ export const FriendsList = () => {
     </Button>
   );
 
+  const renderFollowButton = (id: string) => (
+    <Button status="primary" size="tiny" onPress={async () => await followFriend(id)}>
+      Follow
+    </Button>
+  );
+
   const renderUserActionButton = (id: string) => {
     const isAlreadyFollowed = friends.filter(friend => friend.friendId === id);
 
     return (
       isAlreadyFollowed.length > 0 ? (
-        <Button status="danger" size="tiny" onPress={() => unfollowFriend(isAlreadyFollowed[0].id)}>
-          Unfollow
-        </Button>
+        renderUnfollowButton(isAlreadyFollowed[0].id)
       ) : (
-        <Button status="primary" size="tiny" onPress={() => followFriend(id)}>
-          Follow
-        </Button>
+        renderFollowButton(id)
       )
     )
   };
@@ -148,7 +100,7 @@ export const FriendsList = () => {
     <Icon {...props} name="search" />
   );
 
-  const renderListItem = ({ item }: any) => (
+  const renderFriends = ({ item }: any) => (
     <ListItem
       title={item.friend.fullName}
       accessoryLeft={renderProfilePicture}
@@ -167,7 +119,8 @@ export const FriendsList = () => {
   const Header = (props: any) => (
     <View {...props}>
       <Text category="h6">My Friends</Text>
-      <Button appearance='ghost' style={styles.searchButton} size="small" accessoryLeft={renderSearchIcon} onPress={() => setAddNewFriendCardVisible(true)}/>
+      <Button appearance='outline' style={styles.searchButton} size="small"
+              accessoryLeft={renderSearchIcon} onPress={() => setAddNewFriendCardVisible(true)}/>
     </View>
   );
 
@@ -197,18 +150,14 @@ export const FriendsList = () => {
       </Modal>
       <Card header={Header} style={styles.card} disabled={true}>
         {
-          isLoading ? <View style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+          isLoading ? <View style={styles.loading}>
               <Spinner size='giant' />
             </View> :
             <List
               style={styles.container}
               data={friends}
               ItemSeparatorComponent={Divider}
-              renderItem={renderListItem}
+              renderItem={renderFriends}
             />
         }
       </Card>
@@ -225,8 +174,6 @@ const styles = StyleSheet.create({
   },
   searchButton: {
     marginTop: 10,
-    borderWidth: 0.5,
-    borderColor: 'blue',
     width: 50,
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -250,5 +197,10 @@ const styles = StyleSheet.create({
   },
   footerControl: {
     marginHorizontal: 2,
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

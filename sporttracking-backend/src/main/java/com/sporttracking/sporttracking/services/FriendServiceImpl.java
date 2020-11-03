@@ -37,7 +37,7 @@ public class FriendServiceImpl implements FriendService {
     public void deleteFriendship(String friendshipId) throws FriendNotFoundException {
         final Optional<Friend> friend = friendMongoRepository.findById(friendshipId);
         if (friend.isPresent()) {
-            friendMongoRepository.deleteFriendsByUserIdAndFriendId(friend.get().getUserId(), friend.get().getFriendId());
+            friendMongoRepository.deleteFriendsByUserIdAndFriendId(friend.get().getUser().getId(), friend.get().getFriend().getId());
         } else {
             throw new FriendNotFoundException();
         }

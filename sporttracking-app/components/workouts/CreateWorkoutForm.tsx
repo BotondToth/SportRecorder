@@ -9,8 +9,7 @@ import {
 	IndexPath,
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
-import axios from 'axios';
-import AsyncStorage from '@react-native-community/async-storage';
+import { Client } from "../../api/Client";
 
 const data = ['Running', 'Cycling', 'Walking'];
 
@@ -22,6 +21,7 @@ export const CreateWorkoutForm = (props: any) => {
 	const [duration, setDuration] = useState('0');
 	const [distance, setDistance] = useState('0');
 	const [calories, setCalories] = useState('0');
+	const client: Client = Client.getInstance();
 
 	const onSubmit = async () => {
 		const workout = {
@@ -32,16 +32,9 @@ export const CreateWorkoutForm = (props: any) => {
 			distance: parseInt(distance),
 			calories: parseInt(calories),
 		};
-		const token = await AsyncStorage.getItem('access-token');
-		let config = {
-			headers: {
-				Authorization: token,
-			}
-		};
 
-		await axios
-			.post('http://localhost:8080/workout', workout, config)
-			.then(() => props.onFinish());
+		await client.sendRequest('workout', workout);
+		props.onFinish();
 	};
 
 	const Header = (props: any) => (
@@ -160,5 +153,4 @@ const styles = StyleSheet.create({
 	backdrop: {
 		backgroundColor: 'rgba(0, 0, 0, 0.5)',
 	},
-
 });

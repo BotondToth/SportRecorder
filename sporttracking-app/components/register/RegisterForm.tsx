@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Text, Card, Button, Input, Modal, RadioGroup, Radio } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
-import axios from 'axios';
 import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
+import { Client } from "../../api/Client";
 
 export const RegisterForm = ({ navigation }: Props) => {
 	const [email, setEmail] = useState('');
@@ -18,17 +18,15 @@ export const RegisterForm = ({ navigation }: Props) => {
 	const [fullNameIsDirty, setFullNameIsDirty] = useState(false);
 	const [emailIsDirty, setEmailIsDirty] = useState(false);
 	const minPassLength = 6;
+	const client: Client = Client.getInstance();
 
-	const registerUser = (userToRegister: object): any => {
-		// TODO: move requests into dedicated class, address should come from env file instead of fix localhost
-		axios
-			.post('http://localhost:8080/register', userToRegister)
-			.then((res) => {
-				navigation.navigate('Login');
-			})
-			.catch(() => {
-				setEmailTakenModalVisible(true);
-			});
+	const registerUser = async (userToRegister: object) => {
+		try {
+			await client.sendRequest('register', userToRegister);
+			navigation.navigate('Login');
+		} catch (e) {
+			setEmailTakenModalVisible(true);
+		}
 	};
 
 	const onSubmit = async () => {
@@ -106,13 +104,12 @@ export const RegisterForm = ({ navigation }: Props) => {
 						<Text style={styles.center}>
 							The email address you entered is already taken,
 							please try another one.
-                        </Text>
+            </Text>
 						<Button
 							size="small"
-							onPress={() => setEmailTakenModalVisible(false)}
-						>
+							onPress={() => setEmailTakenModalVisible(false)}>
 							Close
-                        </Button>
+						</Button>
 					</Card>
 				</Modal>
 			)}

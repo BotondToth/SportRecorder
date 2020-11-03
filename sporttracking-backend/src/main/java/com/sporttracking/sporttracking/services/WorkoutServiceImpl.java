@@ -24,6 +24,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Override
     public List<Workout> getWorkoutsForUser(final HttpHeaders headers) {
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
+        System.out.println(user.getId());
         return workoutMongoRepository.findAllByUserId(user.getId());
     }
 
@@ -34,7 +35,6 @@ public class WorkoutServiceImpl implements WorkoutService {
         if (workout.isEmpty()) {
             throw new ResourceNotFoundException();
         }
-
         return workout;
     }
 
@@ -44,7 +44,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public boolean deleteWorkout(String trainingId, HttpHeaders headers) throws ResourceNotFoundException {
+    public boolean deleteWorkout(final String trainingId, final HttpHeaders headers) throws ResourceNotFoundException {
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
 
         if (workoutMongoRepository.findByIdAndUserId(trainingId, user.getId()).isEmpty()) {

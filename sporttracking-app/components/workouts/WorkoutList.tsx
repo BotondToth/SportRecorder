@@ -11,53 +11,36 @@ import {
 	Spinner,
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
-import axios from 'axios';
 import { CreateWorkoutForm } from "./CreateWorkoutForm";
 import { Workout } from "../../types";
+import { Client } from "../../api/Client";
 
 export const WorkoutList = () => {
 	const [workoutInDetail, setWorkoutInDetail] = useState<Workout | undefined>(undefined);
 	const [workouts, setWorkouts] = useState<Workout[]>([]);
 	const [workoutFormVisible, setWorkoutFormVisible] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const client: Client = Client.getInstance();
 
 	const getWorkouts = async () => {
 		setIsLoading(true);
-		const token = await AsyncStorage.getItem('access-token');
-		let config = {
-			headers: {
-				Authorization: token
-			}
-		};
-
-		await axios
-			.get('http://localhost:8080/workouts', config)
-			.then((res) => {
-				setIsLoading(false);
-				setWorkouts(res.data);
-			})
-			.catch(error => {
-				setIsLoading(false);
-				console.log(error);
-			});
+		try {
+			const response = await client.sendRequest('workouts');
+			setWorkouts(response.data);
+		} catch (e) {
+			console.log(e);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	const deleteWorkout = async (workoutId: string): Promise<any> => {
-
-		const token = await AsyncStorage.getItem('access-token');
-		let config = {
-			headers: {
-				Authorization: token
-			}
-		};
-		return await axios
-			.delete(`http://localhost:8080/workout/${workoutId}`, config)
-			.then((res) => {
-				return res.data;
-			}).catch(err => {
-				console.log(err);
-			});
+		try {
+			const response = await client.sendRequest(`workout/${workoutId}`, null, true);
+			return response.data;
+		} catch (e) {
+			console.log(e);
+		}
 	}
 
 	const renderIcon = (props: any) => (
@@ -72,7 +55,7 @@ export const WorkoutList = () => {
 		setWorkoutInDetail(workout);
 	};
 
-	const renderItem = ({ item }: { item: Workout }) => (
+	const renderWorkouts = ({ item }: { item: Workout }) => (
 		<ListItem
 			title={item.title}
 			description={item.description}
@@ -197,7 +180,7 @@ export const WorkoutList = () => {
 				: <List
 					data={workouts}
 					ItemSeparatorComponent={Divider}
-					renderItem={renderItem}
+					renderItem={renderWorkouts}
 				/>}
 		</>
 	);
