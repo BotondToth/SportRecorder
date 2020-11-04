@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Card,
@@ -7,10 +7,44 @@ import {
   List,
   ListItem, Modal, Spinner,
   Text,
-} from "@ui-kitten/components";
+} from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
-import { Friend, User } from "../../types";
-import { Client } from "../../api/Client";
+import { Friend, User } from '../../types';
+import { Client } from '../../api';
+
+const styles = StyleSheet.create({
+  usersModal: { width: '75%' },
+  backdrop: { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
+  searchButton: {
+    marginTop: 10,
+    width: 50,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  container: {
+    maxHeight: 400,
+    width: 400,
+  },
+  usersContainer: {
+    maxHeight: 300,
+    width: '100%',
+  },
+  card: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  footerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  footerControl: { marginHorizontal: 2 },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 export const FriendsList = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -21,7 +55,7 @@ export const FriendsList = () => {
 
   const getFriends = async () => {
     setIsLoading(true);
-    const response = await client.sendRequest('friends')
+    const response = await client.sendRequest('friends');
     setIsLoading(false);
     setFriends(response.data);
   };
@@ -36,6 +70,7 @@ export const FriendsList = () => {
   useEffect(() => {
     getFriends();
     getUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const AllUsersCardHeader = (props: any) => (
@@ -81,7 +116,7 @@ export const FriendsList = () => {
   );
 
   const renderUserActionButton = (id: string) => {
-    const isAlreadyFollowed = friends.filter(friend => friend.friendId === id);
+    const isAlreadyFollowed = friends.filter((friend) => friend.friendId === id);
 
     return (
       isAlreadyFollowed.length > 0 ? (
@@ -89,7 +124,7 @@ export const FriendsList = () => {
       ) : (
         renderFollowButton(id)
       )
-    )
+    );
   };
 
   const renderProfilePicture = (props: any) => (
@@ -119,8 +154,13 @@ export const FriendsList = () => {
   const Header = (props: any) => (
     <View {...props}>
       <Text category="h6">My Friends</Text>
-      <Button appearance='outline' style={styles.searchButton} size="small"
-              accessoryLeft={renderSearchIcon} onPress={() => setAddNewFriendCardVisible(true)}/>
+      <Button
+        appearance="outline"
+        style={styles.searchButton}
+        size="small"
+        accessoryLeft={renderSearchIcon}
+        onPress={() => setAddNewFriendCardVisible(true)}
+      />
     </View>
   );
 
@@ -135,7 +175,7 @@ export const FriendsList = () => {
         }}
       >
         <Card
-          disabled={true}
+          disabled
           style={styles.card}
           header={AllUsersCardHeader}
           footer={AllUsersCardFooter}
@@ -148,59 +188,22 @@ export const FriendsList = () => {
           />
         </Card>
       </Modal>
-      <Card header={Header} style={styles.card} disabled={true}>
+      <Card header={Header} style={styles.card} disabled>
         {
-          isLoading ? <View style={styles.loading}>
-              <Spinner size='giant' />
-            </View> :
+          isLoading ? (
+            <View style={styles.loading}>
+              <Spinner size="giant" />
+            </View>
+          ) : (
             <List
               style={styles.container}
               data={friends}
               ItemSeparatorComponent={Divider}
               renderItem={renderFriends}
             />
-        }
+          )
+}
       </Card>
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  usersModal: {
-    width: '75%',
-  },
-  backdrop: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  searchButton: {
-    marginTop: 10,
-    width: 50,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-  },
-  container: {
-    maxHeight: 400,
-    width: 400,
-  },
-  usersContainer: {
-    maxHeight: 300,
-    width: '100%',
-  },
-  card: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  footerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  footerControl: {
-    marginHorizontal: 2,
-  },
-  loading: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});

@@ -13,31 +13,21 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Share {
-
     @Id
     private String id;
-    @Field
-    private String userId;
     @Field
     @DBRef
     private ApplicationUser user;
     @Field
-    private String friendId;
-    @Field
     @DBRef
     private ApplicationUser friend;
-    @Field
-    private String workoutId;
     @DBRef
     @Field
     private Workout workout;
 
     public Share(ApplicationUser user, ApplicationUser friend, Workout workout) {
-        this.userId = user.getId();
         this.user = user;
-        this.friendId = friend.getId();
         this.friend = friend;
-        this.workoutId = workout.getId();
         this.workout = workout;
     }
 }
