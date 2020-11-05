@@ -6,7 +6,9 @@ import com.sporttracking.sporttracking.data.WorkoutDTO;
 import com.sporttracking.sporttracking.exceptions.ResourceNotFoundException;
 import com.sporttracking.sporttracking.repositories.WorkoutMongoRepository;
 import com.sporttracking.sporttracking.utility.AuthUtility;
+import com.sporttracking.sporttracking.utility.CalorieCalculatorUtility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -39,7 +41,12 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public Workout saveWorkout(final WorkoutDTO workoutDTO, final HttpHeaders headers) {
-        return workoutMongoRepository.save(new Workout(workoutDTO, authUtility.getUserFromHeader(headers)));
+        ApplicationUser user = authUtility.getUserFromHeader(headers);
+        return workoutMongoRepository.save(new Workout(
+                workoutDTO,
+                user,
+                CalorieCalculatorUtility.calculate(workoutDTO.getDuration(), Long.parseLong(user.getWeight()), workoutDTO.getType())
+                ));
     }
 
     @Override

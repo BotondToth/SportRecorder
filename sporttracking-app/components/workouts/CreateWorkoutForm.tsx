@@ -41,7 +41,6 @@ export const CreateWorkoutForm = (props: any) => {
   const type = data[selectedIndex.row];
   const [duration, setDuration] = useState(0);
   const [distance, setDistance] = useState(0);
-  const [calories, setCalories] = useState(0);
   const client: Client = Client.getInstance();
 
   const onSubmit = async () => {
@@ -51,7 +50,6 @@ export const CreateWorkoutForm = (props: any) => {
       type,
       duration,
       distance,
-      calories,
     };
 
     await client.sendRequest('workout', workout);
@@ -143,19 +141,6 @@ export const CreateWorkoutForm = (props: any) => {
           // eslint-disable-next-line no-param-reassign
           if (nextValue === '') nextValue = String(0);
           if (!_.isNaN(Number(nextValue))) setDistance(Number.parseInt(nextValue, 10));
-        }}
-      />
-      <Input
-        style={styles.field}
-        value={_.toString(calories)}
-        label="Burnt calories"
-        placeholder="The calories you burnt during your workout"
-        caption="You should add the calories you burnt here"
-        secureTextEntry={false}
-        onChangeText={(nextValue) => {
-          // eslint-disable-next-line no-param-reassign
-          if (nextValue === '') nextValue = String(0);
-          if (!_.isNaN(Number(nextValue))) setCalories(Number.parseInt(nextValue, 10));
         }}
       />
     </Card>
