@@ -24,7 +24,6 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Override
     public List<Workout> getWorkoutsForUser(final HttpHeaders headers) {
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
-        System.out.println(user.getId());
         return workoutMongoRepository.findAllByUserId(user.getId());
     }
 
