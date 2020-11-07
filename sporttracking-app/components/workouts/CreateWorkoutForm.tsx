@@ -12,7 +12,7 @@ import { StyleSheet, View } from 'react-native';
 import _ from 'lodash';
 import { Client } from '../../api';
 
-const data = ['Running', 'Cycling', 'Walking'];
+const data = ['Running', 'Cycling', 'Walking', 'Swimming'];
 
 const styles = StyleSheet.create({
   topContainer: {
