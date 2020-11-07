@@ -1,0 +1,31 @@
+{
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true
+  },
+  "extends": [
+    "airbnb-typescript",
+    "plugin:react-hooks/recommended"
+  ],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "@typescript-eslint/lines-between-class-members": "off",
+    "class-methods-use-this": 0,
+    "import/prefer-default-export": 0,
+    "object-curly-newline": ["error", {
+      "ImportDeclaration": { "minProperties": 5 },
+      "ObjectExpression": { "minProperties": 2 },
+      "ObjectPattern": { "multiline": true }
+    }],
+    "react/destructuring-assignment": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react/prop-types": 0,
+    "@typescript-eslint/space-before-function-paren": ["error", "always"],
+    "no-return-await": "off",
+    "react/no-unescaped-entities": "off",
+    "react/no-children-prop": "off"
+  }
+}

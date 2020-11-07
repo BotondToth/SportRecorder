@@ -26,4 +26,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install packages
-      run: cd sporttracking-app && yarn install
+      run: cd sporttracking-app && yarn install && yarn run lint

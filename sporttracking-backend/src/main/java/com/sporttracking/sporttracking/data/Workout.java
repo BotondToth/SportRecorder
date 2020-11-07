@@ -19,8 +19,6 @@ public class Workout {
     @DBRef
     private ApplicationUser user;
     @Field
-    private String userId;
-    @Field
     private String title;
     @Field
     private String description;
@@ -41,6 +39,5 @@ public class Workout {
         this.duration = workoutDTO.getDuration();
         this.distance = workoutDTO.getDistance();
         this.user = user;
-        this.userId = user.getId();
     }
 }
