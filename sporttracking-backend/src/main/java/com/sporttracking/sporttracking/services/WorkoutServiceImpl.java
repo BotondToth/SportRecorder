@@ -30,9 +30,9 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public Optional<Workout> getWorkoutForUser(String trainingId, HttpHeaders headers) throws ResourceNotFoundException {
+    public Optional<Workout> getWorkoutForUser(String workoutId, HttpHeaders headers) throws ResourceNotFoundException {
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
-        Optional<Workout> workout =  workoutMongoRepository.findByIdAndUserId(trainingId, user.getId());
+        Optional<Workout> workout =  workoutMongoRepository.findByIdAndUserId(workoutId, user.getId());
         if (workout.isEmpty()) {
             throw new ResourceNotFoundException();
         }
