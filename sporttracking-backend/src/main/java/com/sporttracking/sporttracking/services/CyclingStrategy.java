@@ -1,6 +1,6 @@
 package com.sporttracking.sporttracking.services;
 
-public class CyclingStrategy implements CalorieCalculatorStrategy{
+public class CyclingStrategy implements CalorieCalculatorStrategy {
 
     @Override
     public long calculate(long duration, long weight) {
