@@ -2,6 +2,7 @@ package com.sporttracking.sporttracking.utility;
 
 import com.sporttracking.sporttracking.services.CyclingStrategy;
 import com.sporttracking.sporttracking.services.RunningStrategy;
+import com.sporttracking.sporttracking.services.SwimmingStrategy;
 import com.sporttracking.sporttracking.services.WalkingStrategy;
 
 public class CalorieCalculatorUtility {
@@ -19,6 +20,9 @@ public class CalorieCalculatorUtility {
                 return context.executeStrategy(duration, weight);
             case "Running":
                 context  = new CalorieCalculatorContext(new RunningStrategy());
+                return context.executeStrategy(duration, weight);
+            case "Swimming":
+                context = new CalorieCalculatorContext(new SwimmingStrategy());
                 return context.executeStrategy(duration, weight);
             default:
                 return 0;
