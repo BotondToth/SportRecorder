@@ -4,3 +4,5 @@ export * from './login/LoginForm';
 export * from './register/RegisterForm';
 export * from './workouts/CreateWorkoutForm';
 export * from './workouts/WorkoutList';
+export * from './statistics/StatisticsPage';
+export * from './statistics/YearTab';

@@ -8,9 +8,9 @@ import com.sporttracking.sporttracking.repositories.WorkoutMongoRepository;
 import com.sporttracking.sporttracking.utility.AuthUtility;
 import com.sporttracking.sporttracking.utility.CalorieCalculatorUtility;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -30,9 +30,9 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public Optional<Workout> getWorkoutForUser(String workoutId, HttpHeaders headers) throws ResourceNotFoundException {
+    public Optional<Workout> getWorkoutForUser(final String workoutId, final HttpHeaders headers) throws ResourceNotFoundException {
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
-        Optional<Workout> workout =  workoutMongoRepository.findByIdAndUserId(workoutId, user.getId());
+        final Optional<Workout> workout = workoutMongoRepository.findByIdAndUserId(workoutId, user.getId());
         if (workout.isEmpty()) {
             throw new ResourceNotFoundException();
         }
@@ -41,12 +41,12 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public Workout saveWorkout(final WorkoutDTO workoutDTO, final HttpHeaders headers) {
-        ApplicationUser user = authUtility.getUserFromHeader(headers);
+        final ApplicationUser user = authUtility.getUserFromHeader(headers);
         return workoutMongoRepository.save(new Workout(
                 workoutDTO,
                 user,
                 CalorieCalculatorUtility.calculate(workoutDTO.getDuration(), Long.parseLong(user.getWeight()), workoutDTO.getType())
-                ));
+        ));
     }
 
     @Override

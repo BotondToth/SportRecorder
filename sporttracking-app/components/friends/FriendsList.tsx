@@ -202,7 +202,7 @@ export const FriendsList = () => {
               renderItem={renderFriends}
             />
           )
-}
+        }
       </Card>
     </>
   );
