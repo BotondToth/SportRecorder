@@ -6,8 +6,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import AsyncStorage from '@react-native-community/async-storage';
 import { View } from 'react-native';
-import { AuthorizationContext } from './AuthorizationContext';
-import { RegisterForm, LoginForm, HomePage } from './components';
+import { AuthorizationContext } from 'AuthorizationContext';
+import { RegisterForm, LoginForm, HomePage } from 'components';
 
 const Stack = createStackNavigator();
 

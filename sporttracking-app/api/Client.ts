@@ -16,7 +16,7 @@ export class Client {
     return Client.instance;
   }
 
-  public sendRequest = async (
+  public sendRequest = async <T = any>(
     target: string,
     body: any = null,
     isItDeleteRequest: boolean = false,
@@ -26,11 +26,11 @@ export class Client {
     const config = { headers: { Authorization: token } };
 
     if (isItDeleteRequest) {
-      return await axios.delete(url, config);
+      return await axios.delete<T>(url, config);
     }
     if (body) {
-      return await axios.post(url, body, config);
+      return await axios.post<T>(url, body, config);
     }
-    return await axios.get(url, config);
+    return await axios.get<T>(url, config);
   };
 }

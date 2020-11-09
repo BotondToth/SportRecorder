@@ -6,3 +6,5 @@ export * from './workouts/CreateWorkoutForm';
 export * from './workouts/WorkoutList';
 export * from './statistics/StatisticsPage';
 export * from './statistics/YearTab';
+export * from './statistics/MonthTab';
+export * from './statistics/DayTab';

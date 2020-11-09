@@ -3,9 +3,9 @@ import { Text, Card, Button, Input } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
-import { AuthorizationContext } from '../../AuthorizationContext';
-import { Client } from '../../api';
-import { validateEmail } from '../../utils';
+import { AuthorizationContext } from 'AuthorizationContext';
+import { Client } from 'api';
+import { validateEmail } from 'utils';
 
 const styles = StyleSheet.create({
   topContainer: {
@@ -95,13 +95,12 @@ export const LoginForm = ({ navigation }: Props) => {
     </View>
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  const RegisterLinkFooter = ({ navigation }: Props) => (
+  const RegisterLinkFooter = ({ navigation: navi }: Props) => (
     <View style={styles.registerLink}>
       <Text>You don't have an account yet? Click</Text>
       <Text
         status="primary"
-        onPress={() => navigation.navigate('Register')}
+        onPress={() => navi.navigate('Register')}
       >
         here
       </Text>

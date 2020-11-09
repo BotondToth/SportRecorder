@@ -11,9 +11,9 @@ import {
   Spinner,
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
-import { CreateWorkoutForm } from './CreateWorkoutForm';
-import { Workout } from '../../types';
-import { Client } from '../../api';
+import { CreateWorkoutForm } from 'components';
+import { Workout } from 'types';
+import { Client } from 'api';
 
 const styles = StyleSheet.create({
   modal: { width: '75%' },
@@ -55,7 +55,7 @@ export const WorkoutList = () => {
   const getWorkouts = async () => {
     setIsLoading(true);
     try {
-      const response = await client.sendRequest('workouts');
+      const response = await client.sendRequest<Workout[]>('workouts');
       setWorkouts(response.data);
     } catch (e) {
       console.error(e);

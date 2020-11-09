@@ -36,11 +36,11 @@ public class Workout {
     @Field
     private Date date;
 
-    public Workout(final WorkoutDTO workoutDTO, final ApplicationUser user, final long calorieBurnt) {
+    public Workout(final WorkoutDTO workoutDTO, final ApplicationUser user, final long caloriesBurnt) {
         title = workoutDTO.getTitle();
         description = workoutDTO.getDescription();
         type = workoutDTO.getType();
-        calories = calorieBurnt;
+        calories = caloriesBurnt;
         duration = workoutDTO.getDuration();
         distance = workoutDTO.getDistance();
         this.user = user;

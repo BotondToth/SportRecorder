@@ -9,7 +9,7 @@
     "plugin:react-hooks/recommended"
   ],
   "parserOptions": {
-    "project": "./tsconfig.json"
+    "project": "tsconfig.json"
   },
   "rules": {
     "@typescript-eslint/lines-between-class-members": "off",
@@ -19,7 +19,8 @@
       "error",
       {
         "ImportDeclaration": {
-          "minProperties": 5
+          "minProperties": 5,
+          "multiline": true
         },
         "ObjectExpression": {
           "minProperties": 2
@@ -39,6 +40,8 @@
     "no-return-await": "off",
     "react/no-unescaped-entities": "off",
     "react/no-children-prop": "off",
-    "no-console": ["error", { "allow": ["warn", "error"] }]
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-param-reassign": "off",
+    "no-control-regex": "off"
   }
 }

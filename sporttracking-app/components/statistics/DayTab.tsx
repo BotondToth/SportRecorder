@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { Chart } from 'react-google-charts';
 import { ReactGoogleChartEvent } from 'react-google-charts/dist/types';
 import { View, StyleSheet } from 'react-native';
-import { Client } from '../../api';
+import { Workout } from 'types';
+import { Client } from 'api';
 
 const styles = StyleSheet.create({
   content: {
@@ -32,19 +33,23 @@ export const DayTab = () => {
   const client: Client = Client.getInstance();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getStatistics = (date: Date) => {
+  const getStatistics = async (date: Date) => {
     setLoading(true);
     setChartIsReady(false);
     // TODO: Stats backend-ről betölteni az adatokat
-    client.sendRequest('workouts').then(() => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const response = await client.sendRequest<Workout[]>('workouts');
       const days: (string |number)[][] = [['Hour', 'Number of activities']];
       for (let i = 1; i <= 24; i += 1) {
         days.push([i, i]);
       }
       setData(days);
-    })
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const LoadingSpin = () => (

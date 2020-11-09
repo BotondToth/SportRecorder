@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { Chart } from 'react-google-charts';
 import { ReactGoogleChartEvent } from 'react-google-charts/dist/types';
 import { View, StyleSheet } from 'react-native';
-import { Client } from '../../api';
+import { Workout } from 'types';
+import { Client } from 'api';
 
 const styles = StyleSheet.create({
   content: {
@@ -27,30 +28,33 @@ export const YearTab = () => {
   const client: Client = Client.getInstance();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getStatistics = (year: Date) => {
+  const getStatistics = async (year: Date) => {
     setLoading(true);
     setChartIsReady(false);
     // TODO: Stats backend-ről betölteni az adatokat
-    client.sendRequest('workouts')
-      .then(() => {
-        setData([
-          ['Month', 'Number of activities'],
-          ['Jan', 15],
-          ['Feb', 16],
-          ['Mar', 15],
-          ['Apr', 16],
-          ['May', 15],
-          ['Jun', 16],
-          ['Jul', 15],
-          ['Aug', 16],
-          ['Sep', 15],
-          ['Okt', 16],
-          ['Nov', 16],
-          ['Dec', 16],
-        ]);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const response = await client.sendRequest<Workout[]>('workouts');
+      setData([
+        ['Month', 'Number of activities'],
+        ['Jan', 15],
+        ['Feb', 16],
+        ['Mar', 15],
+        ['Apr', 16],
+        ['May', 15],
+        ['Jun', 16],
+        ['Jul', 15],
+        ['Aug', 16],
+        ['Sep', 15],
+        ['Okt', 16],
+        ['Nov', 16],
+        ['Dec', 16],
+      ]);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const LoadingSpin = () => (

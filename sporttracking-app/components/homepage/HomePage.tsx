@@ -1,16 +1,16 @@
 import React, { useEffect, useContext } from 'react';
 import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
-import { Button,
+import {
+  Button,
   BottomNavigationTab,
   BottomNavigation,
-  Icon } from '@ui-kitten/components';
+  Icon,
+} from '@ui-kitten/components';
 import { StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { FriendsList } from '../friends/FriendsList';
-import { WorkoutList } from '../workouts/WorkoutList';
-import { AuthorizationContext } from '../../AuthorizationContext';
-import { StatisticsPage } from '../statistics/StatisticsPage';
+import { AuthorizationContext } from 'AuthorizationContext';
+import { FriendsList, WorkoutList, StatisticsPage } from 'components';
 
 const styles = StyleSheet.create({
   headerStyle: { marginLeft: 25 },
@@ -42,6 +42,7 @@ export const HomePage = ({ navigation }: Props) => {
         Logout
       </Button>
     ) });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const FriendsIcon = (props: any) => <Icon {...props} name="people-outline" />;
@@ -50,12 +51,11 @@ export const HomePage = ({ navigation }: Props) => {
 
   const StatsIcon = (props: any) => <Icon {...props} name="options-2-outline" />;
 
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  const BottomNav = ({ state, navigation }: any) => (
+  const BottomNav = ({ state, navigation: navi }: any) => (
     <BottomNavigation
       selectedIndex={state.index}
       onSelect={(index) => {
-        if (index !== state.index) { navigation.navigate(state.routeNames[index]); }
+        if (index !== state.index) { navi.navigate(state.routeNames[index]); }
       }}
     >
       <BottomNavigationTab title="Friends" icon={FriendsIcon} />

@@ -5,8 +5,8 @@ import {
 import { StyleSheet, View } from 'react-native';
 import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
 import _ from 'lodash';
-import { Client } from '../../api';
-import { validateEmail } from '../../utils';
+import { Client } from 'api';
+import { validateEmail } from 'utils';
 
 const styles = StyleSheet.create({
   topContainer: {
@@ -159,7 +159,6 @@ export const RegisterForm = ({ navigation }: Props) => {
           caption={validateWeight() ? '' : 'Should contain only numbers!'}
           label="Weight (kg)"
           onChangeText={(nextValue) => {
-            // eslint-disable-next-line no-param-reassign
             if (nextValue === '') nextValue = String(0);
             if (!_.isNaN(Number(nextValue))) setWeight(Number.parseInt(nextValue, 10));
           }}
@@ -171,7 +170,6 @@ export const RegisterForm = ({ navigation }: Props) => {
           caption={validateHeight() ? '' : 'Should contain only numbers!'}
           label="Height (cm)"
           onChangeText={(nextValue) => {
-            // eslint-disable-next-line no-param-reassign
             if (nextValue === '') nextValue = String(0);
             if (!_.isNaN(Number(nextValue))) setHeight(Number.parseInt(nextValue, 10));
           }}

@@ -10,7 +10,7 @@ import {
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
 import _ from 'lodash';
-import { Client } from '../../api';
+import { Client } from 'api';
 
 const data = ['Running', 'Cycling', 'Walking', 'Swimming'];
 
@@ -125,7 +125,6 @@ export const CreateWorkoutForm = (props: any) => {
         caption="You should add the length of your workout here"
         secureTextEntry={false}
         onChangeText={(nextValue) => {
-          // eslint-disable-next-line no-param-reassign
           if (nextValue === '') nextValue = String(0);
           if (!_.isNaN(Number(nextValue))) setDuration(Number.parseInt(nextValue, 10));
         }}
@@ -138,7 +137,6 @@ export const CreateWorkoutForm = (props: any) => {
         caption="You should add the distance of your workout here"
         secureTextEntry={false}
         onChangeText={(nextValue) => {
-          // eslint-disable-next-line no-param-reassign
           if (nextValue === '') nextValue = String(0);
           if (!_.isNaN(Number(nextValue))) setDistance(Number.parseInt(nextValue, 10));
         }}

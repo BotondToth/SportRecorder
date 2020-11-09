@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { Chart } from 'react-google-charts';
 import { ReactGoogleChartEvent } from 'react-google-charts/dist/types';
 import { View, StyleSheet } from 'react-native';
-import { Client } from '../../api';
+import { Workout } from 'types';
+import { Client } from 'api';
 
 const styles = StyleSheet.create({
   content: {
@@ -34,17 +35,20 @@ export const MonthTab = () => {
     setLoading(true);
     setChartIsReady(false);
     // TODO: Stats backend-ről betölteni az adatokat
-    client.sendRequest('workouts')
-      .then(() => {
-        const months: (string |number)[][] = [['Day', 'Number of activities']];
-        const lastDay = new Date(selectedYear, date.getMonth(), 0).getDate();
-        for (let i = 1; i <= lastDay; i += 1) {
-          months.push([i, i]);
-        }
-        setData(months);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const response = client.sendRequest<Workout[]>('workouts');
+      const months: (string |number)[][] = [['Day', 'Number of activities']];
+      const lastDay = new Date(selectedYear, date.getMonth(), 0).getDate();
+      for (let i = 1; i <= lastDay; i += 1) {
+        months.push([i, i]);
+      }
+      setData(months);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const LoadingSpin = () => (
