@@ -17,35 +17,30 @@ const styles = StyleSheet.create({
   chart: { flex: 1 },
 });
 
-export const YearTab = () => {
-  const CURRENT_YEAR = new Date().getFullYear();
-  const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR);
-  const [data, setData] = useState<(string | number)[][]>([]);
+export const MonthTab = () => {
+  const monthToStr = (date: Date) => date.toLocaleString('default', { month: 'long' });
+
+  const CURRENT_DATE = new Date();
+  const [selectedYear, setSelectedYear] = useState(CURRENT_DATE.getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(CURRENT_DATE.getMonth());
+  const [selectMonthAsStr, setSelectedMonthAsStr] = useState(monthToStr(CURRENT_DATE));
+  const [data, setData] = useState<(string |number)[][]>([[]]);
   const [loading, setLoading] = useState(true);
   const [chartIsReady, setChartIsReady] = useState(false);
   const client: Client = Client.getInstance();
 
-  const getStatistics = (year: Date) => {
+  const getStatistics = (date: Date) => {
     setLoading(true);
     setChartIsReady(false);
     // TODO: Stats backend-ről betölteni az adatokat
     client.sendRequest('workouts')
       .then(() => {
-        setData([
-          ['Month', 'Number of activities'],
-          ['Jan', 15],
-          ['Feb', 16],
-          ['Mar', 15],
-          ['Apr', 16],
-          ['May', 15],
-          ['Jun', 16],
-          ['Jul', 15],
-          ['Aug', 16],
-          ['Sep', 15],
-          ['Okt', 16],
-          ['Nov', 16],
-          ['Dec', 16],
-        ]);
+        const months: (string |number)[][] = [['Day', 'Number of activities']];
+        const lastDay = new Date(selectedYear, date.getMonth(), 0).getDate();
+        for (let i = 1; i <= lastDay; i += 1) {
+          months.push([i, i]);
+        }
+        setData(months);
       })
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
@@ -63,8 +58,27 @@ export const YearTab = () => {
   );
 
   useEffect(() => {
-    getStatistics(new Date(selectedYear, 0, 1));
-  }, [selectedYear]);
+    if (selectedMonth === 12) {
+      setSelectedYear((value) => value + 1);
+      setSelectedMonth(0);
+    } else if (selectedMonth === -1) {
+      setSelectedYear((value) => value - 1);
+      setSelectedMonth(11);
+    } else {
+      const date = new Date(selectedYear, selectedMonth);
+      setSelectedMonthAsStr(monthToStr(date));
+      getStatistics(date);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMonth]);
+
+  const disableDecrement = () => loading
+        || !chartIsReady
+        || (selectedYear === 2000 && selectedMonth === 0);
+
+  const disableIncrement = () => loading
+      || !chartIsReady
+      || (selectedYear === CURRENT_DATE.getFullYear() && selectedMonth === CURRENT_DATE.getMonth());
 
   const chartEvents = [
     {
@@ -79,17 +93,17 @@ export const YearTab = () => {
     <View style={styles.content}>
       <View style={styles.dataSelector}>
         <Button
-          disabled={loading || !chartIsReady || selectedYear === 2000}
-          onPress={() => setSelectedYear((prevYear) => prevYear - 1)}
+          disabled={disableDecrement()}
+          onPress={() => setSelectedMonth((prevYear) => prevYear - 1)}
         >
           {'<'}
         </Button>
         <Text>
-          {selectedYear}
+          {`${selectMonthAsStr}, ${selectedYear}`}
         </Text>
         <Button
-          disabled={loading || !chartIsReady || CURRENT_YEAR === selectedYear}
-          onPress={() => setSelectedYear((prevYear) => prevYear + 1)}
+          disabled={disableIncrement()}
+          onPress={() => setSelectedMonth((prevYear) => prevYear + 1)}
         >
           {'>'}
         </Button>

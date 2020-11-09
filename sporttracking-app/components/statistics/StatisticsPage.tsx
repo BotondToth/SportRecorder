@@ -1,59 +1,76 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Button, Spinner, Text } from '@ui-kitten/components';
+import { Button, Text } from '@ui-kitten/components';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { YearTab } from './YearTab';
+import { MonthTab } from './MonthTab';
+import { DayTab } from './DayTab';
 
 const styles = StyleSheet.create({
   header: {
-    flex: 0.2,
+    flex: 0.1,
     justifyContent: 'space-around',
     backgroundColor: 'white',
   },
   title: { textAlign: 'center' },
   content: { flex: 1 },
-  dataSelector: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
   viewSwitchButtons: {
-    flex: 0.1,
+    flex: 0.08,
     flexDirection: 'row',
-    justifyContent: 'space-around',
   },
+  switchButton: { flex: 1 },
+  viewArea: { flex: 1 },
 });
 
-export const StatisticsPage = () => {
-  const DAY = 0;
-  const MONTH = 1;
-  const YEAR = 2;
-  const [activeView, setActiveView] = useState(YEAR);
-  const DayTab = () => <Text category="h5">DayTab</Text>;
-  const MonthTab = () => <Text category="h5">MonthTab</Text>;
+export const StatisticsPage = ({ navigation }: any) => {
+  const { Navigator, Screen } = createBottomTabNavigator();
+  const DAY: string = 'day';
+  const MONTH: string = 'month';
+  const YEAR: string = 'year';
 
-  useEffect(() => {
-    console.log('reload');
-  }, []);
+  const navigate = (where: string) => {
+    navigation.navigate(where);
+  };
 
   return (
     <>
       <View style={styles.header}>
         <Text category="h5" style={styles.title}>Read your statistics!</Text>
       </View>
-      <View style={styles.viewSwitchButtons}>
-        <Button onPress={() => {
-          setActiveView(MONTH);
-          console.log(activeView);
-        }}
-        >
-          Hónap
-        </Button>
-        <Button onPress={() => setActiveView(YEAR)}>Év</Button>
-        <Button onPress={() => setActiveView(DAY)}>Nap</Button>
-      </View>
       <View style={styles.content}>
-        {activeView === DAY && (<DayTab />)}
-        {activeView === MONTH && (<MonthTab />)}
-        {activeView === YEAR && (<YearTab />)}
+        <View style={styles.viewSwitchButtons}>
+          <Button
+            appearance="outline"
+            style={styles.switchButton}
+            onPress={() => navigate(DAY)}
+          >
+            Daily
+          </Button>
+          <Button
+            appearance="outline"
+            style={styles.switchButton}
+            onPress={() => navigate(MONTH)}
+          >
+            Monthly
+          </Button>
+          <Button
+            appearance="outline"
+            style={styles.switchButton}
+            onPress={() => navigate(YEAR)}
+          >
+            Yearly
+          </Button>
+        </View>
+        <View style={styles.viewArea}>
+          <Navigator
+            initialRouteName={DAY}
+            screenOptions={{ tabBarVisible: false }}
+          >
+            <Screen name={DAY} component={DayTab} />
+            <Screen name={MONTH} component={MonthTab} />
+            <Screen name={YEAR} component={YearTab} />
+          </Navigator>
+        </View>
       </View>
     </>
   );

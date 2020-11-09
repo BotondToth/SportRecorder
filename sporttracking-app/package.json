@@ -26,6 +26,7 @@
 		"lodash": "^4.17.20",
 		"react": "16.13.1",
 		"react-dom": "16.13.1",
+		"react-google-charts": "^3.0.15",
 		"react-native": "https://github.com/expo/react-native/archive/sdk-39.0.2.tar.gz",
 		"react-native-gesture-handler": "~1.7.0",
 		"react-native-paper": "^4.2.0",

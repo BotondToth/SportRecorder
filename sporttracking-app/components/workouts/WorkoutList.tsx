@@ -110,7 +110,7 @@ export const WorkoutList = () => {
         style={styles.deleteButton}
         size="small"
         onPress={async () => {
-          await deleteWorkout(workoutInDetail!.id);
+          await deleteWorkout(workoutInDetail.id);
           setWorkoutInDetail(undefined);
           await getWorkouts();
         }}

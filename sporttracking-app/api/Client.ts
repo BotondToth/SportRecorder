@@ -27,7 +27,8 @@ export class Client {
 
     if (isItDeleteRequest) {
       return await axios.delete(url, config);
-    } if (body) {
+    }
+    if (body) {
       return await axios.post(url, body, config);
     }
     return await axios.get(url, config);
