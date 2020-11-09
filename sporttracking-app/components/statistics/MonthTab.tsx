@@ -1,6 +1,7 @@
 import { Text, Button, Spinner } from '@ui-kitten/components';
 import React, { useEffect, useState } from 'react';
 import { Chart } from 'react-google-charts';
+import { ReactGoogleChartEvent } from 'react-google-charts/dist/types';
 import { View, StyleSheet } from 'react-native';
 import { Client } from '../../api';
 
@@ -42,7 +43,7 @@ export const MonthTab = () => {
         }
         setData(months);
       })
-      .catch((error) => console.log(error))
+      .catch(console.error)
       .finally(() => setLoading(false));
   };
 
@@ -80,7 +81,7 @@ export const MonthTab = () => {
       || !chartIsReady
       || (selectedYear === CURRENT_DATE.getFullYear() && selectedMonth === CURRENT_DATE.getMonth());
 
-  const chartEvents = [
+  const chartEvents: ReactGoogleChartEvent[] = [
     {
       callback: () => {
         setChartIsReady(true);

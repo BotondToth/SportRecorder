@@ -49,8 +49,7 @@ export const LoginForm = ({ navigation }: Props) => {
     try {
       await AsyncStorage.setItem('access-token', token);
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
+      console.error(e);
     }
   };
 
@@ -65,8 +64,7 @@ export const LoginForm = ({ navigation }: Props) => {
       setLoginFailed(false);
       signIn();
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
+      console.error(e);
       setLoginFailed(true);
     }
   };

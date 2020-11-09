@@ -38,6 +38,7 @@
     ],
     "no-return-await": "off",
     "react/no-unescaped-entities": "off",
-    "react/no-children-prop": "off"
+    "react/no-children-prop": "off",
+    "no-console": ["error", { "allow": ["warn", "error"] }]
   }
 }

@@ -58,8 +58,7 @@ export const WorkoutList = () => {
       const response = await client.sendRequest('workouts');
       setWorkouts(response.data);
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
+      console.error(e);
     } finally {
       setIsLoading(false);
     }
@@ -70,8 +69,7 @@ export const WorkoutList = () => {
       const response = await client.sendRequest(`workout/${workoutId}`, null, true);
       return response.data;
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
+      console.error(e);
       return null;
     }
   };

@@ -11,7 +11,7 @@ import { RegisterForm, LoginForm, HomePage } from './components';
 
 const Stack = createStackNavigator();
 
-export default function App() {
+export default function App () {
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -23,8 +23,7 @@ export default function App() {
         }
         setLoading(false);
       })
-      // eslint-disable-next-line no-console
-      .catch(console.log);
+      .catch(console.error);
   }, []);
 
   const authContext = {

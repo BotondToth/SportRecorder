@@ -1,6 +1,7 @@
 import { Text, Button, Spinner } from '@ui-kitten/components';
 import React, { useEffect, useState } from 'react';
 import { Chart } from 'react-google-charts';
+import { ReactGoogleChartEvent } from 'react-google-charts/dist/types';
 import { View, StyleSheet } from 'react-native';
 import { Client } from '../../api';
 
@@ -25,6 +26,7 @@ export const YearTab = () => {
   const [chartIsReady, setChartIsReady] = useState(false);
   const client: Client = Client.getInstance();
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getStatistics = (year: Date) => {
     setLoading(true);
     setChartIsReady(false);
@@ -47,7 +49,7 @@ export const YearTab = () => {
           ['Dec', 16],
         ]);
       })
-      .catch((error) => console.log(error))
+      .catch(console.error)
       .finally(() => setLoading(false));
   };
 
@@ -64,9 +66,10 @@ export const YearTab = () => {
 
   useEffect(() => {
     getStatistics(new Date(selectedYear, 0, 1));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedYear]);
 
-  const chartEvents = [
+  const chartEvents: ReactGoogleChartEvent[] = [
     {
       callback: () => {
         setChartIsReady(true);

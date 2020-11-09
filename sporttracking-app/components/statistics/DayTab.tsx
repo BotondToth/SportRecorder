@@ -1,6 +1,7 @@
 import { Text, Button, Spinner } from '@ui-kitten/components';
 import React, { useEffect, useState } from 'react';
 import { Chart } from 'react-google-charts';
+import { ReactGoogleChartEvent } from 'react-google-charts/dist/types';
 import { View, StyleSheet } from 'react-native';
 import { Client } from '../../api';
 
@@ -30,6 +31,7 @@ export const DayTab = () => {
   const [chartIsReady, setChartIsReady] = useState(false);
   const client: Client = Client.getInstance();
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getStatistics = (date: Date) => {
     setLoading(true);
     setChartIsReady(false);
@@ -41,7 +43,7 @@ export const DayTab = () => {
       }
       setData(days);
     })
-      .catch((error) => console.log(error))
+      .catch(console.error)
       .finally(() => setLoading(false));
   };
 
@@ -77,7 +79,7 @@ export const DayTab = () => {
         || !chartIsReady
         || new Date(selectedYear, selectedMonth, selectedDay + 1) >= CURRENT_DATE;
 
-  const chartEvents = [
+  const chartEvents: ReactGoogleChartEvent[] = [
     {
       callback: () => {
         setChartIsReady(true);
