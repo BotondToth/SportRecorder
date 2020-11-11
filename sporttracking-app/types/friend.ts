@@ -1,4 +1,4 @@
-import { User } from 'types';
+import { User } from './user';
 
 export interface Friend {
   id: string;

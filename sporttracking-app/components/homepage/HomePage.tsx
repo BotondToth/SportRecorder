@@ -9,8 +9,10 @@ import {
 import { StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { AuthorizationContext } from 'AuthorizationContext';
-import { FriendsList, WorkoutList, StatisticsPage } from 'components';
+import { StatisticsPage } from '../statistics/StatisticsPage';
+import { FriendsList } from '../friends/FriendsList';
+import { WorkoutList } from '../workouts/WorkoutList';
+import { AuthorizationContext } from '../../AuthorizationContext';
 
 const styles = StyleSheet.create({
   headerStyle: { marginLeft: 25 },

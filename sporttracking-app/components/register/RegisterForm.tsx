@@ -5,8 +5,8 @@ import {
 import { StyleSheet, View } from 'react-native';
 import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
 import _ from 'lodash';
-import { Client } from 'api';
-import { validateEmail } from 'utils';
+import { Client } from '../../api';
+import { validateEmail } from '../../utils';
 
 const styles = StyleSheet.create({
   topContainer: {

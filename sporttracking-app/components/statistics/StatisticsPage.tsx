@@ -2,7 +2,9 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Button, Text } from '@ui-kitten/components';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { YearTab, MonthTab, DayTab } from 'components';
+import { DayTab } from './DayTab';
+import { MonthTab } from './MonthTab';
+import { YearTab } from './YearTab';
 
 const styles = StyleSheet.create({
   header: {

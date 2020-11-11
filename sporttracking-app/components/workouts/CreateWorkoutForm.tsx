@@ -10,7 +10,7 @@ import {
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
 import _ from 'lodash';
-import { Client } from 'api';
+import { Client } from '../../api';
 
 const data = ['Running', 'Cycling', 'Walking', 'Swimming'];
 

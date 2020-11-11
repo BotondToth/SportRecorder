@@ -3,9 +3,9 @@ import { Text, Card, Button, Input } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
-import { AuthorizationContext } from 'AuthorizationContext';
-import { Client } from 'api';
-import { validateEmail } from 'utils';
+import { AuthorizationContext } from '../../AuthorizationContext';
+import { Client } from '../../api';
+import { validateEmail } from '../../utils';
 
 const styles = StyleSheet.create({
   topContainer: {

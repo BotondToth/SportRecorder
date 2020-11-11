@@ -9,8 +9,8 @@ import {
   Text,
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
-import { Friend, User } from 'types';
-import { Client } from 'api';
+import { Friend, User } from '../../types';
+import { Client } from '../../api';
 
 const styles = StyleSheet.create({
   usersModal: { width: '75%' },

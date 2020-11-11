@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { Chart } from 'react-google-charts';
 import { ReactGoogleChartEvent } from 'react-google-charts/dist/types';
 import { View, StyleSheet } from 'react-native';
-import { Workout } from 'types';
-import { Client } from 'api';
+import { Workout } from '../../types';
+import { Client } from '../../api';
 
 const styles = StyleSheet.create({
   content: {

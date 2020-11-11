@@ -11,9 +11,9 @@ import {
   Spinner,
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
-import { CreateWorkoutForm } from 'components';
-import { Workout } from 'types';
-import { Client } from 'api';
+import { CreateWorkoutForm } from './CreateWorkoutForm';
+import { Workout } from '../../types';
+import { Client } from '../../api';
 
 const styles = StyleSheet.create({
   modal: { width: '75%' },
