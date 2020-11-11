@@ -8,4 +8,5 @@ export interface Workout {
   distance: number;
   date: Date
   calories: number;
+  beersPerWorkout: number;
 }

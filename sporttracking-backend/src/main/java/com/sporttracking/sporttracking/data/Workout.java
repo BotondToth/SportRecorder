@@ -35,8 +35,10 @@ public class Workout {
     private long calories;
     @Field
     private Date date;
+    @Field
+    private long beersPerWorkout;
 
-    public Workout(final WorkoutDTO workoutDTO, final ApplicationUser user, final long caloriesBurnt) {
+    public Workout(final WorkoutDTO workoutDTO, final ApplicationUser user, final long caloriesBurnt, final long beers) {
         title = workoutDTO.getTitle();
         description = workoutDTO.getDescription();
         type = workoutDTO.getType();
@@ -45,5 +47,6 @@ public class Workout {
         distance = workoutDTO.getDistance();
         this.user = user;
         date = new DateTime().plusHours(1).toDate();
+        beersPerWorkout = beers;
     }
 }
