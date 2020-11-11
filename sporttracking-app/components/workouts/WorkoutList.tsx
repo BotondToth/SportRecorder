@@ -55,11 +55,10 @@ export const WorkoutList = () => {
   const getWorkouts = async () => {
     setIsLoading(true);
     try {
-      const response = await client.sendRequest('workouts');
+      const response = await client.sendRequest<Workout[]>('workouts');
       setWorkouts(response.data);
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
+      console.error(e);
     } finally {
       setIsLoading(false);
     }
@@ -70,8 +69,7 @@ export const WorkoutList = () => {
       const response = await client.sendRequest(`workout/${workoutId}`, null, true);
       return response.data;
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
+      console.error(e);
       return null;
     }
   };
@@ -110,7 +108,7 @@ export const WorkoutList = () => {
         style={styles.deleteButton}
         size="small"
         onPress={async () => {
-          await deleteWorkout(workoutInDetail!.id);
+          await deleteWorkout(workoutInDetail.id);
           setWorkoutInDetail(undefined);
           await getWorkouts();
         }}

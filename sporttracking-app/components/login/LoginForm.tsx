@@ -49,8 +49,7 @@ export const LoginForm = ({ navigation }: Props) => {
     try {
       await AsyncStorage.setItem('access-token', token);
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
+      console.error(e);
     }
   };
 
@@ -65,8 +64,7 @@ export const LoginForm = ({ navigation }: Props) => {
       setLoginFailed(false);
       signIn();
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
+      console.error(e);
       setLoginFailed(true);
     }
   };
@@ -97,13 +95,12 @@ export const LoginForm = ({ navigation }: Props) => {
     </View>
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  const RegisterLinkFooter = ({ navigation }: Props) => (
+  const RegisterLinkFooter = ({ navigation: navi }: Props) => (
     <View style={styles.registerLink}>
       <Text>You don't have an account yet? Click</Text>
       <Text
         status="primary"
-        onPress={() => navigation.navigate('Register')}
+        onPress={() => navi.navigate('Register')}
       >
         here
       </Text>

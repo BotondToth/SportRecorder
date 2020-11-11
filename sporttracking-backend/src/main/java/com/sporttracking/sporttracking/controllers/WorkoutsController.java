@@ -18,22 +18,22 @@ public class WorkoutsController implements BaseController {
     private WorkoutServiceImpl workoutService;
 
     @PostMapping("/workout")
-    public Workout saveWorkout(@RequestBody final WorkoutDTO workoutDTO, @RequestHeader HttpHeaders headers) {
-       return workoutService.saveWorkout(workoutDTO, headers);
+    public Workout saveWorkout(@RequestBody final WorkoutDTO workoutDTO, @RequestHeader final HttpHeaders headers) {
+        return workoutService.saveWorkout(workoutDTO, headers);
     }
 
     @GetMapping("/workouts")
-    public List<Workout> getWorkoutsForUser(@RequestHeader HttpHeaders headers) {
+    public List<Workout> getWorkoutsForUser(@RequestHeader final HttpHeaders headers) {
         return workoutService.getWorkoutsForUser(headers);
     }
 
     @GetMapping("/workout/{id}")
-    public Optional<Workout> getWorkoutsForUser(@PathVariable(value = "id") String workoutId, @RequestHeader HttpHeaders headers) throws ResourceNotFoundException {
+    public Optional<Workout> getWorkoutsForUser(@PathVariable(value = "id") final String workoutId, @RequestHeader final HttpHeaders headers) throws ResourceNotFoundException {
         return workoutService.getWorkoutForUser(workoutId, headers);
     }
 
     @DeleteMapping("/workout/{id}")
-    public boolean deleteWorkout(@PathVariable(value = "id") String workoutId, @RequestHeader HttpHeaders headers) throws ResourceNotFoundException {
+    public boolean deleteWorkout(@PathVariable(value = "id") final String workoutId, @RequestHeader final HttpHeaders headers) throws ResourceNotFoundException {
         return workoutService.deleteWorkout(workoutId, headers);
     }
 }

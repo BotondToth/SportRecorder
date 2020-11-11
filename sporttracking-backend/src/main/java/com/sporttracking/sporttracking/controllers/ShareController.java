@@ -1,7 +1,5 @@
 package com.sporttracking.sporttracking.controllers;
 
-import com.sporttracking.sporttracking.data.Friend;
-import com.sporttracking.sporttracking.data.FriendDTO;
 import com.sporttracking.sporttracking.data.Share;
 import com.sporttracking.sporttracking.data.ShareDTO;
 import com.sporttracking.sporttracking.exceptions.NotFriendException;
@@ -16,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-public class ShareController implements BaseController{
+public class ShareController implements BaseController {
 
     @Autowired
     ShareService shareService;

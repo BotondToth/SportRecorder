@@ -1,4 +1,6 @@
 import { createContext } from 'react';
 
-// @ts-ignore
-export const AuthorizationContext = createContext<{ signIn:() => void; signOut: () => void; }>();
+const dummy = () => {};
+export const AuthorizationContext = createContext<{ signIn:() => void; signOut: () => void; }>({
+  signIn: dummy, signOut: dummy,
+});

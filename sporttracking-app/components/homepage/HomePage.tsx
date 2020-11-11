@@ -1,15 +1,15 @@
 import React, { useEffect, useContext } from 'react';
 import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
 import {
-  Text,
   Button,
   BottomNavigationTab,
   BottomNavigation,
   Icon,
 } from '@ui-kitten/components';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { StatisticsPage } from '../statistics/StatisticsPage';
 import { FriendsList } from '../friends/FriendsList';
 import { WorkoutList } from '../workouts/WorkoutList';
 import { AuthorizationContext } from '../../AuthorizationContext';
@@ -39,25 +39,13 @@ export const HomePage = ({ navigation }: Props) => {
         style={styles.logOutButton}
         size="small"
         status="basic"
-        onPress={logOut}
+        onPress={() => logOut()}
       >
         Logout
       </Button>
     ) });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const StatScreen = () => (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <Text>Statistics!</Text>
-    </View>
-  );
 
   const FriendsIcon = (props: any) => <Icon {...props} name="people-outline" />;
 
@@ -65,12 +53,11 @@ export const HomePage = ({ navigation }: Props) => {
 
   const StatsIcon = (props: any) => <Icon {...props} name="options-2-outline" />;
 
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  const BottomNav = ({ state, navigation }: any) => (
+  const BottomNav = ({ state, navigation: navi }: any) => (
     <BottomNavigation
       selectedIndex={state.index}
       onSelect={(index) => {
-        if (index !== state.index) navigation.navigate(state.routeNames[index]);
+        if (index !== state.index) { navi.navigate(state.routeNames[index]); }
       }}
     >
       <BottomNavigationTab title="Friends" icon={FriendsIcon} />
@@ -83,7 +70,7 @@ export const HomePage = ({ navigation }: Props) => {
     <Navigator tabBar={BottomNav}>
       <Screen name="Friends" component={FriendsList} />
       <Screen name="Workouts" component={WorkoutList} />
-      <Screen name="Stats" component={StatScreen} />
+      <Screen name="Stats" children={StatisticsPage} />
     </Navigator>
   );
 };

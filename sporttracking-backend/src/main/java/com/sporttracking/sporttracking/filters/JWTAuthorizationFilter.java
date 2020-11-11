@@ -38,7 +38,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(req, res);
     }
-
+    
     public static String getUserFromToken(final String token) {
         return JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
                 .build()

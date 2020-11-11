@@ -55,14 +55,14 @@ export const FriendsList = () => {
 
   const getFriends = async () => {
     setIsLoading(true);
-    const response = await client.sendRequest('friends');
+    const response = await client.sendRequest<Friend[]>('friends');
     setIsLoading(false);
     setFriends(response.data);
   };
 
   const getUsers = async () => {
     setIsLoading(true);
-    const response = await client.sendRequest('users');
+    const response = await client.sendRequest<User[]>('users');
     setIsLoading(false);
     setUsers(response.data);
   };
@@ -70,7 +70,7 @@ export const FriendsList = () => {
   useEffect(() => {
     getFriends();
     getUsers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const AllUsersCardHeader = (props: any) => (
@@ -202,7 +202,7 @@ export const FriendsList = () => {
               renderItem={renderFriends}
             />
           )
-}
+        }
       </Card>
     </>
   );

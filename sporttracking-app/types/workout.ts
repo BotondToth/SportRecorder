@@ -4,7 +4,8 @@ export interface Workout {
   title: string;
   description: string;
   type: string;
-  duration: string;
-  distance: string;
-  calories: string;
+  duration: number;
+  distance: number;
+  date: Date
+  calories: number;
 }
