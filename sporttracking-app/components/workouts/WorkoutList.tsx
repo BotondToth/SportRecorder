@@ -205,11 +205,12 @@ export const WorkoutList = () => {
 
           {workoutInDetail.type === 'Running' && (
           <>
-          <Text category="s1">Beers</Text>
-          <Text style={styles.lowerLine}>
-            {workoutInDetail.beersPerWorkout}
-          </Text></>
-            )}
+            <Text category="s1">Beers</Text>
+            <Text style={styles.lowerLine}>
+              {workoutInDetail.beersPerWorkout}
+            </Text>
+          </>
+          )}
         </Card>
       </Modal>
       )}
