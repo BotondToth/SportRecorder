@@ -202,6 +202,15 @@ export const WorkoutList = () => {
             {' '}
             kcal
           </Text>
+
+          {workoutInDetail.type === 'Running' && (
+          <>
+            <Text category="s1">Beers</Text>
+            <Text style={styles.lowerLine}>
+              {workoutInDetail.beersPerWorkout}
+            </Text>
+          </>
+          )}
         </Card>
       </Modal>
       )}

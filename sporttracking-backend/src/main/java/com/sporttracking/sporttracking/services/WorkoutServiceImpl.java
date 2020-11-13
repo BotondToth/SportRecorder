@@ -17,6 +17,8 @@ import java.util.Optional;
 @Service
 public class WorkoutServiceImpl implements WorkoutService {
 
+    final long BEER_CALORIE = 150;
+
     @Autowired
     private WorkoutMongoRepository workoutMongoRepository;
 
@@ -42,11 +44,14 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Override
     public Workout saveWorkout(final WorkoutDTO workoutDTO, final HttpHeaders headers) {
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
+        final long calories  = CalorieCalculatorUtility.calculate(workoutDTO.getDuration(), Long.parseLong(user.getWeight()), workoutDTO.getType());
+
         return workoutMongoRepository.save(new Workout(
-                workoutDTO,
-                user,
-                CalorieCalculatorUtility.calculate(workoutDTO.getDuration(), Long.parseLong(user.getWeight()), workoutDTO.getType())
-        ));
+            workoutDTO,
+            user,
+            calories,
+            calculateBeersPerWorkout(calories))
+        );
     }
 
     @Override
@@ -58,5 +63,9 @@ public class WorkoutServiceImpl implements WorkoutService {
         }
         workoutMongoRepository.deleteById(trainingId);
         return true;
+    }
+
+    private long calculateBeersPerWorkout(long burntCalories) {
+        return (long) Math.floor(burntCalories / BEER_CALORIE);
     }
 }
