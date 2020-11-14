@@ -33,15 +33,11 @@ export const YearTab = () => {
     const from = new Date(date.getFullYear(), 0);
     const to = new Date(date.getFullYear() + 1, 0);
     const mode = 'yearly';
-    const statistics = await client.sendRequest<Map<String, Number>>(`statistics?from=${from.getTime()}&to=${to.getTime()}&mode=${mode}`);
+    const statistics = await client.sendRequest<Map<string, number>>(`statistics?from=${from.getTime()}&to=${to.getTime()}&mode=${mode}`);
     try {
-      if (Object.keys(statistics.data).length !== 0) {
-        const months: (string | number)[][] = [['Month', 'Number of activities']];
-        for (const month of monthNames) {
-          months.push([month, statistics.data[month]]);
-        }
-        setData(months);
-      }
+      const months: (string | number)[][] = [['Month', 'Number of activities']];
+      monthNames.forEach((month) => months.push([month, statistics.data[month] || 0]));
+      setData(months);
     } catch (error) {
       console.error(error);
     } finally {
@@ -74,7 +70,7 @@ export const YearTab = () => {
     },
   ];
 
-  return data.length > 0 ? (
+  return (
     <View style={styles.content}>
       <View style={styles.dataSelector}>
         <Button
@@ -102,10 +98,15 @@ export const YearTab = () => {
               loader={(<LoadingSpin />)}
               data={data}
               chartEvents={chartEvents}
-              options={{ vAxis: { minValue: 0 } }}
+              options={{
+                vAxis: { viewWindow: { min: 0 } },
+                hAxis: {
+                  format: '#', gridlines: { count: 12 },
+                },
+              }}
             />
           )}
       </View>
     </View>
-  ) : <Text>There are no statistics for this year.</Text>;
+  );
 };

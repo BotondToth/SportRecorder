@@ -36,16 +36,14 @@ export const MonthTab = () => {
     const from = new Date(date.getFullYear(), date.getMonth());
     const to = new Date(date.getFullYear(), date.getMonth() + 1);
     const mode = 'monthly';
-    const statistics = await client.sendRequest<Map<String, Number>>(`statistics?from=${from.getTime()}&to=${to.getTime()}&mode=${mode}`);
+    const statistics = await client.sendRequest<Map<string, number>>(`statistics?from=${from.getTime()}&to=${to.getTime()}&mode=${mode}`);
     try {
-      if (Object.keys(statistics.data).length !== 0) {
-        const days: (string | number)[][] = [['Day', 'Number of activities']];
-        const lastDay = new Date(selectedYear, date.getMonth(), 0).getDate();
-        for (let i = 1; i <= lastDay; i += 1) {
-          days.push([i, statistics.data[i]]);
-        }
-        setData(days);
+      const days: (string | number)[][] = [['Day', 'Number of activities']];
+      const lastDay = new Date(selectedYear, date.getMonth() + 1, 0).getDate();
+      for (let i = 1; i <= lastDay; i += 1) {
+        days.push([i, statistics.data[i] || 0]);
       }
+      setData(days);
     } catch (error) {
       console.error(error);
     } finally {
@@ -96,7 +94,7 @@ export const MonthTab = () => {
     },
   ];
 
-  return data.length > 0 ? (
+  return (
     <View style={styles.content}>
       <View style={styles.dataSelector}>
         <Button
@@ -124,10 +122,15 @@ export const MonthTab = () => {
               loader={(<LoadingSpin />)}
               data={data}
               chartEvents={chartEvents}
-              options={{ vAxis: { minValue: 0 } }}
+              options={{
+                vAxis: { viewWindow: { min: 0 } },
+                hAxis: {
+                  format: '#', gridlines: { count: new Date(selectedYear, selectedMonth + 1, 0).getDate() },
+                },
+              }}
             />
           )}
       </View>
     </View>
-  ) : <Text>There are no statistics for this month.</Text>;
+  );
 };

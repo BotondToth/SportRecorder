@@ -37,15 +37,13 @@ export const DayTab = () => {
     const from = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     const to = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
     const mode = 'daily';
-    const statistics = await client.sendRequest<Map<String, Number>>(`statistics?from=${from.getTime()}&to=${to.getTime()}&mode=${mode}`);
+    const statistics = await client.sendRequest<Map<string, number>>(`statistics?from=${from.getTime()}&to=${to.getTime()}&mode=${mode}`);
     try {
-      if (Object.keys(statistics.data).length !== 0) {
-        const hours: (string | number)[][] = [['Hour', 'Number of activities']];
-        for (let i = 0; i < 24; i += 1) {
-          hours.push([i, statistics.data[i]]);
-        }
-        setData(hours);
+      const hours: (string | number)[][] = [['Hour', 'Number of activities']];
+      for (let i = 0; i < 24; i += 1) {
+        hours.push([i, statistics.data[i] || 0]);
       }
+      setData(hours);
     } catch (error) {
       console.error(error);
     } finally {
@@ -94,7 +92,7 @@ export const DayTab = () => {
     },
   ];
 
-  return data.length > 0 ? (
+  return (
     <View style={styles.content}>
       <View style={styles.dataSelector}>
         <Button
@@ -124,10 +122,15 @@ export const DayTab = () => {
               loader={(<LoadingSpin />)}
               chartEvents={chartEvents}
               data={data}
-              options={{ vAxis: { minValue: 0 } }}
+              options={{
+                vAxis: { viewWindow: { min: 0 } },
+                hAxis: {
+                  format: '#', gridlines: { count: 24 },
+                },
+              }}
             />
           )}
       </View>
     </View>
-  ) : <Text>There are no statistics for this day.</Text>;
+  );
 };
