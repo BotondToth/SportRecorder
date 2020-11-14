@@ -1,9 +1,8 @@
-import { Text, Button, Spinner } from '@ui-kitten/components';
+import { Button, Spinner, Text } from '@ui-kitten/components';
 import React, { useEffect, useState } from 'react';
 import { Chart } from 'react-google-charts';
 import { ReactGoogleChartEvent } from 'react-google-charts/dist/types';
-import { View, StyleSheet } from 'react-native';
-import { Workout } from '../../types';
+import { StyleSheet, View } from 'react-native';
 import { Client } from '../../api';
 
 const styles = StyleSheet.create({
@@ -27,24 +26,26 @@ export const DayTab = () => {
   const [selectedMonth, setSelectedMonth] = useState(CURRENT_DATE.getMonth());
   const [selectedDay, setSelectedDay] = useState(CURRENT_DATE.getDate());
   const [selectMonthAsStr, setSelectedMonthAsStr] = useState(monthToStr(CURRENT_DATE));
-  const [data, setData] = useState<(string |number)[][]>([[]]);
+  const [data, setData] = useState<(string | number)[][]>([]);
   const [loading, setLoading] = useState(true);
   const [chartIsReady, setChartIsReady] = useState(false);
   const client: Client = Client.getInstance();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getStatistics = async (date: Date) => {
     setLoading(true);
     setChartIsReady(false);
-    // TODO: Stats backend-ről betölteni az adatokat
+    const from = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const to = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
+    const mode = 'daily';
+    const statistics = await client.sendRequest<Map<String, Number>>(`statistics?from=${from.getTime()}&to=${to.getTime()}&mode=${mode}`);
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const response = await client.sendRequest<Workout[]>('workouts');
-      const days: (string |number)[][] = [['Hour', 'Number of activities']];
-      for (let i = 1; i <= 24; i += 1) {
-        days.push([i, i]);
+      if (Object.keys(statistics.data).length !== 0) {
+        const hours: (string | number)[][] = [['Hour', 'Number of activities']];
+        for (let i = 0; i < 24; i += 1) {
+          hours.push([i, statistics.data[i]]);
+        }
+        setData(hours);
       }
-      setData(days);
     } catch (error) {
       console.error(error);
     } finally {
@@ -93,7 +94,7 @@ export const DayTab = () => {
     },
   ];
 
-  return (
+  return data.length > 0 ? (
     <View style={styles.content}>
       <View style={styles.dataSelector}>
         <Button
@@ -128,5 +129,5 @@ export const DayTab = () => {
           )}
       </View>
     </View>
-  );
+  ) : <Text>There are no statistics for this day.</Text>;
 };
