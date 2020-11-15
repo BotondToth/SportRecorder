@@ -1,12 +1,13 @@
 package com.sporttracking.sporttracking.controllers;
 
+import com.sporttracking.sporttracking.data.BulkShareDTO;
 import com.sporttracking.sporttracking.data.Share;
 import com.sporttracking.sporttracking.data.ShareDTO;
 import com.sporttracking.sporttracking.exceptions.NotFriendException;
 import com.sporttracking.sporttracking.exceptions.ShareAlreadyExistException;
 import com.sporttracking.sporttracking.exceptions.UserNotFoundException;
 import com.sporttracking.sporttracking.exceptions.WorkoutNotFoundException;
-import com.sporttracking.sporttracking.services.ShareServiceImpl;
+import com.sporttracking.sporttracking.services.ShareService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +18,16 @@ import java.util.List;
 public class ShareController implements BaseController {
 
     @Autowired
-    ShareServiceImpl shareService;
+    private ShareService shareService;
 
-    @PostMapping("shares")
+    @PostMapping("/shares")
     public Share saveShare(@RequestHeader final HttpHeaders headers, @RequestBody final ShareDTO shareDTO) throws WorkoutNotFoundException, UserNotFoundException, ShareAlreadyExistException, NotFriendException {
         return shareService.createShare(headers, shareDTO);
+    }
+
+    @PostMapping("/bulkShares")
+    public List<Share> bukCreateShares (@RequestHeader final HttpHeaders headers, @RequestBody final BulkShareDTO bulkShareDTO) throws UserNotFoundException, ShareAlreadyExistException, NotFriendException, WorkoutNotFoundException {
+        return shareService.bulkCreateShares(headers, bulkShareDTO);
     }
 
     @GetMapping("/shares-from")

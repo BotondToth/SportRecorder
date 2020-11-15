@@ -12,6 +12,8 @@ public interface FriendService {
 
     List<Friend> getFriendsForUser(HttpHeaders headers);
 
+    List<Friend> getFriendsWithoutShareByWorkout(HttpHeaders headers, String workoutId);
+
     void deleteFriendship(String friendshipId) throws FriendNotFoundException;
 
     List<Friend> createFriend(HttpHeaders headers, FriendDTO friendDTO) throws UserNotFoundException;

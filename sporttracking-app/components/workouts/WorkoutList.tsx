@@ -8,11 +8,11 @@ import {
   ListItem,
   Modal,
   Icon,
-  Spinner,
+  Spinner, IndexPath, SelectItem, Select,
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
 import { CreateWorkoutForm } from './CreateWorkoutForm';
-import { Workout } from '../../types';
+import { Friend, Workout } from '../../types';
 import { Client } from '../../api';
 
 const styles = StyleSheet.create({
@@ -43,20 +43,55 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     borderColor: 'red',
   },
+  workoutDetailHeaderContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    overflow: 'hidden',
+    // justifyContent: 'flex-end',
+  },
+  shareButton: {
+    marginLeft: 'auto', width: '10%',
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 export const WorkoutList = () => {
   const [workoutInDetail, setWorkoutInDetail] = useState<Workout | undefined>(undefined);
   const [workouts, setWorkouts] = useState<Workout[]>([]);
-  const [workoutFormVisible, setWorkoutFormVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [workoutFormVisible, setWorkoutFormVisible] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [shareWorkoutVisible, setShareWorkoutVisible] = useState<boolean>(false);
+  const [friends, setFriends] = useState<Friend[]>([]);
   const client: Client = Client.getInstance();
+  // eslint-disable-next-line max-len
+  const [workoutToReopenDetailsModalWith, setWorkoutToReopenDetailsModalWith] = useState<Workout | undefined>(workoutInDetail);
+  const [selectedIndex, setSelectedIndex] = useState<IndexPath[]>([]);
+  let shareNameHolder = '';
+  selectedIndex.forEach((index) => {
+    shareNameHolder += `${friends[index.row].friend.fullName}, `;
+  });
 
   const getWorkouts = async () => {
     setIsLoading(true);
     try {
       const response = await client.sendRequest<Workout[]>('workouts');
       setWorkouts(response.data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getFriends = async (workoutId: string) => {
+    setIsLoading(true);
+    try {
+      const response = await client.sendRequest<Friend[]>(`friendsForWorkout?workoutId=${workoutId}`);
+      setFriends(response.data);
     } catch (e) {
       console.error(e);
     } finally {
@@ -74,8 +109,12 @@ export const WorkoutList = () => {
     }
   };
 
-  const renderIcon = (props: any) => (
+  const renderPersonIcon = (props: any) => (
     <Icon {...props} name="person-done-outline" />
+  );
+
+  const renderShareIcon = (props: any) => (
+    <Icon {...props} name="share-outline" />
   );
 
   useEffect(() => {
@@ -85,20 +124,73 @@ export const WorkoutList = () => {
 
   const onWorkOutPress = (workout: Workout) => {
     setWorkoutInDetail(workout);
+    setWorkoutToReopenDetailsModalWith(workout);
   };
 
   const renderWorkouts = ({ item }: { item: Workout }) => (
     <ListItem
       title={item.title}
       description={item.description}
-      accessoryLeft={renderIcon}
+      accessoryLeft={renderPersonIcon}
       onPress={() => onWorkOutPress(item)}
     />
   );
 
   const WorkoutDetailHeader = (props: any) => (
-    <View {...props}>
+    <View {...props} style={[props.style, styles.workoutDetailHeaderContainer]}>
       <Text category="h6">Workout Details</Text>
+      <Button
+        style={styles.shareButton}
+        appearance="ghost"
+        size="large"
+        accessoryLeft={renderShareIcon}
+        onPress={async () => {
+          setWorkoutToReopenDetailsModalWith(workoutInDetail);
+          setWorkoutInDetail(undefined);
+          await getFriends(workoutToReopenDetailsModalWith.id);
+          setShareWorkoutVisible(true);
+        }}
+      />
+    </View>
+  );
+
+  const ShareWorkoutHeader = (props: any) => (
+    <View {...props} style={[props.style, styles.workoutDetailHeaderContainer]}>
+      <Text category="h6">Share your workout!</Text>
+    </View>
+  );
+
+  const ShareWorkoutFooter = (props: any) => (
+    <View {...props} style={[props.style, styles.footerContainer]}>
+      <Button
+        style={styles.deleteButton}
+        size="small"
+        onPress={async () => {
+          const selectedFriendIds = [];
+          selectedIndex.forEach((index) => {
+            selectedFriendIds.push(friends[index.row].friend.id);
+          });
+
+          await client.sendRequest('bulkShares', {
+            friendIds: selectedFriendIds, workoutId: workoutToReopenDetailsModalWith.id,
+          });
+
+          setWorkoutInDetail(workoutToReopenDetailsModalWith);
+          setShareWorkoutVisible(false);
+        }}
+      >
+        Share
+      </Button>
+      <Button
+        style={styles.footerControl}
+        size="small"
+        onPress={() => {
+          setWorkoutInDetail(workoutToReopenDetailsModalWith);
+          setShareWorkoutVisible(false);
+        }}
+      >
+        Close
+      </Button>
     </View>
   );
 
@@ -214,14 +306,38 @@ export const WorkoutList = () => {
         </Card>
       </Modal>
       )}
+      <Modal
+        style={styles.modal}
+        visible={shareWorkoutVisible}
+        backdropStyle={styles.backdrop}
+        onBackdropPress={() => {
+          setWorkoutInDetail(workoutToReopenDetailsModalWith);
+          setShareWorkoutVisible(false);
+        }}
+      >
+        <Card
+          status="primary"
+          disabled
+          header={ShareWorkoutHeader}
+          footer={ShareWorkoutFooter}
+        >
+          <Select
+            value={shareNameHolder}
+            multiSelect
+            selectedIndex={selectedIndex}
+            onSelect={(index) => setSelectedIndex(index)}
+          >
+            {
+              friends.map((friend) => (
+                <SelectItem key={friend.id} title={friend.friend.fullName} />
+              ))
+            }
+          </Select>
+        </Card>
+      </Modal>
       {isLoading
         ? (
-          <View style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          >
+          <View style={styles.loading}>
             <Spinner size="giant" />
           </View>
         )

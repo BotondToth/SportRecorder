@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +47,20 @@ public class ShareServiceImpl implements ShareService{
     public List<Share> getSharesToUser(@RequestHeader final HttpHeaders headers) {
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
         return shareMongoRepository.findAllByFriendId(user.getId());
+    }
+
+    @Override
+    public List<Share> bulkCreateShares(HttpHeaders headers, BulkShareDTO bulkShareDTO) throws UserNotFoundException, ShareAlreadyExistException, NotFriendException, WorkoutNotFoundException {
+        for (String friendId: bulkShareDTO.getFriendIds()) {
+            createShare(headers, new ShareDTO(friendId, bulkShareDTO.getWorkoutId()));
+        }
+
+        return getSharesFromUser(headers);
+    }
+
+    @Override
+    public List<Share> getSharesForWorkout(final String workoutId) {
+        return shareMongoRepository.findAllByWorkoutId(workoutId);
     }
 
     @Override

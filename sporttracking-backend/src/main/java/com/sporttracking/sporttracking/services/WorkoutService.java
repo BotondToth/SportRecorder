@@ -10,6 +10,8 @@ import java.util.Optional;
 
 public interface WorkoutService {
 
+    Workout getWorkoutById(String workoutId);
+
     List<Workout> getWorkoutsForUser(HttpHeaders headers) throws ResourceNotFoundException;
 
     Optional<Workout> getWorkoutForUser(String trainingId, HttpHeaders headers) throws ResourceNotFoundException;
