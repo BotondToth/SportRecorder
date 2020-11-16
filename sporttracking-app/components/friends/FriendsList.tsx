@@ -52,7 +52,6 @@ export const FriendsList = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [addNewFriendCardVisible, setAddNewFriendCardVisible] = useState<boolean>(false);
   const client: Client = Client.getInstance();
-  const friendIdsToShareWorkoutWith = [];
 
   const getFriends = async () => {
     setIsLoading(true);
