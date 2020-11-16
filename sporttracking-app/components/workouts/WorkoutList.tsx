@@ -57,19 +57,32 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  buttonGroup: {
+    margin: 10,
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  buttonGroupButton: { width: 200 },
+  mainContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  feedContainer: { width: '70%' },
 });
 
 export const WorkoutList = () => {
   const [workoutInDetail, setWorkoutInDetail] = useState<Workout | undefined>(undefined);
   const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [feedData, setFeedData] = useState<Workout[]>([]);
   const [workoutFormVisible, setWorkoutFormVisible] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [shareWorkoutVisible, setShareWorkoutVisible] = useState<boolean>(false);
   const [friends, setFriends] = useState<Friend[]>([]);
-  const client: Client = Client.getInstance();
   // eslint-disable-next-line max-len
   const [workoutToReopenDetailsModalWith, setWorkoutToReopenDetailsModalWith] = useState<Workout | undefined>(workoutInDetail);
   const [selectedIndex, setSelectedIndex] = useState<IndexPath[]>([]);
+  const [selectedViewMode, setSelectedViewMode] = useState<string>('feed');
+  const client: Client = Client.getInstance();
   let shareNameHolder = '';
   selectedIndex.forEach((index) => {
     shareNameHolder += `${friends[index.row].friend.fullName}, `;
@@ -80,6 +93,18 @@ export const WorkoutList = () => {
     try {
       const response = await client.sendRequest<Workout[]>('workouts');
       setWorkouts(response.data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getFeedData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await client.sendRequest<Workout[]>('feed');
+      setFeedData(response.data);
     } catch (e) {
       console.error(e);
     } finally {
@@ -118,9 +143,13 @@ export const WorkoutList = () => {
   );
 
   useEffect(() => {
-    getWorkouts();
+    if (selectedViewMode === 'workouts') {
+      getWorkouts();
+    } else {
+      getFeedData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [selectedViewMode]);
 
   const onWorkOutPress = (workout: Workout) => {
     setWorkoutInDetail(workout);
@@ -130,6 +159,15 @@ export const WorkoutList = () => {
   const renderWorkouts = ({ item }: { item: Workout }) => (
     <ListItem
       title={item.title}
+      description={item.description}
+      accessoryLeft={renderPersonIcon}
+      onPress={() => onWorkOutPress(item)}
+    />
+  );
+
+  const renderFeedData = ({ item }: { item: Workout }) => (
+    <ListItem
+      title={`${item.user.fullName}: ${item.title}`}
       description={item.description}
       accessoryLeft={renderPersonIcon}
       onPress={() => onWorkOutPress(item)}
@@ -202,7 +240,7 @@ export const WorkoutList = () => {
         onPress={async () => {
           await deleteWorkout(workoutInDetail.id);
           setWorkoutInDetail(undefined);
-          await getWorkouts();
+          setSelectedViewMode('feed'); // todo
         }}
       >
         Delete
@@ -232,7 +270,7 @@ export const WorkoutList = () => {
           <CreateWorkoutForm
             onFinish={async () => {
               setWorkoutFormVisible(false);
-              await getWorkouts();
+              setSelectedViewMode('workouts');
             }}
           />
         </Modal>
@@ -247,6 +285,22 @@ export const WorkoutList = () => {
         >
           Add new workout
         </Button>
+        <View style={styles.buttonGroup}>
+          <Button
+            status={selectedViewMode === 'feed' ? 'basic' : 'primary'}
+            style={styles.buttonGroupButton}
+            onPress={() => setSelectedViewMode('feed')}
+          >
+            Feed
+          </Button>
+          <Button
+            status={selectedViewMode === 'workouts' ? 'basic' : 'primary'}
+            style={styles.buttonGroupButton}
+            onPress={() => setSelectedViewMode('workouts')}
+          >
+            My Workouts
+          </Button>
+        </View>
       </View>
       {workoutInDetail && (
       <Modal
@@ -333,19 +387,28 @@ export const WorkoutList = () => {
               ))
             }
           </Select>
+          {/* eslint-enable */}
         </Card>
       </Modal>
+      {/* eslint-disable-next-line no-nested-ternary */}
       {isLoading
         ? (
           <View style={styles.loading}>
             <Spinner size="giant" />
           </View>
         )
-        : (
+        : selectedViewMode === 'workouts' ? (
           <List
             data={workouts}
             ItemSeparatorComponent={Divider}
             renderItem={renderWorkouts}
+          />
+        ) : (
+          <List
+            style={styles.feedContainer}
+            data={feedData}
+            ItemSeparatorComponent={Divider}
+            renderItem={renderFeedData}
           />
         )}
     </>

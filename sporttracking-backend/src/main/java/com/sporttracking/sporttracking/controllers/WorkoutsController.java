@@ -24,7 +24,7 @@ public class WorkoutsController implements BaseController {
 
     @GetMapping("/workouts")
     public List<Workout> getWorkoutsForUser(@RequestHeader final HttpHeaders headers) {
-        return workoutService.getWorkoutsForUser(headers);
+        return workoutService.getWorkoutsForLoggedInUser(headers);
     }
 
     @GetMapping("/workout/{id}")
@@ -35,5 +35,10 @@ public class WorkoutsController implements BaseController {
     @DeleteMapping("/workout/{id}")
     public boolean deleteWorkout(@PathVariable(value = "id") final String workoutId, @RequestHeader final HttpHeaders headers) throws ResourceNotFoundException {
         return workoutService.deleteWorkout(workoutId, headers);
+    }
+
+    @GetMapping("/feed")
+    public List<Workout> getFeed(@RequestHeader final HttpHeaders headers) {
+        return workoutService.getFeed(headers);
     }
 }

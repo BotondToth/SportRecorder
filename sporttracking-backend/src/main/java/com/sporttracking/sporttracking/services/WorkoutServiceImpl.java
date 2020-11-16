@@ -1,6 +1,7 @@
 package com.sporttracking.sporttracking.services;
 
 import com.sporttracking.sporttracking.data.ApplicationUser;
+import com.sporttracking.sporttracking.data.Friend;
 import com.sporttracking.sporttracking.data.Workout;
 import com.sporttracking.sporttracking.data.WorkoutDTO;
 import com.sporttracking.sporttracking.exceptions.ResourceNotFoundException;
@@ -11,8 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkoutServiceImpl implements WorkoutService {
@@ -25,14 +29,33 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Autowired
     private AuthUtility authUtility;
 
+    @Autowired
+    private FriendService friendService;
+
+    @Override
+    public List<Workout> getFeed(final HttpHeaders headers) {
+        final List<Friend> followedUsers = friendService.getFriendsForUser(headers);
+        final List<Workout> allWorkouts = getWorkoutsForLoggedInUser(headers);
+        for (Friend followedAccount : followedUsers) {
+            allWorkouts.addAll(getWorkoutsForUser(followedAccount.getFriend()));
+        }
+        allWorkouts.sort(Comparator.comparing(Workout::getDate));
+        return allWorkouts.stream().limit(20).collect(Collectors.toList());
+    }
+
     @Override
     public Workout getWorkoutById(final String workoutId) {
         return workoutMongoRepository.findById(workoutId).orElse(null);
     }
 
     @Override
-    public List<Workout> getWorkoutsForUser(final HttpHeaders headers) {
+    public List<Workout> getWorkoutsForLoggedInUser(final HttpHeaders headers) {
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
+        return workoutMongoRepository.findAllByUserId(user.getId());
+    }
+
+    @Override
+    public List<Workout> getWorkoutsForUser(final ApplicationUser user) {
         return workoutMongoRepository.findAllByUserId(user.getId());
     }
 

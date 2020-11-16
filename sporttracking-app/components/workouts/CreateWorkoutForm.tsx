@@ -122,7 +122,7 @@ export const CreateWorkoutForm = (props: any) => {
         value={_.toString(duration)}
         label="Workout duration"
         placeholder="The duration of your workout in minutes"
-        caption="You should add the length of your workout here"
+        caption="You should add the length of your workout here in minutes"
         secureTextEntry={false}
         onChangeText={(nextValue) => {
           if (nextValue === '') nextValue = String(0);
