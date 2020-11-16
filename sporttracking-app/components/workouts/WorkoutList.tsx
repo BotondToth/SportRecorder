@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  feedContainer: { width: '70%' },
 });
 
 export const WorkoutList = () => {
@@ -405,7 +404,6 @@ export const WorkoutList = () => {
           />
         ) : (
           <List
-            style={styles.feedContainer}
             data={feedData}
             ItemSeparatorComponent={Divider}
             renderItem={renderFeedData}
