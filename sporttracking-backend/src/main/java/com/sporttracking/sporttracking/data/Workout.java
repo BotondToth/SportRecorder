@@ -1,8 +1,6 @@
 package com.sporttracking.sporttracking.data;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -13,8 +11,6 @@ import java.util.Date;
 
 @Data
 @Document(collection = "Workouts")
-@NoArgsConstructor
-@AllArgsConstructor
 public class Workout {
     @Id
     private String id;
@@ -38,15 +34,45 @@ public class Workout {
     @Field
     private long beersPerWorkout;
 
-    public Workout(final WorkoutDTO workoutDTO, final ApplicationUser user, final long caloriesBurnt, final long beers) {
-        title = workoutDTO.getTitle();
-        description = workoutDTO.getDescription();
-        type = workoutDTO.getType();
-        calories = caloriesBurnt;
-        duration = workoutDTO.getDuration();
-        distance = workoutDTO.getDistance();
-        this.user = user;
-        date = new DateTime().plusHours(1).toDate();
-        beersPerWorkout = beers;
+    private Workout() {
+        date = new Date();
+    }
+
+    public static class WorkoutBuilder {
+
+        private final Workout workout;
+
+        public WorkoutBuilder() {
+            workout = new Workout();
+        }
+
+        public WorkoutBuilder setWorkoutDTO(final WorkoutDTO wdto) {
+            workout.setTitle(wdto.getTitle());
+            workout.setDescription(wdto.getDescription());
+            workout.setType(wdto.getType());
+            workout.setDuration(wdto.getDuration());
+            workout.setDistance(wdto.getDistance());
+            return this;
+        }
+
+        public WorkoutBuilder setUser(final ApplicationUser user) {
+            workout.setUser(user);
+            return this;
+        }
+
+        public WorkoutBuilder setCaloriesBurnt(final long calories) {
+            workout.setCalories(calories);
+            return this;
+        }
+
+        public WorkoutBuilder setBeersPerWorkout(final long beers) {
+            workout.setBeersPerWorkout(beers);
+            return this;
+        }
+
+        public Workout build() {
+            workout.setDate(new DateTime().plusHours(1).toDate());
+            return workout;
+        }
     }
 }

@@ -44,14 +44,10 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Override
     public Workout saveWorkout(final WorkoutDTO workoutDTO, final HttpHeaders headers) {
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
-        final long calories  = CalorieCalculatorUtility.calculate(workoutDTO.getDuration(), Long.parseLong(user.getWeight()), workoutDTO.getType());
-
-        return workoutMongoRepository.save(new Workout(
-            workoutDTO,
-            user,
-            calories,
-            calculateBeersPerWorkout(calories))
-        );
+        final long calories = CalorieCalculatorUtility.calculate(workoutDTO.getDuration(), Long.parseLong(user.getWeight()), workoutDTO.getType());
+        final Workout.WorkoutBuilder wb = new Workout.WorkoutBuilder();
+        wb.setWorkoutDTO(workoutDTO).setUser(user).setCaloriesBurnt(calories).setBeersPerWorkout(calculateBeersPerWorkout(calories));
+        return workoutMongoRepository.save(wb.build());
     }
 
     @Override
@@ -65,7 +61,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         return true;
     }
 
-    private long calculateBeersPerWorkout(long burntCalories) {
+    private long calculateBeersPerWorkout(final long burntCalories) {
         return (long) Math.floor(burntCalories / BEER_CALORIE);
     }
 }
