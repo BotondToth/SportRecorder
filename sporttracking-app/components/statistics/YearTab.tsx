@@ -1,9 +1,8 @@
-import { Text, Button, Spinner } from '@ui-kitten/components';
+import { Button, Spinner, Text } from '@ui-kitten/components';
 import React, { useEffect, useState } from 'react';
 import { Chart } from 'react-google-charts';
 import { ReactGoogleChartEvent } from 'react-google-charts/dist/types';
-import { View, StyleSheet } from 'react-native';
-import { Workout } from '../../types';
+import { StyleSheet, View } from 'react-native';
 import { Client } from '../../api';
 
 const styles = StyleSheet.create({
@@ -26,30 +25,19 @@ export const YearTab = () => {
   const [loading, setLoading] = useState(true);
   const [chartIsReady, setChartIsReady] = useState(false);
   const client: Client = Client.getInstance();
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getStatistics = async (year: Date) => {
+  const getStatistics = async (date: Date) => {
     setLoading(true);
     setChartIsReady(false);
-    // TODO: Stats backend-ről betölteni az adatokat
+    const from = new Date(date.getFullYear(), 0);
+    const to = new Date(date.getFullYear() + 1, 0);
+    const mode = 'yearly';
+    const statistics = await client.sendRequest<Map<string, number>>(`statistics?from=${from.getTime()}&to=${to.getTime()}&mode=${mode}`);
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const response = await client.sendRequest<Workout[]>('workouts');
-      setData([
-        ['Month', 'Number of activities'],
-        ['Jan', 15],
-        ['Feb', 16],
-        ['Mar', 15],
-        ['Apr', 16],
-        ['May', 15],
-        ['Jun', 16],
-        ['Jul', 15],
-        ['Aug', 16],
-        ['Sep', 15],
-        ['Okt', 16],
-        ['Nov', 16],
-        ['Dec', 16],
-      ]);
+      const months: (string | number)[][] = [['Month', 'Number of activities']];
+      monthNames.forEach((month) => months.push([month, statistics.data[month] || 0]));
+      setData(months);
     } catch (error) {
       console.error(error);
     } finally {
@@ -110,7 +98,12 @@ export const YearTab = () => {
               loader={(<LoadingSpin />)}
               data={data}
               chartEvents={chartEvents}
-              options={{ vAxis: { minValue: 0 } }}
+              options={{
+                vAxis: { viewWindow: { min: 0 } },
+                hAxis: {
+                  format: '#', gridlines: { count: 12 },
+                },
+              }}
             />
           )}
       </View>
