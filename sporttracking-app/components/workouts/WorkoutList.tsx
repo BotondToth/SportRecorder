@@ -332,6 +332,8 @@ export const WorkoutList = () => {
           <Text category="s1">Duration</Text>
           <Text style={styles.lowerLine}>
             {workoutInDetail.duration}
+            {' '}
+            minutes
           </Text>
 
           <Text category="s1">Distance</Text>
