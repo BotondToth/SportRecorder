@@ -24,7 +24,7 @@ public class WorkoutsController implements BaseController {
 
     @GetMapping("/workouts")
     public List<Workout> getWorkoutsForUser(@RequestHeader final HttpHeaders headers) {
-        return workoutService.getWorkoutsForLoggedInUser(headers);
+        return workoutService.getWorkoutsForUser(headers);
     }
 
     @GetMapping("/workout/{id}")

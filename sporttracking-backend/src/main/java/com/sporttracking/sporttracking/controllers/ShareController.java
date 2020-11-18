@@ -26,7 +26,7 @@ public class ShareController implements BaseController {
     }
 
     @PostMapping("/bulkShares")
-    public List<Share> bukCreateShares (@RequestHeader final HttpHeaders headers, @RequestBody final BulkShareDTO bulkShareDTO) throws UserNotFoundException, ShareAlreadyExistException, NotFriendException, WorkoutNotFoundException {
+    public List<Share> bulkCreateShares (@RequestHeader final HttpHeaders headers, @RequestBody final BulkShareDTO bulkShareDTO) throws UserNotFoundException, ShareAlreadyExistException, NotFriendException, WorkoutNotFoundException {
         return shareService.bulkCreateShares(headers, bulkShareDTO);
     }
 

@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +34,8 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Override
     public List<Workout> getFeed(final HttpHeaders headers) {
         final List<Friend> followedUsers = friendService.getFriendsForUser(headers);
-        final List<Workout> allWorkouts = getWorkoutsForLoggedInUser(headers);
+        final ApplicationUser user = authUtility.getUserFromHeader(headers);
+        final List<Workout> allWorkouts = getWorkoutsForUser(user);
         for (Friend followedAccount : followedUsers) {
             allWorkouts.addAll(getWorkoutsForUser(followedAccount.getFriend()));
         }
@@ -49,9 +49,9 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public List<Workout> getWorkoutsForLoggedInUser(final HttpHeaders headers) {
+    public List<Workout> getWorkoutsForUser(final HttpHeaders headers) {
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
-        return workoutMongoRepository.findAllByUserId(user.getId());
+        return getWorkoutsForUser(user);
     }
 
     @Override
