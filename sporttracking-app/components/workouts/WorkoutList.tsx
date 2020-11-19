@@ -10,10 +10,11 @@ import {
   Icon,
   Spinner, IndexPath, SelectItem, Select,
 } from '@ui-kitten/components';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { CreateWorkoutForm } from './CreateWorkoutForm';
 import { Friend, Workout } from '../../types';
 import { Client } from '../../api';
+import { RecordWorkoutForm } from './RecordWorkoutForm';
 
 const styles = StyleSheet.create({
   modal: { width: '75%' },
@@ -37,6 +38,12 @@ const styles = StyleSheet.create({
   addWorkoutButton: {
     padding: 10,
     width: 200,
+  },
+  recordWorkoutButton: {
+    padding: 10,
+    width: 200,
+    marginTop: 10,
+    marginBottom: 10,
   },
   deleteButton: {
     marginHorizontal: 5,
@@ -74,6 +81,7 @@ export const WorkoutList = () => {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [feedData, setFeedData] = useState<Workout[]>([]);
   const [workoutFormVisible, setWorkoutFormVisible] = useState<boolean>(false);
+  const [recordWorkoutFormVisible, setRecordWorkoutFormVisible] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [shareWorkoutVisible, setShareWorkoutVisible] = useState<boolean>(false);
   const [friends, setFriends] = useState<Friend[]>([]);
@@ -257,6 +265,20 @@ export const WorkoutList = () => {
   return (
     <>
       <View style={styles.workoutHeader}>
+        {
+          recordWorkoutFormVisible && (
+            <Modal
+              style={styles.modal}
+              visible={recordWorkoutFormVisible}
+              backdropStyle={styles.backdrop}
+              onBackdropPress={() => {
+                setRecordWorkoutFormVisible(false);
+              }}
+            >
+              <RecordWorkoutForm />
+            </Modal>
+          )
+        }
         {workoutFormVisible && (
         <Modal
           style={styles.modal}
@@ -284,6 +306,17 @@ export const WorkoutList = () => {
         >
           Add new workout
         </Button>
+        {
+          Platform.OS === 'android' && (
+            <Button
+              style={styles.recordWorkoutButton}
+              size="small"
+              onPress={() => setRecordWorkoutFormVisible(true)}
+            >
+              Record workout
+            </Button>
+          )
+        }
         <View style={styles.buttonGroup}>
           <Button
             status={selectedViewMode === 'feed' ? 'basic' : 'primary'}
