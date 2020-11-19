@@ -275,7 +275,11 @@ export const WorkoutList = () => {
                 setRecordWorkoutFormVisible(false);
               }}
             >
-              <RecordWorkoutForm />
+              <RecordWorkoutForm onSave={() => {
+                setRecordWorkoutFormVisible(false);
+                setSelectedViewMode('workouts');
+              }}
+              />
             </Modal>
           )
         }
@@ -289,7 +293,7 @@ export const WorkoutList = () => {
           }}
         >
           <CreateWorkoutForm
-            onFinish={async () => {
+            onFinish={() => {
               setWorkoutFormVisible(false);
               setSelectedViewMode('workouts');
             }}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   Button,
@@ -9,8 +9,10 @@ import {
   IndexPath,
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
+import { Stopwatch } from 'react-native-stopwatch-timer';
 import _ from 'lodash';
 import { Client } from '../../api';
+import { CreateWorkoutForm } from './CreateWorkoutForm';
 
 const styles = StyleSheet.create({
   topContainer: {
@@ -27,16 +29,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
+  stopper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+  },
   footerControl: { marginHorizontal: 2 },
   field: { marginBottom: 20 },
   backdrop: { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
 });
 
 export const RecordWorkoutForm = (props: any) => {
-  const [title, setTitle] = useState('');
-  let startTime: Date; let
-    endTime: Date;
-  const client: Client = Client.getInstance();
+  const [startTimer, setStartTimer] = useState<boolean>(true);
+  const [renderWorkoutForm, setRenderWorkoutForm] = useState<boolean>(false);
+  const [seconds, setSeconds] = useState(0);
+  const distance: number = 5; // todo
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!renderWorkoutForm) {
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        setSeconds((seconds) => seconds + 1);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const Header = (headerProps: any) => (
     <View {...headerProps}>
@@ -51,12 +68,28 @@ export const RecordWorkoutForm = (props: any) => {
         style={styles.footerControl}
         size="small"
         status="danger"
-        // onPress={} TODO
+        onPress={() => {
+          setStartTimer(false);
+          setRenderWorkoutForm(true);
+        }}
       >
         Finish workout
       </Button>
     </View>
   );
+
+  const CreateWorkoutFormHolder = (
+    <CreateWorkoutForm
+      data={{
+        duration: seconds, distance,
+      }}
+      onFinish={props.onSave}
+    />
+  );
+
+  if (renderWorkoutForm) {
+    return CreateWorkoutFormHolder;
+  }
 
   return (
     <Card
@@ -65,7 +98,15 @@ export const RecordWorkoutForm = (props: any) => {
       header={Header}
       footer={Footer}
     >
-      <Text>Workout being recorded....</Text>
+      <View style={styles.stopper}>
+        <Text>Workout being recorded....</Text>
+        <Stopwatch
+          laps={false}
+          msecs={false}
+          start={startTimer}
+          reset={false}
+        />
+      </View>
     </Card>
   );
 };

@@ -34,14 +34,23 @@ const styles = StyleSheet.create({
   backdrop: { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
 });
 
+const calculateDuration = (duration: number): number => {
+  console.log('duration: ', duration);
+  const times = duration.split(':');
+  console.log('calculated minutes: ', parseInt(times[0], 10) * 60 + parseInt(times[1], 10) + parseInt(times[2], 10) / 60);
+  return parseInt(times[0], 10) * 60 + parseInt(times[1], 10) + parseInt(times[2], 10) / 60;
+};
+
 export const CreateWorkoutForm = (props: any) => {
   const [selectedIndex, setSelectedIndex] = useState(new IndexPath(0));
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const type = data[selectedIndex.row];
-  const [duration, setDuration] = useState(0);
-  const [distance, setDistance] = useState(0);
+  const [duration, setDuration] = useState<number>(props.data.duration
+    ? Math.floor(props.data.duration / 60) : 0);
+  const [distance, setDistance] = useState(props.data.distance ? props.data.distance : 0);
   const client: Client = Client.getInstance();
+  const isFormEditable = _.isUndefined(props.data);
 
   const onSubmit = async () => {
     const workout = {
@@ -118,6 +127,7 @@ export const CreateWorkoutForm = (props: any) => {
         {data.map((element, idx) => renderWorkoutType(idx, element))}
       </Select>
       <Input
+        disabled={!isFormEditable}
         style={styles.field}
         value={_.toString(duration)}
         label="Workout duration"
@@ -130,6 +140,7 @@ export const CreateWorkoutForm = (props: any) => {
         }}
       />
       <Input
+        disabled={!isFormEditable}
         style={styles.field}
         value={_.toString(distance)}
         label="Workout distance"
