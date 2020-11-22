@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Button, Card, Icon, Text } from '@ui-kitten/components';
-import { Dimensions, Platform, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import _ from 'lodash';
-import MapView, { Polyline } from 'react-native-maps';
 import { BoundingBox, getBoundingBox } from 'geolocation-utils';
+import MapView, { Polyline } from './MapViewWrapper';
 
 const styles = StyleSheet.create({
   footerContainer: {
