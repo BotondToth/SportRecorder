@@ -1,17 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Text,
   Button,
   Card,
-  Input,
-  Select,
-  SelectItem,
-  IndexPath,
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
 import { Stopwatch } from 'react-native-stopwatch-timer';
-import _ from 'lodash';
-import { Client } from '../../api';
+import * as Location from 'expo-location';
 import { CreateWorkoutForm } from './CreateWorkoutForm';
 
 const styles = StyleSheet.create({
@@ -43,16 +38,29 @@ export const RecordWorkoutForm = (props: any) => {
   const [startTimer, setStartTimer] = useState<boolean>(true);
   const [renderWorkoutForm, setRenderWorkoutForm] = useState<boolean>(false);
   const [seconds, setSeconds] = useState(0);
-  const distance: number = 5; // todo
+  const [locations, setLocations] = useState<any[]>([]);
+  const locationInterval = useRef(null);
+  const elapsedSecondsInterval = useRef(null);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (!renderWorkoutForm) {
-        // eslint-disable-next-line @typescript-eslint/no-shadow
-        setSeconds((seconds) => seconds + 1);
-      }
+    elapsedSecondsInterval.current = setInterval(() => {
+      // eslint-disable-next-line @typescript-eslint/no-shadow
+      setSeconds((seconds) => seconds + 1);
     }, 1000);
-    return () => clearInterval(interval);
+    return () => clearInterval(elapsedSecondsInterval.current);
+  }, []);
+
+  useEffect(() => {
+    locationInterval.current = setInterval(async () => {
+      // const { status } = await Location.requestPermissionsAsync();
+      // if (status !== 'granted') {
+      // console.log('Permission to access location was denied');
+      // }
+      const location = await Location.getCurrentPositionAsync({});
+      // eslint-disable-next-line @typescript-eslint/no-shadow
+      setLocations((locations) => locations.concat(location));
+    }, 2000);
+    return () => clearInterval(locationInterval.current);
   }, []);
 
   const Header = (headerProps: any) => (
@@ -69,6 +77,8 @@ export const RecordWorkoutForm = (props: any) => {
         size="small"
         status="danger"
         onPress={() => {
+          clearInterval(locationInterval.current);
+          clearInterval(elapsedSecondsInterval.current);
           setStartTimer(false);
           setRenderWorkoutForm(true);
         }}
@@ -81,7 +91,8 @@ export const RecordWorkoutForm = (props: any) => {
   const CreateWorkoutFormHolder = (
     <CreateWorkoutForm
       data={{
-        duration: seconds, distance,
+        duration: seconds,
+        locations,
       }}
       onFinish={props.onSave}
     />

@@ -10,11 +10,12 @@ import {
   Icon,
   Spinner, IndexPath, SelectItem, Select,
 } from '@ui-kitten/components';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Dimensions, Platform, StyleSheet, View } from 'react-native';
 import { CreateWorkoutForm } from './CreateWorkoutForm';
 import { Friend, Workout } from '../../types';
 import { Client } from '../../api';
 import { RecordWorkoutForm } from './RecordWorkoutForm';
+import { WorkoutDetailsCard } from './WorkoutDetailsCard';
 
 const styles = StyleSheet.create({
   modal: { width: '75%' },
@@ -145,10 +146,6 @@ export const WorkoutList = () => {
     <Icon {...props} name="person-done-outline" />
   );
 
-  const renderShareIcon = (props: any) => (
-    <Icon {...props} name="share-outline" />
-  );
-
   useEffect(() => {
     if (selectedViewMode === 'workouts') {
       getWorkouts();
@@ -179,24 +176,6 @@ export const WorkoutList = () => {
       accessoryLeft={renderPersonIcon}
       onPress={() => onWorkOutPress(item)}
     />
-  );
-
-  const WorkoutDetailHeader = (props: any) => (
-    <View {...props} style={[props.style, styles.workoutDetailHeaderContainer]}>
-      <Text category="h6">Workout Details</Text>
-      <Button
-        style={styles.shareButton}
-        appearance="ghost"
-        size="large"
-        accessoryLeft={renderShareIcon}
-        onPress={async () => {
-          setWorkoutToReopenDetailsModalWith(workoutInDetail);
-          setWorkoutInDetail(undefined);
-          await getFriends(workoutToReopenDetailsModalWith.id);
-          setShareWorkoutVisible(true);
-        }}
-      />
-    </View>
   );
 
   const ShareWorkoutHeader = (props: any) => (
@@ -239,29 +218,6 @@ export const WorkoutList = () => {
     </View>
   );
 
-  const WorkoutDetailFooter = (props: any) => (
-    <View {...props} style={[props.style, styles.footerContainer]}>
-      <Button
-        style={styles.deleteButton}
-        size="small"
-        onPress={async () => {
-          await deleteWorkout(workoutInDetail.id);
-          setWorkoutInDetail(undefined);
-          setSelectedViewMode('feed'); // todo
-        }}
-      >
-        Delete
-      </Button>
-      <Button
-        style={styles.footerControl}
-        size="small"
-        onPress={() => setWorkoutInDetail(undefined)}
-      >
-        Close
-      </Button>
-    </View>
-  );
-
   return (
     <>
       <View style={styles.workoutHeader}>
@@ -284,21 +240,21 @@ export const WorkoutList = () => {
           )
         }
         {workoutFormVisible && (
-        <Modal
-          style={styles.modal}
-          visible={workoutFormVisible}
-          backdropStyle={styles.backdrop}
-          onBackdropPress={() => {
-            setWorkoutFormVisible(false);
-          }}
-        >
-          <CreateWorkoutForm
-            onFinish={() => {
+          <Modal
+            style={styles.modal}
+            visible={workoutFormVisible}
+            backdropStyle={styles.backdrop}
+            onBackdropPress={() => {
               setWorkoutFormVisible(false);
-              setSelectedViewMode('workouts');
             }}
-          />
-        </Modal>
+          >
+            <CreateWorkoutForm
+              onFinish={() => {
+                setWorkoutFormVisible(false);
+                setSelectedViewMode('workouts');
+              }}
+            />
+          </Modal>
         )}
         <Text category="h5" style={styles.workoutTitle}>
           Workout history
@@ -339,64 +295,23 @@ export const WorkoutList = () => {
         </View>
       </View>
       {workoutInDetail && (
-      <Modal
-        style={styles.modal}
-        visible={!!workoutInDetail}
-        backdropStyle={styles.backdrop}
-        onBackdropPress={() => setWorkoutInDetail(undefined)}
-      >
-        <Card
-          status="primary"
-          disabled
-          header={WorkoutDetailHeader}
-          footer={WorkoutDetailFooter}
+        <Modal
+          style={styles.modal}
+          visible={!!workoutInDetail}
+          backdropStyle={styles.backdrop}
+          onBackdropPress={() => setWorkoutInDetail(undefined)}
         >
-          <Text category="s1">Title</Text>
-          <Text style={styles.lowerLine}>
-            {workoutInDetail.title}
-          </Text>
-
-          <Text category="s1">Description</Text>
-          <Text style={styles.lowerLine}>
-            {workoutInDetail.description}
-          </Text>
-
-          <Text category="s1">Type</Text>
-          <Text style={styles.lowerLine}>
-            {workoutInDetail.type}
-          </Text>
-
-          <Text category="s1">Duration</Text>
-          <Text style={styles.lowerLine}>
-            {workoutInDetail.duration}
-            {' '}
-            minutes
-          </Text>
-
-          <Text category="s1">Distance</Text>
-          <Text style={styles.lowerLine}>
-            {workoutInDetail.distance}
-            {' '}
-            km
-          </Text>
-
-          <Text category="s1">Calories</Text>
-          <Text style={styles.lowerLine}>
-            {workoutInDetail.calories}
-            {' '}
-            kcal
-          </Text>
-
-          {workoutInDetail.type === 'Running' && (
-          <>
-            <Text category="s1">Beers</Text>
-            <Text style={styles.lowerLine}>
-              {workoutInDetail.beersPerWorkout}
-            </Text>
-          </>
-          )}
-        </Card>
-      </Modal>
+          <WorkoutDetailsCard
+            workoutInDetail={workoutInDetail}
+            setWorkoutInDetail={setWorkoutInDetail}
+            workoutToReopenDetailsModalWith={workoutToReopenDetailsModalWith}
+            setWorkoutToReopenDetailsModalWith={setWorkoutToReopenDetailsModalWith}
+            setShareWorkoutVisible={setShareWorkoutVisible}
+            getFriends={getFriends}
+            deleteWorkout={deleteWorkout}
+            setSelectedViewMode={setSelectedViewMode}
+          />
+        </Modal>
       )}
       <Modal
         style={styles.modal}

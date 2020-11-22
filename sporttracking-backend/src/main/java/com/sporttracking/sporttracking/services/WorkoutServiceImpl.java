@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -74,12 +75,18 @@ public class WorkoutServiceImpl implements WorkoutService {
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
         final long calories  = CalorieCalculatorUtility.calculate(workoutDTO.getDuration(), Long.parseLong(user.getWeight()), workoutDTO.getType());
 
-        return workoutMongoRepository.save(new Workout(
-            workoutDTO,
-            user,
-            calories,
-            calculateBeersPerWorkout(calories))
-        );
+        return workoutMongoRepository.save(Workout.builder()
+            .user(user)
+            .calories(calories)
+            .beersPerWorkout(calculateBeersPerWorkout(calories))
+            .duration(workoutDTO.getDuration())
+            .locationPoints(workoutDTO.getLocationPoints())
+            .title(workoutDTO.getTitle())
+            .description(workoutDTO.getDescription())
+            .type(workoutDTO.getType())
+            .date(new Date())
+            .distance(workoutDTO.getDistance())
+            .build());
     }
 
     @Override

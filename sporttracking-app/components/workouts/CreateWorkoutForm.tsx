@@ -11,6 +11,7 @@ import {
 import { StyleSheet, View } from 'react-native';
 import _ from 'lodash';
 import { Client } from '../../api';
+import { calculateDistance, getFormattedLocationPoints } from '../../utils';
 
 const data = ['Running', 'Cycling', 'Walking', 'Swimming'];
 
@@ -34,31 +35,30 @@ const styles = StyleSheet.create({
   backdrop: { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
 });
 
-const calculateDuration = (duration: number): number => {
-  console.log('duration: ', duration);
-  const times = duration.split(':');
-  console.log('calculated minutes: ', parseInt(times[0], 10) * 60 + parseInt(times[1], 10) + parseInt(times[2], 10) / 60);
-  return parseInt(times[0], 10) * 60 + parseInt(times[1], 10) + parseInt(times[2], 10) / 60;
-};
-
 export const CreateWorkoutForm = (props: any) => {
+  const locationInitialData = (props.data && props.data.locations)
+    ? calculateDistance(props.data.locations) : 0;
   const [selectedIndex, setSelectedIndex] = useState(new IndexPath(0));
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const type = data[selectedIndex.row];
-  const [duration, setDuration] = useState<number>(props.data.duration
+  const [duration, setDuration] = useState<number>((props.data && props.data.duration)
     ? Math.floor(props.data.duration / 60) : 0);
-  const [distance, setDistance] = useState(props.data.distance ? props.data.distance : 0);
+  const [distance, setDistance] = useState(locationInitialData);
   const client: Client = Client.getInstance();
   const isFormEditable = _.isUndefined(props.data);
 
   const onSubmit = async () => {
+    const locationPoints = (props.data && props.data.locations)
+      ? getFormattedLocationPoints(props.data.locations) : [];
+
     const workout = {
       title,
       description,
       type,
       duration,
       distance,
+      locationPoints,
     };
 
     await client.sendRequest('workout', workout);

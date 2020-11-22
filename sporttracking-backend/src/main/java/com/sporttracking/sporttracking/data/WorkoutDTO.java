@@ -15,4 +15,5 @@ public class WorkoutDTO {
     private long distance;
     private long calories;
     private Date date;
+    private Point[] locationPoints;
 }

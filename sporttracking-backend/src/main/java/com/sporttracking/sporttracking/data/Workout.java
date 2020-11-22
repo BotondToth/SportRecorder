@@ -1,6 +1,7 @@
 package com.sporttracking.sporttracking.data;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
@@ -11,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
 
+@Builder
 @Data
 @Document(collection = "Workouts")
 @NoArgsConstructor
@@ -37,16 +39,6 @@ public class Workout {
     private Date date;
     @Field
     private long beersPerWorkout;
-
-    public Workout(final WorkoutDTO workoutDTO, final ApplicationUser user, final long caloriesBurnt, final long beers) {
-        title = workoutDTO.getTitle();
-        description = workoutDTO.getDescription();
-        type = workoutDTO.getType();
-        calories = caloriesBurnt;
-        duration = workoutDTO.getDuration();
-        distance = workoutDTO.getDistance();
-        this.user = user;
-        date = new DateTime().plusHours(1).toDate();
-        beersPerWorkout = beers;
-    }
+    @Field
+    private Point[] locationPoints;
 }
