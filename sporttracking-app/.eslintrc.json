@@ -43,6 +43,6 @@
     "no-console": ["error", { "allow": ["warn", "error"] }],
     "no-param-reassign": "off",
     "no-control-regex": "off",
-    "linebreak-style": ["error", "windows"]
+    "linebreak-style": "off"
   }
 }
