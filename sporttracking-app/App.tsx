@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { ApplicationProvider, IconRegistry, Spinner } from '@ui-kitten/components';
+import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import AsyncStorage from '@react-native-community/async-storage';
-import { View } from 'react-native';
-import { HomePage, LoginForm, RegisterForm } from './components';
+import { HomePage, LoadingSpinner, LoginForm, RegisterForm } from './components';
 import { AuthorizationContext } from './AuthorizationContext';
 
 const Stack = createStackNavigator();
@@ -38,14 +37,7 @@ export default function App () {
   if (loading) {
     return (
       <ApplicationProvider {...eva} theme={eva.light}>
-        <View style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        >
-          <Spinner size="giant" />
-        </View>
+        <LoadingSpinner />
       </ApplicationProvider>
     );
   }
@@ -60,7 +52,7 @@ export default function App () {
               screenOptions={{ headerTitleAlign: 'center' }}
             >
               {loggedIn
-                ? (<Stack.Screen name="Home" children={HomePage} />)
+                ? (<Stack.Screen name="Home" component={HomePage} />)
                 : (
                   <>
                     <Stack.Screen name="Login" component={LoginForm} />

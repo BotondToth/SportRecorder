@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { CancelToken } from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 
 export class Client {
@@ -20,10 +20,14 @@ export class Client {
     target: string,
     body: any = null,
     isItDeleteRequest: boolean = false,
+    cancel?: CancelToken,
   ) => {
     const url = `${Client.BASE_URL}/${target}`;
     const token = await AsyncStorage.getItem('access-token');
-    const config = { headers: { Authorization: token } };
+    const config = {
+      headers: { Authorization: token },
+      cancelToken: cancel,
+    };
 
     if (isItDeleteRequest) {
       return await axios.delete<T>(url, config);

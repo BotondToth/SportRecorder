@@ -67,10 +67,12 @@ export const HomePage = ({ navigation }: Props) => {
   );
 
   return (
-    <Navigator tabBar={BottomNav}>
-      <Screen name="Friends" component={FriendsList} />
-      <Screen name="Workouts" component={WorkoutList} />
-      <Screen name="Stats" children={StatisticsPage} />
-    </Navigator>
+    <>
+      <Navigator tabBar={BottomNav}>
+        <Screen name="Friends" component={FriendsList} />
+        <Screen name="Workouts" component={WorkoutList} />
+        <Screen name="Stats" component={StatisticsPage} />
+      </Navigator>
+    </>
   );
 };
