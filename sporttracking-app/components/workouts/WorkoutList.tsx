@@ -8,9 +8,9 @@ import {
   ListItem,
   Modal,
   Icon,
-  Spinner,
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { CreateWorkoutForm } from './CreateWorkoutForm';
 import { Workout } from '../../types';
 import { Client } from '../../api';
@@ -216,14 +216,7 @@ export const WorkoutList = () => {
       )}
       {isLoading
         ? (
-          <View style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          >
-            <Spinner size="giant" />
-          </View>
+          <LoadingSpinner />
         )
         : (
           <List
