@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Text, Card, Button, Input, Modal, RadioGroup, Radio, TextProps,
+  Text, Card, Button, Input, Modal, RadioGroup, Radio,
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
 import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
