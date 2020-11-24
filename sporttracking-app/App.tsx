@@ -52,7 +52,7 @@ export default function App () {
               screenOptions={{ headerTitleAlign: 'center' }}
             >
               {loggedIn
-                ? (<Stack.Screen name="Home" component={HomePage} />)
+                ? (<Stack.Screen name="Home" component={HomePage} options={{ title: '' }} />)
                 : (
                   <>
                     <Stack.Screen name="Login" component={LoginForm} />

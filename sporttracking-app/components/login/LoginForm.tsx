@@ -45,22 +45,12 @@ export const LoginForm = ({ navigation }: Props) => {
   const { signIn } = useContext(AuthorizationContext);
   const client: Client = Client.getInstance();
 
-  const saveData = async (token: string) => {
-    try {
-      await AsyncStorage.setItem('access-token', token);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const isLoginButtonDisabled = () => (
-    password.length === 0 || email.length === 0 || !validateEmail(email)
-  );
+  const isLoginButtonDisabled = () => password.length === 0 || email.length === 0 || (email.includes('@') && !validateEmail(email));
 
   const loginUser = async (userToLogin: object) => {
     try {
       const response = await client.sendRequest('login', userToLogin);
-      await saveData(response.headers.authorization);
+      await AsyncStorage.setItem('access-token', response.headers.authorization);
       setLoginFailed(false);
       signIn();
     } catch (e) {
@@ -70,9 +60,17 @@ export const LoginForm = ({ navigation }: Props) => {
   };
 
   const onSubmit = async () => {
-    await loginUser({
-      email, password,
-    });
+    let user = {};
+    if (email.includes('@')) {
+      user = {
+        email, password,
+      };
+    } else {
+      user = {
+        username: email, password,
+      };
+    }
+    await loginUser(user);
   };
 
   const Header = (props: any) => (
@@ -118,8 +116,8 @@ export const LoginForm = ({ navigation }: Props) => {
         <Input
           style={styles.field}
           value={email}
-          label="Email address"
-          placeholder="Email address"
+          label="Email or Username"
+          placeholder="Email or Username"
           secureTextEntry={false}
           onChangeText={(val: any) => setEmail(val)}
         />
@@ -133,7 +131,7 @@ export const LoginForm = ({ navigation }: Props) => {
         />
         {loginFailed && (
         <Text style={styles.errorMessage}>
-          Invalid email or password!
+          Invalid login datas!
         </Text>
         )}
       </Card>
