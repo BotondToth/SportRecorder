@@ -5,10 +5,11 @@ import {
   Divider,
   Icon,
   List,
-  ListItem, Modal, Spinner,
+  ListItem, Modal,
   Text,
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { Friend, User } from '../../types';
 import { Client } from '../../api';
 
@@ -39,11 +40,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   footerControl: { marginHorizontal: 2 },
-  loading: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
 });
 
 export const FriendsList = () => {
@@ -191,9 +187,7 @@ export const FriendsList = () => {
       <Card header={Header} style={styles.card} disabled>
         {
           isLoading ? (
-            <View style={styles.loading}>
-              <Spinner size="giant" />
-            </View>
+            <LoadingSpinner />
           ) : (
             <List
               style={styles.container}
