@@ -21,6 +21,8 @@ public class ApplicationUser {
     @Field
     private String fullName;
     @Field
+    private String username;
+    @Field
     private String sex;
     @Field
     private String weight;
@@ -28,11 +30,12 @@ public class ApplicationUser {
     private String height;
 
     public ApplicationUser(final UserDTO userDto) {
-        this.email = userDto.getEmail();
-        this.password = userDto.getPassword();
-        this.fullName = userDto.getFullName();
-        this.sex = userDto.getSex();
-        this.weight = userDto.getWeight();
-        this.height = userDto.getHeight();
+        email = userDto.getEmail();
+        password = userDto.getPassword();
+        fullName = userDto.getFullName();
+        username = userDto.getUsername();
+        sex = userDto.getSex();
+        weight = userDto.getWeight();
+        height = userDto.getHeight();
     }
 }

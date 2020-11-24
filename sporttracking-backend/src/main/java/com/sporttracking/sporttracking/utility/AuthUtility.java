@@ -15,8 +15,15 @@ public class AuthUtility {
     @Autowired
     private UserMongoRepository userMongoRepository;
 
-    public ApplicationUser getUserFromHeader(final HttpHeaders headers) {
+    public ApplicationUser getUserFromHeader(HttpHeaders headers) {
         final String token = Objects.requireNonNull(headers.get("authorization")).get(0);
-        return userMongoRepository.findByEmail(JWTAuthorizationFilter.getUserFromToken(token));
+        String userID = JWTAuthorizationFilter.getUserFromToken(token);
+        if (userID == null) {
+            return null;
+        }
+        if (userID.contains("@")) {
+            return userMongoRepository.findByEmail(userID);
+        }
+        return userMongoRepository.findByUsername(userID);
     }
 }
