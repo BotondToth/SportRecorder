@@ -1,6 +1,6 @@
 package com.sporttracking.sporttracking.utility;
 
-import com.sporttracking.sporttracking.services.CalorieCalculatorStrategy;
+import com.sporttracking.sporttracking.strategies.CalorieCalculatorStrategy;
 
 public class CalorieCalculatorContext {
 

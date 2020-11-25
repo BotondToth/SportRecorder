@@ -1,7 +1,7 @@
 package com.sporttracking.sporttracking.controllers;
 
 import com.sporttracking.sporttracking.data.Friend;
-import com.sporttracking.sporttracking.data.FriendDTO;
+import com.sporttracking.sporttracking.data.dto.FriendDTO;
 import com.sporttracking.sporttracking.exceptions.FriendNotFoundException;
 import com.sporttracking.sporttracking.exceptions.UserNotFoundException;
 import com.sporttracking.sporttracking.services.FriendService;

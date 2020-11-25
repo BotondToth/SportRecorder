@@ -1,6 +1,8 @@
 package com.sporttracking.sporttracking.services;
 
 import com.sporttracking.sporttracking.data.*;
+import com.sporttracking.sporttracking.data.dto.BulkShareDTO;
+import com.sporttracking.sporttracking.data.dto.ShareDTO;
 import com.sporttracking.sporttracking.exceptions.NotFriendException;
 import com.sporttracking.sporttracking.exceptions.ShareAlreadyExistException;
 import com.sporttracking.sporttracking.exceptions.UserNotFoundException;
@@ -15,7 +17,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,6 +86,6 @@ public class ShareServiceImpl implements ShareService{
             throw new NotFriendException();
         }
 
-        return shareMongoRepository.save(new Share(user, friend.get(), workout.get()));
+        return shareMongoRepository.save(Share.builder().user(user).friend(friend.get()).workout(workout.get()).build());
     }
 }

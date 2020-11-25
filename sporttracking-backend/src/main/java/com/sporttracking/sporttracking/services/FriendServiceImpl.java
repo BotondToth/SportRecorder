@@ -1,6 +1,7 @@
 package com.sporttracking.sporttracking.services;
 
 import com.sporttracking.sporttracking.data.*;
+import com.sporttracking.sporttracking.data.dto.FriendDTO;
 import com.sporttracking.sporttracking.exceptions.FriendNotFoundException;
 import com.sporttracking.sporttracking.exceptions.UserNotFoundException;
 import com.sporttracking.sporttracking.repositories.FriendMongoRepository;
@@ -65,7 +66,11 @@ public class FriendServiceImpl implements FriendService {
             throw new UserNotFoundException();
         }
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
-        friendMongoRepository.save(new Friend(user, userToBeAFriend.get()));
+
+        friendMongoRepository.save(Friend.builder()
+                .user(user)
+                .friend(userToBeAFriend.get())
+                .build());
 
         return friendMongoRepository.findAllByUserId(user.getId());
     }

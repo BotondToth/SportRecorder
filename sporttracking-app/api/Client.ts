@@ -2,12 +2,11 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 
 export class Client {
-  private static BASE_URL: string = 'http://192.168.0.12:8080';
+  private static BASE_URL: string = 'http://localhost:8080';
   private static instance: Client;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  private constructor () {
-  }
+  private constructor () {}
 
   public static getInstance (): Client {
     if (!Client.instance) {

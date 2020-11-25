@@ -3,7 +3,7 @@ package com.sporttracking.sporttracking.services;
 import com.sporttracking.sporttracking.data.ApplicationUser;
 import com.sporttracking.sporttracking.data.Friend;
 import com.sporttracking.sporttracking.data.Workout;
-import com.sporttracking.sporttracking.data.WorkoutDTO;
+import com.sporttracking.sporttracking.data.dto.WorkoutDTO;
 import com.sporttracking.sporttracking.exceptions.ResourceNotFoundException;
 import com.sporttracking.sporttracking.repositories.WorkoutMongoRepository;
 import com.sporttracking.sporttracking.utility.AuthUtility;
@@ -21,7 +21,8 @@ import java.util.stream.Collectors;
 @Service
 public class WorkoutServiceImpl implements WorkoutService {
 
-    final long BEER_CALORIE = 150;
+    final static long BEER_CALORIE = 150;
+    final static int FEED_LIMIT = 20;
 
     @Autowired
     private WorkoutMongoRepository workoutMongoRepository;
@@ -37,11 +38,9 @@ public class WorkoutServiceImpl implements WorkoutService {
         final List<Friend> followedUsers = friendService.getFriendsForUser(headers);
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
         final List<Workout> allWorkouts = getWorkoutsForUser(user);
-        for (Friend followedAccount : followedUsers) {
-            allWorkouts.addAll(getWorkoutsForUser(followedAccount.getFriend()));
-        }
+        followedUsers.forEach(followedUser -> allWorkouts.addAll(getWorkoutsForUser(followedUser.getFriend())));
         allWorkouts.sort(Comparator.comparing(Workout::getDate));
-        return allWorkouts.stream().limit(20).collect(Collectors.toList());
+        return allWorkouts.stream().limit(FEED_LIMIT).collect(Collectors.toList());
     }
 
     @Override

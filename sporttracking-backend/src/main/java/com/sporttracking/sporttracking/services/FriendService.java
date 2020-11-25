@@ -1,7 +1,7 @@
 package com.sporttracking.sporttracking.services;
 
 import com.sporttracking.sporttracking.data.Friend;
-import com.sporttracking.sporttracking.data.FriendDTO;
+import com.sporttracking.sporttracking.data.dto.FriendDTO;
 import com.sporttracking.sporttracking.exceptions.FriendNotFoundException;
 import com.sporttracking.sporttracking.exceptions.UserNotFoundException;
 import org.springframework.http.HttpHeaders;

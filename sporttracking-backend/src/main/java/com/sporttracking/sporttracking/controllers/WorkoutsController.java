@@ -1,7 +1,7 @@
 package com.sporttracking.sporttracking.controllers;
 
 import com.sporttracking.sporttracking.data.Workout;
-import com.sporttracking.sporttracking.data.WorkoutDTO;
+import com.sporttracking.sporttracking.data.dto.WorkoutDTO;
 import com.sporttracking.sporttracking.exceptions.ResourceNotFoundException;
 import com.sporttracking.sporttracking.services.WorkoutServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

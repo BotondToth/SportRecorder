@@ -2,7 +2,7 @@ package com.sporttracking.sporttracking.services;
 
 import com.sporttracking.sporttracking.data.ApplicationUser;
 import com.sporttracking.sporttracking.data.Workout;
-import com.sporttracking.sporttracking.data.WorkoutDTO;
+import com.sporttracking.sporttracking.data.dto.WorkoutDTO;
 import com.sporttracking.sporttracking.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
 

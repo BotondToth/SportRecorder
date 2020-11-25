@@ -1,4 +1,4 @@
-package com.sporttracking.sporttracking.data;
+package com.sporttracking.sporttracking.data.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Card, Icon, Text } from '@ui-kitten/components';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, Platform, StyleSheet, View } from 'react-native';
 import _ from 'lodash';
 import { BoundingBox, getBoundingBox } from 'geolocation-utils';
 import MapView, { Polyline } from './MapViewWrapper';
@@ -87,7 +87,7 @@ export const WorkoutDetailsCard = (props) => {
         Delete
       </Button>
       {
-        (workoutInDetail.locationPoints && !_.isEmpty(workoutInDetail)) && (
+        (Platform.OS !== 'web' && workoutInDetail.locationPoints && !_.isEmpty(workoutInDetail)) && (
           <Button
             status="success"
             style={styles.footerControl}

@@ -1,6 +1,7 @@
 package com.sporttracking.sporttracking.data;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -8,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+@Builder
 @Data
 @Document(collection = "Shares")
 @NoArgsConstructor
@@ -24,10 +26,4 @@ public class Share {
     @DBRef
     @Field
     private Workout workout;
-
-    public Share(ApplicationUser user, ApplicationUser friend, Workout workout) {
-        this.user = user;
-        this.friend = friend;
-        this.workout = workout;
-    }
 }

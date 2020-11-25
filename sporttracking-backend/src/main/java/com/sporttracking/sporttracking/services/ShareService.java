@@ -1,8 +1,8 @@
 package com.sporttracking.sporttracking.services;
 
-import com.sporttracking.sporttracking.data.BulkShareDTO;
+import com.sporttracking.sporttracking.data.dto.BulkShareDTO;
 import com.sporttracking.sporttracking.data.Share;
-import com.sporttracking.sporttracking.data.ShareDTO;
+import com.sporttracking.sporttracking.data.dto.ShareDTO;
 import com.sporttracking.sporttracking.exceptions.NotFriendException;
 import com.sporttracking.sporttracking.exceptions.ShareAlreadyExistException;
 import com.sporttracking.sporttracking.exceptions.UserNotFoundException;

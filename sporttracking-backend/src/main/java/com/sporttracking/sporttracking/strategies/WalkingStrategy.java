@@ -1,4 +1,4 @@
-package com.sporttracking.sporttracking.services;
+package com.sporttracking.sporttracking.strategies;
 
 public class WalkingStrategy implements CalorieCalculatorStrategy {
     @Override

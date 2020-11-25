@@ -1,12 +1,14 @@
 package com.sporttracking.sporttracking.data;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+@Builder
 @Data
 @Document(collection = "Users")
 @NoArgsConstructor
@@ -26,13 +28,4 @@ public class ApplicationUser {
     private String weight;
     @Field
     private String height;
-
-    public ApplicationUser(final UserDTO userDto) {
-        this.email = userDto.getEmail();
-        this.password = userDto.getPassword();
-        this.fullName = userDto.getFullName();
-        this.sex = userDto.getSex();
-        this.weight = userDto.getWeight();
-        this.height = userDto.getHeight();
-    }
 }

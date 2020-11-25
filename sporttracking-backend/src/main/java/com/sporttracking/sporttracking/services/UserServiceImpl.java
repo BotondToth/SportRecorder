@@ -1,7 +1,7 @@
 package com.sporttracking.sporttracking.services;
 
 import com.sporttracking.sporttracking.data.ApplicationUser;
-import com.sporttracking.sporttracking.data.UserDTO;
+import com.sporttracking.sporttracking.data.dto.UserDTO;
 import com.sporttracking.sporttracking.exceptions.EmailAddressTakenException;
 import com.sporttracking.sporttracking.repositories.UserMongoRepository;
 import com.sporttracking.sporttracking.utility.AuthUtility;
@@ -37,7 +37,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new EmailAddressTakenException();
         }
         userToRegister.setPassword(bCryptPasswordEncoder.encode(userToRegister.getPassword()));
-        final ApplicationUser newUser = new ApplicationUser(userToRegister);
+        final ApplicationUser newUser = ApplicationUser.builder().email(userToRegister.getEmail())
+            .password(userToRegister.getPassword())
+            .fullName(userToRegister.getFullName())
+            .height(userToRegister.getHeight())
+            .sex(userToRegister.getSex())
+            .weight(userToRegister.getWeight())
+            .build();
         return userMongoRepository.save(newUser);
     }
 
