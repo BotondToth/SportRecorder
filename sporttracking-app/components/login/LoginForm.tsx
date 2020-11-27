@@ -66,7 +66,7 @@ export const LoginForm = ({ navigation }: Props) => {
     try {
       setIsLoading(true);
       const response = await client.sendRequest('login', userToLogin);
-      await AsyncStorage.setItem('access-token', response.headers.authorization);
+      await saveData(response.headers.authorization);
       setLoginFailed(false);
       signIn();
     } catch (e) {
@@ -78,7 +78,7 @@ export const LoginForm = ({ navigation }: Props) => {
   };
 
   const onSubmit = async () => {
-    let user = {};
+    let user: {};
     if (email.includes('@')) {
       user = {
         email, password,

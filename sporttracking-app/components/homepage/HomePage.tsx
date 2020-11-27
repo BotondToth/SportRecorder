@@ -33,13 +33,13 @@ export const HomePage = ({ navigation }: Props) => {
   const client: Client = Client.getInstance();
   const [loading, setLoading] = useState(true);
 
-  const logOut = async () => {
-    await AsyncStorage.removeItem('access-token');
-    await AsyncStorage.removeItem('logged-in-user');
-    signOut();
-  };
-
   useEffect(() => {
+    const logOut = async () => {
+      await AsyncStorage.removeItem('access-token');
+      await AsyncStorage.removeItem('logged-in-user');
+      signOut();
+    };
+
     setLoading(true);
 
     const setNavigationHeader = (username: string) => {
@@ -49,8 +49,7 @@ export const HomePage = ({ navigation }: Props) => {
             style={styles.logOutButton}
             size="small"
             onPress={async () => {
-              await AsyncStorage.removeItem('access-token');
-              logOut();
+              await logOut();
             }}
           >
             Logout
