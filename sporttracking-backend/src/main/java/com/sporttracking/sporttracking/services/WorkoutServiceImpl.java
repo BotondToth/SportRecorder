@@ -2,7 +2,6 @@ package com.sporttracking.sporttracking.services;
 
 import com.sporttracking.sporttracking.data.ApplicationUser;
 import com.sporttracking.sporttracking.data.Friend;
-import com.sporttracking.sporttracking.data.Share;
 import com.sporttracking.sporttracking.data.Workout;
 import com.sporttracking.sporttracking.data.dto.WorkoutDTO;
 import com.sporttracking.sporttracking.exceptions.ResourceNotFoundException;
@@ -101,7 +100,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         return true;
     }
 
-    private long calculateBeersPerWorkout(long burntCalories) {
+    private long calculateBeersPerWorkout(final long burntCalories) {
         return (long) Math.floor(burntCalories / BEER_CALORIE);
     }
 }

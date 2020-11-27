@@ -1,10 +1,11 @@
-import { Text, Button, Spinner } from '@ui-kitten/components';
-import React, { useEffect, useState } from 'react';
-import { Chart } from 'react-google-charts';
-import { ReactGoogleChartEvent } from 'react-google-charts/dist/types';
-import { View, StyleSheet } from 'react-native';
-import { Workout } from '../../types';
+import { Button, Text } from '@ui-kitten/components';
+import React, { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import Axios from 'axios';
+import { LoadingSpinner } from '../LoadingSpinner';
+import { AXIO_CANCELLED, DataType, DAYS } from '../../types/statsConstants';
 import { Client } from '../../api';
+import { StatisticsChart } from './StatisticsChart';
 
 const styles = StyleSheet.create({
   content: {
@@ -12,119 +13,104 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   dataSelector: {
-    flex: 0.1,
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    margin: '15px',
   },
-  chart: { flex: 1 },
+  chart: {
+    flex: 1,
+    alignItems: 'center',
+  },
 });
+const monthToStr = (dateToMonth: Date) => dateToMonth.toLocaleString('default', { month: 'long' });
 
-export const MonthTab = () => {
-  const monthToStr = (date: Date) => date.toLocaleString('default', { month: 'long' });
-
+export const MonthTab = ({ date: inputDate, changeDate }: {date: Date, changeDate: any}) => {
   const CURRENT_DATE = new Date();
-  const [selectedYear, setSelectedYear] = useState(CURRENT_DATE.getFullYear());
-  const [selectedMonth, setSelectedMonth] = useState(CURRENT_DATE.getMonth());
-  const [selectMonthAsStr, setSelectedMonthAsStr] = useState(monthToStr(CURRENT_DATE));
-  const [data, setData] = useState<(string |number)[][]>([[]]);
+  const [selectedDate, setSelectedDate] = useState(inputDate);
+  const [selectMonthAsStr, setSelectedMonthAsStr] = useState(monthToStr(inputDate));
+  const [data, setData] = useState<DataType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [chartIsReady, setChartIsReady] = useState(false);
   const client: Client = Client.getInstance();
 
-  const getStatistics = (date: Date) => {
-    setLoading(true);
-    setChartIsReady(false);
-    // TODO: Stats backend-ről betölteni az adatokat
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const response = client.sendRequest<Workout[]>('workouts');
-      const months: (string |number)[][] = [['Day', 'Number of activities']];
-      const lastDay = new Date(selectedYear, date.getMonth(), 0).getDate();
-      for (let i = 1; i <= lastDay; i += 1) {
-        months.push([i, i]);
-      }
-      setData(months);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const LoadingSpin = () => (
-    <View style={{
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}
-    >
-      <Spinner size="giant" />
-    </View>
-  );
+  useEffect(() => {
+    setSelectedDate(inputDate);
+  }, [inputDate]);
 
   useEffect(() => {
-    if (selectedMonth === 12) {
-      setSelectedYear((value) => value + 1);
-      setSelectedMonth(0);
-    } else if (selectedMonth === -1) {
-      setSelectedYear((value) => value - 1);
-      setSelectedMonth(11);
-    } else {
-      const date = new Date(selectedYear, selectedMonth);
-      setSelectedMonthAsStr(monthToStr(date));
-      getStatistics(date);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedMonth]);
+    setSelectedMonthAsStr(monthToStr(selectedDate));
+    const canceltoken = Axios.CancelToken.source();
+
+    const getStatistics = async () => {
+      setLoading(true);
+      const from = new Date(selectedDate);
+      from.setDate(1);
+      from.setHours(0, 0, 0, 0);
+      const to = new Date(from);
+      to.setMonth(to.getMonth() + 1);
+      const mode = 'monthly';
+      try {
+        const statistics = await client.sendRequest<Map<string, number>>(`statistics?from=${from.getTime()}&to=${to.getTime()}&mode=${mode}`,
+          null, false, canceltoken.token);
+        const days: DataType[] = [];
+        const lastDay = new Date(to.getFullYear(), to.getMonth(), 0).getDate();
+        for (let i = 1; i <= lastDay; i += 1) {
+          days.push({
+            x: i.toString(), y: statistics.data[i] || 0,
+          });
+        }
+        setData(days);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getStatistics();
+    return () => canceltoken.cancel(AXIO_CANCELLED);
+  }, [client, selectedDate]);
 
   const disableDecrement = () => loading
-        || !chartIsReady
-        || (selectedYear === 2000 && selectedMonth === 0);
+        || (selectedDate.getFullYear() === 2000 && selectedDate.getMonth() === 0);
 
   const disableIncrement = () => loading
-      || !chartIsReady
-      || (selectedYear === CURRENT_DATE.getFullYear() && selectedMonth === CURRENT_DATE.getMonth());
+      || (selectedDate.getFullYear() === CURRENT_DATE.getFullYear()
+      && selectedDate.getMonth() === CURRENT_DATE.getMonth());
 
-  const chartEvents: ReactGoogleChartEvent[] = [
-    {
-      callback: () => {
-        setChartIsReady(true);
-      },
-      eventName: 'ready',
-    },
-  ];
+  const chartClicked = useCallback((day: number) => {
+    const newDate = selectedDate;
+    newDate.setDate(day + 1);
+    changeDate(newDate);
+  }, [changeDate, selectedDate]);
 
   return (
     <View style={styles.content}>
       <View style={styles.dataSelector}>
         <Button
           disabled={disableDecrement()}
-          onPress={() => setSelectedMonth((prevYear) => prevYear - 1)}
+          onPress={() => setSelectedDate(
+            (value) => new Date(value.getFullYear(), value.getMonth() - 1),
+          )}
         >
           {'<'}
         </Button>
-        <Text>
-          {`${selectMonthAsStr}, ${selectedYear}`}
+        <Text category="h6">
+          {`${selectMonthAsStr}, ${selectedDate.getFullYear()}`}
         </Text>
         <Button
           disabled={disableIncrement()}
-          onPress={() => setSelectedMonth((prevYear) => prevYear + 1)}
+          onPress={() => {
+            setSelectedDate((value) => new Date(value.getFullYear(), value.getMonth() + 1));
+          }}
         >
           {'>'}
         </Button>
       </View>
       <View style={styles.chart}>
         {loading
-          ? <LoadingSpin />
-          : (
-            <Chart
-              chartType="ColumnChart"
-              loader={(<LoadingSpin />)}
-              data={data}
-              chartEvents={chartEvents}
-              options={{ vAxis: { minValue: 0 } }}
-            />
-          )}
+          ? <LoadingSpinner />
+          : <StatisticsChart data={data} xaxisLabel={DAYS} onClickHandler={chartClicked} />}
       </View>
     </View>
   );

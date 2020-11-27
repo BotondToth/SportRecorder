@@ -23,6 +23,8 @@ public class ApplicationUser {
     @Field
     private String fullName;
     @Field
+    private String username;
+    @Field
     private String sex;
     @Field
     private String weight;

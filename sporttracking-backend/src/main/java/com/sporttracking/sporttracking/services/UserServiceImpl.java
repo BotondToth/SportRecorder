@@ -3,6 +3,7 @@ package com.sporttracking.sporttracking.services;
 import com.sporttracking.sporttracking.data.ApplicationUser;
 import com.sporttracking.sporttracking.data.dto.UserDTO;
 import com.sporttracking.sporttracking.exceptions.EmailAddressTakenException;
+import com.sporttracking.sporttracking.exceptions.UsernameAlreadyTakenException;
 import com.sporttracking.sporttracking.repositories.UserMongoRepository;
 import com.sporttracking.sporttracking.utility.AuthUtility;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,19 +32,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private AuthUtility authUtility;
 
     @Override
-    public ApplicationUser registerUser(final UserDTO userToRegister) throws EmailAddressTakenException {
+    public ApplicationUser registerUser(final UserDTO userToRegister) throws EmailAddressTakenException, UsernameAlreadyTakenException {
         final ApplicationUser userByEmail = userMongoRepository.findByEmail(userToRegister.getEmail());
         if (userByEmail != null) {
             throw new EmailAddressTakenException();
         }
+        final ApplicationUser userByUsername = userMongoRepository.findByUsername(userToRegister.getUsername());
+        if (userByUsername != null) {
+            throw new UsernameAlreadyTakenException();
+        }
         userToRegister.setPassword(bCryptPasswordEncoder.encode(userToRegister.getPassword()));
-        final ApplicationUser newUser = ApplicationUser.builder().email(userToRegister.getEmail())
+        final ApplicationUser newUser = ApplicationUser.builder()
+            .email(userToRegister.getEmail())
+            .username(userToRegister.getUsername())
             .password(userToRegister.getPassword())
             .fullName(userToRegister.getFullName())
             .height(userToRegister.getHeight())
             .sex(userToRegister.getSex())
             .weight(userToRegister.getWeight())
             .build();
+
         return userMongoRepository.save(newUser);
     }
 
@@ -54,11 +62,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(final String email) throws UsernameNotFoundException {
-        final ApplicationUser user = userMongoRepository.findByEmail(email);
-        if (user == null) {
-            throw new UsernameNotFoundException(email);
+    public ApplicationUser getCurrentUser(final HttpHeaders headers) {
+        return authUtility.getUserFromHeader(headers);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(final String userID) throws UsernameNotFoundException {
+        final ApplicationUser user;
+        if (userID.contains("@")) {
+            user = userMongoRepository.findByEmail(userID);
+        } else {
+            user = userMongoRepository.findByUsername(userID);
         }
+        if (user == null) {
+            throw new UsernameNotFoundException(userID);
+        }
+
         return new User(user.getEmail(), user.getPassword(), emptyList());
     }
 }

@@ -1,9 +1,7 @@
 package com.sporttracking.sporttracking.data;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,8 +12,6 @@ import java.util.Date;
 @Builder
 @Data
 @Document(collection = "Workouts")
-@NoArgsConstructor
-@AllArgsConstructor
 public class Workout {
     @Id
     private String id;

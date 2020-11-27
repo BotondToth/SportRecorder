@@ -1,10 +1,11 @@
-import { Text, Button, Spinner } from '@ui-kitten/components';
-import React, { useEffect, useState } from 'react';
-import { Chart } from 'react-google-charts';
-import { ReactGoogleChartEvent } from 'react-google-charts/dist/types';
-import { View, StyleSheet } from 'react-native';
-import { Workout } from '../../types';
+import { Button, Text } from '@ui-kitten/components';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import Axios from 'axios';
+import { LoadingSpinner } from '../LoadingSpinner';
+import { AXIO_CANCELLED, DataType, MONTHS } from '../../types/statsConstants';
 import { Client } from '../../api';
+import { StatisticsChart } from './StatisticsChart';
 
 const styles = StyleSheet.create({
   content: {
@@ -12,107 +13,89 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   dataSelector: {
-    flex: 0.1,
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    margin: '15px',
   },
-  chart: { flex: 1 },
+  chart: {
+    flex: 1,
+    alignItems: 'center',
+  },
 });
 
-export const YearTab = () => {
+export const YearTab = ({ changeDate }: any) => {
   const CURRENT_YEAR = new Date().getFullYear();
-  const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR);
-  const [data, setData] = useState<(string | number)[][]>([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [data, setData] = useState<DataType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [chartIsReady, setChartIsReady] = useState(false);
   const client: Client = Client.getInstance();
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getStatistics = async (year: Date) => {
-    setLoading(true);
-    setChartIsReady(false);
-    // TODO: Stats backend-ről betölteni az adatokat
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const response = await client.sendRequest<Workout[]>('workouts');
-      setData([
-        ['Month', 'Number of activities'],
-        ['Jan', 15],
-        ['Feb', 16],
-        ['Mar', 15],
-        ['Apr', 16],
-        ['May', 15],
-        ['Jun', 16],
-        ['Jul', 15],
-        ['Aug', 16],
-        ['Sep', 15],
-        ['Okt', 16],
-        ['Nov', 16],
-        ['Dec', 16],
-      ]);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const LoadingSpin = () => (
-    <View style={{
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}
-    >
-      <Spinner size="giant" />
-    </View>
-  );
+  const monthNames = useMemo(() => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], []);
 
   useEffect(() => {
-    getStatistics(new Date(selectedYear, 0, 1));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedYear]);
+    const canceltoken = Axios.CancelToken.source();
 
-  const chartEvents: ReactGoogleChartEvent[] = [
-    {
-      callback: () => {
-        setChartIsReady(true);
-      },
-      eventName: 'ready',
-    },
-  ];
+    const getStatistics = async () => {
+      setLoading(true);
+      const from = new Date(selectedDate);
+      from.setMonth(0, 1);
+      from.setHours(0, 0, 0, 0);
+      const to = new Date(from);
+      to.setFullYear(to.getFullYear() + 1);
+      const mode = 'yearly';
+      try {
+        const statistics = await client.sendRequest<Map<string, number>>(`statistics?from=${from.getTime()}&to=${to.getTime()}&mode=${mode}`,
+          null, false, canceltoken.token);
+        const months: DataType[] = [];
+        monthNames.forEach((month) => {
+          months.push({
+            x: month, y: statistics.data[month] || 0,
+          });
+        });
+        setData(months);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getStatistics();
+
+    return () => canceltoken.cancel(AXIO_CANCELLED);
+  }, [client, monthNames, selectedDate]);
+
+  const chartClicked = useCallback((month: number) => {
+    changeDate(new Date(selectedDate.getFullYear(), month));
+  }, [changeDate, selectedDate]);
 
   return (
     <View style={styles.content}>
       <View style={styles.dataSelector}>
         <Button
-          disabled={loading || !chartIsReady || selectedYear === 2000}
-          onPress={() => setSelectedYear((prevYear) => prevYear - 1)}
+          disabled={loading || selectedDate.getFullYear() === 2000}
+          onPress={() => setSelectedDate(
+            (value) => new Date(value.getFullYear() - 1, 0, 1),
+          )}
         >
           {'<'}
         </Button>
-        <Text>
-          {selectedYear}
+        <Text category="h6">
+          {selectedDate.getFullYear()}
         </Text>
         <Button
-          disabled={loading || !chartIsReady || CURRENT_YEAR === selectedYear}
-          onPress={() => setSelectedYear((prevYear) => prevYear + 1)}
+          disabled={loading || CURRENT_YEAR === selectedDate.getFullYear()}
+          onPress={() => setSelectedDate(
+            (value) => new Date(value.getFullYear() + 1, 0, 1),
+          )}
         >
           {'>'}
         </Button>
       </View>
       <View style={styles.chart}>
         {loading
-          ? <LoadingSpin />
-          : (
-            <Chart
-              chartType="ColumnChart"
-              loader={(<LoadingSpin />)}
-              data={data}
-              chartEvents={chartEvents}
-              options={{ vAxis: { minValue: 0 } }}
-            />
-          )}
+          ? <LoadingSpinner />
+          : <StatisticsChart data={data} xaxisLabel={MONTHS} onClickHandler={chartClicked} />}
       </View>
     </View>
   );

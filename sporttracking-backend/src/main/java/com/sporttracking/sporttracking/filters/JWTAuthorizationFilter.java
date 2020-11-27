@@ -18,27 +18,26 @@ import static com.sporttracking.sporttracking.security.SecurityConstants.*;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
-    public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
+    public JWTAuthorizationFilter(final AuthenticationManager authenticationManager) {
         super(authenticationManager);
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest req,
-                                    HttpServletResponse res,
-                                    FilterChain chain) throws IOException, ServletException {
-        String header = req.getHeader(HEADER_STRING);
-
+    protected void doFilterInternal(final HttpServletRequest req,
+                                    final HttpServletResponse res,
+                                    final FilterChain chain) throws IOException, ServletException {
+        final String header = req.getHeader(HEADER_STRING);
         if (header == null || !header.startsWith(TOKEN_PREFIX)) {
             chain.doFilter(req, res);
             return;
         }
 
-        UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
+        final UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(req, res);
     }
-    
+
     public static String getUserFromToken(final String token) {
         return JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
                 .build()
@@ -46,11 +45,11 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 .getSubject();
     }
 
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader(HEADER_STRING);
+    private UsernamePasswordAuthenticationToken getAuthentication(final HttpServletRequest request) {
+        final String token = request.getHeader(HEADER_STRING);
         if (token != null) {
             // parse the token.
-            String user = getUserFromToken(token);
+            final String user = getUserFromToken(token);
             if (user != null) {
                 return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
             }

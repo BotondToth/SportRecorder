@@ -5,11 +5,12 @@ import {
   Divider,
   Icon,
   List,
-  ListItem, Modal, Spinner,
+  ListItem, Modal,
   Text,
 } from '@ui-kitten/components';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { Friendship, User } from '../../types';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { Client } from '../../api';
 
 const styles = StyleSheet.create({
@@ -40,11 +41,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   footerControl: { marginHorizontal: 2 },
-  loading: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
 });
 
 export const FriendsList = () => {
@@ -138,7 +134,7 @@ export const FriendsList = () => {
 
   const renderFriends = ({ item }: any) => (
     <ListItem
-      title={item.friend.fullName}
+      title={item.friend.username}
       accessoryLeft={renderProfilePicture}
       accessoryRight={() => renderUnfollowButton(item.id)}
     />
@@ -146,7 +142,7 @@ export const FriendsList = () => {
 
   const renderUsers = ({ item }: any) => (
     <ListItem
-      title={item.fullName}
+      title={item.username}
       accessoryLeft={renderProfilePicture}
       accessoryRight={() => renderUserActionButton(item.id)}
     />
@@ -192,9 +188,7 @@ export const FriendsList = () => {
       <Card header={Header} style={styles.card} disabled>
         {
           isLoading ? (
-            <View style={styles.loading}>
-              <Spinner size="giant" />
-            </View>
+            <LoadingSpinner />
           ) : (
             <List
               style={styles.container}

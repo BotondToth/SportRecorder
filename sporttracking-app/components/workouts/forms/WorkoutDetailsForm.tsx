@@ -72,7 +72,7 @@ export const WorkoutDetailsForm = (props) => {
         <Text style={styles.workoutHeaderText} category="h6">Workout Details</Text>
         <Text category="h8">
           @
-          {workoutInDetail.user.fullName}
+          {workoutInDetail.user.username}
         </Text>
       </View>
       {

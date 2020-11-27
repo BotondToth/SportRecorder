@@ -8,11 +8,14 @@ import {
   ListItem,
   Modal,
   Icon,
-  Spinner, IndexPath, SelectItem, Select,
+  IndexPath,
+  SelectItem,
+  Select,
 } from '@ui-kitten/components';
 import { Dimensions, Platform, StyleSheet, View } from 'react-native';
 import { CreateWorkoutForm } from './forms/CreateWorkoutForm';
 import { Friendship, Workout } from '../../types';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { Client } from '../../api';
 import { RecordWorkoutForm } from './forms/RecordWorkoutForm';
 import { WorkoutDetailsForm } from './forms/WorkoutDetailsForm';
@@ -185,7 +188,7 @@ export const WorkoutList = () => {
 
   const renderFeedData = ({ item }: { item: Workout }) => (
     <ListItem
-      title={`${item.user.fullName}: ${item.title}`}
+      title={`${item.user.username}: ${item.title}`}
       description={item.description}
       accessoryLeft={renderPersonIcon}
       onPress={() => onWorkOutPress(item)}
@@ -365,11 +368,7 @@ export const WorkoutList = () => {
       </Modal>
       {/* eslint-disable-next-line no-nested-ternary */}
       {isLoading
-        ? (
-          <View style={styles.loading}>
-            <Spinner size="giant" />
-          </View>
-        )
+        ? (<LoadingSpinner />)
         : selectedViewMode === 'workouts' ? (
           <View style={styles.workoutContainer}>
             <List

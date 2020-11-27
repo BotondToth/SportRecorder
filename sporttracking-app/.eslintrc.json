@@ -42,6 +42,7 @@
     "react/no-children-prop": "off",
     "no-console": ["error", { "allow": ["warn", "error"] }],
     "no-param-reassign": "off",
-    "no-control-regex": "off"
+    "no-control-regex": "off",
+    "linebreak-style": "off"
   }
 }
