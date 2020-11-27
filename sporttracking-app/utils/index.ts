@@ -1,3 +1,6 @@
+import AsyncStorage from '@react-native-community/async-storage';
+import _ from 'lodash';
+
 const haversine = require('haversine');
 
 export const validateEmail = (emailToTest: string) => {
@@ -31,4 +34,9 @@ export const getFormattedLocationPoints = (points) => {
     longitude: point.coords.longitude,
   }));
   return formattedPoints;
+};
+
+export const canUserEditWorkout = async (email: string) => {
+  const loggedInUser = await AsyncStorage.getItem('logged-in-user');
+  return loggedInUser === email;
 };

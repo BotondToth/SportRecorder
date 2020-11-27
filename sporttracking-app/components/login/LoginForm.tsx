@@ -1,6 +1,8 @@
 import React, { useState, useContext } from 'react';
-import { Text, Card, Button, Input } from '@ui-kitten/components';
-import { StyleSheet, View } from 'react-native';
+import {
+  Text, Card, Button, Input, Spinner,
+} from '@ui-kitten/components';
+import { Dimensions, Platform, StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
 import { AuthorizationContext } from '../../AuthorizationContext';
@@ -24,7 +26,10 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   footerControl: { marginHorizontal: 2 },
-  field: { marginBottom: 20 },
+  field: {
+    marginBottom: 20,
+    width: Dimensions.get('window').width * (Platform.OS === 'web' ? 0.25 : 0.75),
+  },
   registerLink: {
     flex: 1,
     alignItems: 'center',
@@ -39,6 +44,7 @@ const styles = StyleSheet.create({
 });
 
 export const LoginForm = ({ navigation }: Props) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginFailed, setLoginFailed] = useState(false);
@@ -48,6 +54,7 @@ export const LoginForm = ({ navigation }: Props) => {
   const saveData = async (token: string) => {
     try {
       await AsyncStorage.setItem('access-token', token);
+      await AsyncStorage.setItem('logged-in-user', email);
     } catch (e) {
       console.error(e);
     }
@@ -59,6 +66,7 @@ export const LoginForm = ({ navigation }: Props) => {
 
   const loginUser = async (userToLogin: object) => {
     try {
+      setIsLoading(true);
       const response = await client.sendRequest('login', userToLogin);
       await saveData(response.headers.authorization);
       setLoginFailed(false);
@@ -66,6 +74,8 @@ export const LoginForm = ({ navigation }: Props) => {
     } catch (e) {
       console.error(e);
       setLoginFailed(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -83,15 +93,21 @@ export const LoginForm = ({ navigation }: Props) => {
 
   const Footer = (props: any) => (
     <View {...props} style={[props.style, styles.footerContainer]}>
-      <Button
-        disabled={isLoginButtonDisabled()}
-        style={styles.footerControl}
-        size="small"
-        status="basic"
-        onPress={onSubmit}
-      >
-        Login
-      </Button>
+      {
+        isLoading ? <Spinner size="small" />
+          : (
+            <Button
+              disabled={isLoginButtonDisabled()}
+              style={styles.footerControl}
+              size="small"
+              status="basic"
+              onPress={onSubmit}
+            >
+              Login
+            </Button>
+          )
+      }
+
     </View>
   );
 

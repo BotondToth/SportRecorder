@@ -8,8 +8,8 @@ import {
   ListItem, Modal, Spinner,
   Text,
 } from '@ui-kitten/components';
-import { StyleSheet, View } from 'react-native';
-import { Friend, User } from '../../types';
+import { Dimensions, StyleSheet, View } from 'react-native';
+import { Friendship, User } from '../../types';
 import { Client } from '../../api';
 
 const styles = StyleSheet.create({
@@ -22,12 +22,13 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
   },
   container: {
-    maxHeight: 400,
-    width: 400,
+    marginTop: 50,
+    maxHeight: Dimensions.get('window').height * 0.75,
+    width: Dimensions.get('window').width * 0.75,
   },
   usersContainer: {
-    maxHeight: 300,
-    width: '100%',
+    maxHeight: Dimensions.get('window').height * 0.50,
+    width: Dimensions.get('window').width * 0.50,
   },
   card: {
     flex: 1,
@@ -48,16 +49,16 @@ const styles = StyleSheet.create({
 
 export const FriendsList = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [friends, setFriends] = useState<Friend[]>([]);
+  const [friendships, setFriendships] = useState<Friendship[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [addNewFriendCardVisible, setAddNewFriendCardVisible] = useState<boolean>(false);
   const client: Client = Client.getInstance();
 
-  const getFriends = async () => {
+  const getFriendships = async () => {
     setIsLoading(true);
-    const response = await client.sendRequest<Friend[]>('friends');
+    const response = await client.sendRequest<Friendship[]>('friends');
     setIsLoading(false);
-    setFriends(response.data);
+    setFriendships(response.data);
   };
 
   const getUsers = async () => {
@@ -68,7 +69,7 @@ export const FriendsList = () => {
   };
 
   useEffect(() => {
-    getFriends();
+    getFriendships();
     getUsers();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -93,14 +94,14 @@ export const FriendsList = () => {
 
   const unfollowFriend = async (id: string) => {
     await client.sendRequest(`friends?friendshipId=${id}`, null, true);
-    await getFriends();
     setAddNewFriendCardVisible(false);
+    await getFriendships();
   };
 
-  const followFriend = async (id: string) => {
-    await client.sendRequest('friends', { friendId: id });
-    await getFriends();
+  const followFriend = async (friendId: string) => {
+    await client.sendRequest('friends', { friendId });
     setAddNewFriendCardVisible(false);
+    await getFriendships();
   };
 
   const renderUnfollowButton = (id: string) => (
@@ -116,7 +117,7 @@ export const FriendsList = () => {
   );
 
   const renderUserActionButton = (id: string) => {
-    const isAlreadyFollowed = friends.filter((friend) => friend.friendId === id);
+    const isAlreadyFollowed = friendships.filter((friendship) => friendship.friend.id === id);
 
     return (
       isAlreadyFollowed.length > 0 ? (
@@ -197,7 +198,7 @@ export const FriendsList = () => {
           ) : (
             <List
               style={styles.container}
-              data={friends}
+              data={friendships}
               ItemSeparatorComponent={Divider}
               renderItem={renderFriends}
             />

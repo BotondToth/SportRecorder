@@ -17,10 +17,6 @@ import { AuthorizationContext } from '../../AuthorizationContext';
 const styles = StyleSheet.create({
   headerStyle: { marginLeft: 25 },
   logOutButton: { marginHorizontal: 10 },
-  workoutTitle: {
-    padding: 15,
-    backgroundColor: 'white',
-  },
   backdrop: { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
 });
 
@@ -28,9 +24,10 @@ export const HomePage = ({ navigation }: Props) => {
   const { Navigator, Screen } = createBottomTabNavigator();
   const { signOut } = useContext(AuthorizationContext);
 
-  const logOut = () => {
-    AsyncStorage.removeItem('access-token')
-      .then(() => signOut());
+  const logOut = async () => {
+    await AsyncStorage.removeItem('access-token');
+    await AsyncStorage.removeItem('logged-in-user');
+    signOut();
   };
 
   useEffect(() => {

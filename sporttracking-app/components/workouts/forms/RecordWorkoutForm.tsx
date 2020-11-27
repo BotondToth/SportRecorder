@@ -52,10 +52,6 @@ export const RecordWorkoutForm = (props: any) => {
 
   useEffect(() => {
     locationInterval.current = setInterval(async () => {
-      // const { status } = await Location.requestPermissionsAsync();
-      // if (status !== 'granted') {
-      // console.log('Permission to access location was denied');
-      // }
       const location = await Location.getCurrentPositionAsync({});
       // eslint-disable-next-line @typescript-eslint/no-shadow
       setLocations((locations) => locations.concat(location));

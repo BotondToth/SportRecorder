@@ -10,8 +10,8 @@ import {
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
 import _ from 'lodash';
-import { Client } from '../../api';
-import { calculateDistance, getFormattedLocationPoints } from '../../utils';
+import { Client } from '../../../api';
+import { calculateDistance, getFormattedLocationPoints } from '../../../utils';
 
 const data = ['Running', 'Cycling', 'Walking', 'Swimming'];
 
@@ -76,7 +76,7 @@ export const CreateWorkoutForm = (props: any) => {
     <View {...footerProps} style={[footerProps.style, styles.footerContainer]}>
       <Button
         style={styles.footerControl}
-        size="small"
+        size="large"
         status="basic"
         onPress={onSubmit}
       >

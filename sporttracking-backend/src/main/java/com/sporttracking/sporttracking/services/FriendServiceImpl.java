@@ -39,8 +39,8 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public List<Friend> getFriendsWithoutShareByWorkout(HttpHeaders headers, String workoutId) {
         final List<Friend> friends = getFriendsForUser(headers);
-        final List<Share> sharedPostsWorkout = shareService.getSharesForWorkout(workoutId);
-        final List<String> friendsInSharedWorkouts = sharedPostsWorkout.stream()
+        final List<Share> sharesForWorkout = shareService.getSharesForWorkout(workoutId);
+        final List<String> friendsInSharedWorkouts = sharesForWorkout.stream()
                 .map(Share::getFriend)
                 .map(ApplicationUser::getId)
                 .collect(Collectors.toList());

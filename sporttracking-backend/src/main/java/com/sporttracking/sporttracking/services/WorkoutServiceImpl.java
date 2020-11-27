@@ -2,6 +2,7 @@ package com.sporttracking.sporttracking.services;
 
 import com.sporttracking.sporttracking.data.ApplicationUser;
 import com.sporttracking.sporttracking.data.Friend;
+import com.sporttracking.sporttracking.data.Share;
 import com.sporttracking.sporttracking.data.Workout;
 import com.sporttracking.sporttracking.data.dto.WorkoutDTO;
 import com.sporttracking.sporttracking.exceptions.ResourceNotFoundException;
@@ -38,7 +39,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         final List<Friend> followedUsers = friendService.getFriendsForUser(headers);
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
         final List<Workout> allWorkouts = getWorkoutsForUser(user);
-        followedUsers.forEach(followedUser -> allWorkouts.addAll(getWorkoutsForUser(followedUser.getFriend())));
+        followedUsers.forEach(followedUser -> allWorkouts.addAll(getWorkoutsForUser(followedUser.getFriend()))); // TODO: only shared workouts
         allWorkouts.sort(Comparator.comparing(Workout::getDate));
         return allWorkouts.stream().limit(FEED_LIMIT).collect(Collectors.toList());
     }
@@ -95,6 +96,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         if (workoutMongoRepository.findByIdAndUserId(trainingId, user.getId()).isEmpty()) {
             throw new ResourceNotFoundException();
         }
+
         workoutMongoRepository.deleteById(trainingId);
         return true;
     }

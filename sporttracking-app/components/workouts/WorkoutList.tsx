@@ -11,14 +11,17 @@ import {
   Spinner, IndexPath, SelectItem, Select,
 } from '@ui-kitten/components';
 import { Dimensions, Platform, StyleSheet, View } from 'react-native';
-import { CreateWorkoutForm } from './CreateWorkoutForm';
-import { Friend, Workout } from '../../types';
+import { CreateWorkoutForm } from './forms/CreateWorkoutForm';
+import { Friendship, Workout } from '../../types';
 import { Client } from '../../api';
-import { RecordWorkoutForm } from './RecordWorkoutForm';
-import { WorkoutDetailsCard } from './WorkoutDetailsCard';
+import { RecordWorkoutForm } from './forms/RecordWorkoutForm';
+import { WorkoutDetailsForm } from './forms/WorkoutDetailsForm';
 
 const styles = StyleSheet.create({
-  modal: { width: '75%' },
+  modal: {
+    maxHeight: Dimensions.get('window').height * 0.75,
+    width: Dimensions.get('window').width * (Platform.OS === 'web' ? 0.45 : 0.75),
+  },
   backdrop: { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
   footerContainer: {
     flexDirection: 'row',
@@ -55,10 +58,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     overflow: 'hidden',
-    // justifyContent: 'flex-end',
   },
   shareButton: {
-    marginLeft: 'auto', width: '10%',
+    marginLeft: 'auto',
+    width: '10%',
   },
   loading: {
     flex: 1,
@@ -75,6 +78,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  workoutList: {
+    width: Dimensions.get('window').width * 0.8,
+    backgroundColor: 'white',
+  },
+  workoutContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
 });
 
 export const WorkoutList = () => {
@@ -85,7 +98,7 @@ export const WorkoutList = () => {
   const [recordWorkoutFormVisible, setRecordWorkoutFormVisible] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [shareWorkoutVisible, setShareWorkoutVisible] = useState<boolean>(false);
-  const [friends, setFriends] = useState<Friend[]>([]);
+  const [friends, setFriends] = useState<Friendship[]>([]);
   // eslint-disable-next-line max-len
   const [workoutToReopenDetailsModalWith, setWorkoutToReopenDetailsModalWith] = useState<Workout | undefined>(workoutInDetail);
   const [selectedIndex, setSelectedIndex] = useState<IndexPath[]>([]);
@@ -93,7 +106,7 @@ export const WorkoutList = () => {
   const client: Client = Client.getInstance();
   let shareNameHolder = '';
   selectedIndex.forEach((index) => {
-    shareNameHolder += `${friends[index.row].friend.fullName}, `;
+    shareNameHolder += `${friends[index.row]?.friend.fullName}, `;
   });
 
   const getWorkouts = async () => {
@@ -123,7 +136,7 @@ export const WorkoutList = () => {
   const getFriends = async (workoutId: string) => {
     setIsLoading(true);
     try {
-      const response = await client.sendRequest<Friend[]>(`friendsForWorkout?workoutId=${workoutId}`);
+      const response = await client.sendRequest<Friendship[]>(`friendsForWorkout?workoutId=${workoutId}`);
       setFriends(response.data);
     } catch (e) {
       console.error(e);
@@ -135,6 +148,7 @@ export const WorkoutList = () => {
   const deleteWorkout = async (workoutId: string): Promise<any> => {
     try {
       const response = await client.sendRequest(`workout/${workoutId}`, null, true);
+      setSelectedViewMode('feed');
       return response.data;
     } catch (e) {
       console.error(e);
@@ -187,6 +201,7 @@ export const WorkoutList = () => {
   const ShareWorkoutFooter = (props: any) => (
     <View {...props} style={[props.style, styles.footerContainer]}>
       <Button
+        disabled={shareNameHolder === ''}
         style={styles.deleteButton}
         size="small"
         onPress={async () => {
@@ -239,23 +254,25 @@ export const WorkoutList = () => {
             </Modal>
           )
         }
-        {workoutFormVisible && (
-          <Modal
-            style={styles.modal}
-            visible={workoutFormVisible}
-            backdropStyle={styles.backdrop}
-            onBackdropPress={() => {
-              setWorkoutFormVisible(false);
-            }}
-          >
-            <CreateWorkoutForm
-              onFinish={() => {
+        {
+          workoutFormVisible && (
+            <Modal
+              style={styles.modal}
+              visible={workoutFormVisible}
+              backdropStyle={styles.backdrop}
+              onBackdropPress={() => {
                 setWorkoutFormVisible(false);
-                setSelectedViewMode('workouts');
               }}
-            />
-          </Modal>
-        )}
+            >
+              <CreateWorkoutForm
+                onFinish={() => {
+                  setWorkoutFormVisible(false);
+                  setSelectedViewMode('workouts');
+                }}
+              />
+            </Modal>
+          )
+        }
         <Text category="h5" style={styles.workoutTitle}>
           Workout history
         </Text>
@@ -279,13 +296,16 @@ export const WorkoutList = () => {
         }
         <View style={styles.buttonGroup}>
           <Button
+            disabled={isLoading}
             status={selectedViewMode === 'feed' ? 'basic' : 'primary'}
             style={styles.buttonGroupButton}
             onPress={() => setSelectedViewMode('feed')}
           >
             Feed
           </Button>
+
           <Button
+            disabled={isLoading}
             status={selectedViewMode === 'workouts' ? 'basic' : 'primary'}
             style={styles.buttonGroupButton}
             onPress={() => setSelectedViewMode('workouts')}
@@ -301,7 +321,7 @@ export const WorkoutList = () => {
           backdropStyle={styles.backdrop}
           onBackdropPress={() => setWorkoutInDetail(undefined)}
         >
-          <WorkoutDetailsCard
+          <WorkoutDetailsForm
             workoutInDetail={workoutInDetail}
             setWorkoutInDetail={setWorkoutInDetail}
             workoutToReopenDetailsModalWith={workoutToReopenDetailsModalWith}
@@ -351,17 +371,25 @@ export const WorkoutList = () => {
           </View>
         )
         : selectedViewMode === 'workouts' ? (
-          <List
-            data={workouts}
-            ItemSeparatorComponent={Divider}
-            renderItem={renderWorkouts}
-          />
+          <View style={styles.workoutContainer}>
+            <List
+              style={styles.workoutList}
+              data={workouts}
+              ItemSeparatorComponent={Divider}
+              renderItem={renderWorkouts}
+            />
+          </View>
+
         ) : (
-          <List
-            data={feedData}
-            ItemSeparatorComponent={Divider}
-            renderItem={renderFeedData}
-          />
+          <View style={styles.workoutContainer}>
+            <List
+              style={styles.workoutList}
+              data={feedData}
+              ItemSeparatorComponent={Divider}
+              renderItem={renderFeedData}
+            />
+          </View>
+
         )}
     </>
   );

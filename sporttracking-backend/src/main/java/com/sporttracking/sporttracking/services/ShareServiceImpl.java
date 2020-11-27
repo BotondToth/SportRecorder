@@ -52,7 +52,7 @@ public class ShareServiceImpl implements ShareService{
 
     @Override
     public List<Share> bulkCreateShares(final HttpHeaders headers, final BulkShareDTO bulkShareDTO) throws UserNotFoundException, ShareAlreadyExistException, NotFriendException, WorkoutNotFoundException {
-        for (String friendId: bulkShareDTO.getFriendIds()) {
+        for (final String friendId: bulkShareDTO.getFriendIds()) {
             createShare(headers, new ShareDTO(friendId, bulkShareDTO.getWorkoutId()));
         }
 

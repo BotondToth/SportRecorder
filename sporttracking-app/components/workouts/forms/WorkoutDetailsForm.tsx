@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Card, Icon, Text } from '@ui-kitten/components';
 import { Dimensions, Platform, StyleSheet, View } from 'react-native';
 import _ from 'lodash';
 import { BoundingBox, getBoundingBox } from 'geolocation-utils';
-import MapView, { Polyline } from './MapViewWrapper';
+import MapView, { Polyline } from '../map/MapViewWrapper';
+import { canUserEditWorkout } from '../../../utils';
 
 const styles = StyleSheet.create({
   footerContainer: {
@@ -35,11 +36,12 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width / 1.1,
     height: Dimensions.get('window').height / 1.5,
   },
+  workoutHeaderText: { marginTop: 15 },
 });
 
-export const WorkoutDetailsCard = (props) => {
+export const WorkoutDetailsForm = (props) => {
   const [cardViewMode, setCardViewMode] = useState<'details' | 'map'>('details');
-
+  const [editable, setEditable] = useState<boolean>(false);
   const {
     workoutInDetail,
     setWorkoutInDetail,
@@ -51,41 +53,64 @@ export const WorkoutDetailsCard = (props) => {
     setSelectedViewMode,
   } = props;
 
+  useEffect(() => {
+    const getEditableStatus = async () => {
+      setEditable(await canUserEditWorkout(workoutInDetail.user.email));
+    };
+
+    getEditableStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const renderShareIcon = (iconProps: any) => (
     <Icon {...iconProps} name="share-outline" />
   );
 
   const WorkoutDetailHeader = (headerProps: any) => (
     <View {...headerProps} style={[headerProps.style, styles.workoutDetailHeaderContainer]}>
-      <Text category="h6">Workout Details</Text>
-      <Button
-        style={styles.shareButton}
-        appearance="ghost"
-        size="large"
-        accessoryLeft={renderShareIcon}
-        onPress={async () => {
-          setWorkoutToReopenDetailsModalWith(workoutInDetail);
-          setWorkoutInDetail(undefined);
-          await getFriends(workoutToReopenDetailsModalWith.id);
-          setShareWorkoutVisible(true);
-        }}
-      />
+      <View style={{ flex: 1 }}>
+        <Text style={styles.workoutHeaderText} category="h6">Workout Details</Text>
+        <Text category="h8">
+          @
+          {workoutInDetail.user.fullName}
+        </Text>
+      </View>
+      {
+        editable && (
+          <Button
+            style={styles.shareButton}
+            appearance="ghost"
+            size="large"
+            accessoryLeft={renderShareIcon}
+            onPress={async () => {
+              setWorkoutToReopenDetailsModalWith(workoutInDetail);
+              setWorkoutInDetail(undefined);
+              await getFriends(workoutToReopenDetailsModalWith.id);
+              setShareWorkoutVisible(true);
+            }}
+          />
+        )
+      }
     </View>
   );
 
   const WorkoutDetailFooter = (footerProps: any) => (
     <View {...footerProps} style={[footerProps.style, styles.footerContainer]}>
-      <Button
-        style={styles.deleteButton}
-        size="small"
-        onPress={async () => {
-          await deleteWorkout(workoutInDetail.id);
-          setWorkoutInDetail(undefined);
-          setSelectedViewMode('feed'); // todo
-        }}
-      >
-        Delete
-      </Button>
+      {
+        editable && (
+          <Button
+            style={styles.deleteButton}
+            size="small"
+            onPress={async () => {
+              await deleteWorkout(workoutInDetail.id);
+              setWorkoutInDetail(undefined);
+              setSelectedViewMode('feed'); // todo
+            }}
+          >
+            Delete
+          </Button>
+        )
+      }
       {
         (Platform.OS !== 'web' && workoutInDetail.locationPoints && !_.isEmpty(workoutInDetail)) && (
           <Button
@@ -175,7 +200,13 @@ export const WorkoutDetailsCard = (props) => {
             longitudeDelta: 0.01,
           }}
         >
-          <Polyline strokeWidth={3} strokeColor="red" lineJoin="round" lineCap="round" coordinates={workoutInDetail.locationPoints} />
+          <Polyline
+            strokeWidth={3}
+            strokeColor="red"
+            lineJoin="round"
+            lineCap="round"
+            coordinates={workoutInDetail.locationPoints}
+          />
         </MapView>
         <Button
           style={styles.footerControl}
