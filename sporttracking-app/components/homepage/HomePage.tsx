@@ -20,10 +20,6 @@ import { Client } from '../../api';
 const styles = StyleSheet.create({
   headerStyle: { marginLeft: 25 },
   logOutButton: { marginHorizontal: 10 },
-  workoutTitle: {
-    padding: 15,
-    backgroundColor: 'white',
-  },
   backdrop: { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
   bottomTabs: {
     borderColor: 'rgb(216, 216, 216)',
@@ -38,6 +34,12 @@ export const HomePage = ({ navigation }: Props) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const logOut = async () => {
+      await AsyncStorage.removeItem('access-token');
+      await AsyncStorage.removeItem('logged-in-user');
+      signOut();
+    };
+
     setLoading(true);
 
     const setNavigationHeader = (username: string) => {
@@ -47,8 +49,7 @@ export const HomePage = ({ navigation }: Props) => {
             style={styles.logOutButton}
             size="small"
             onPress={async () => {
-              await AsyncStorage.removeItem('access-token');
-              signOut();
+              await logOut();
             }}
           >
             Logout

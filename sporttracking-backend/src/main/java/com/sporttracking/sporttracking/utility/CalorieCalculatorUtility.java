@@ -1,9 +1,9 @@
 package com.sporttracking.sporttracking.utility;
 
-import com.sporttracking.sporttracking.services.CyclingStrategy;
-import com.sporttracking.sporttracking.services.RunningStrategy;
-import com.sporttracking.sporttracking.services.SwimmingStrategy;
-import com.sporttracking.sporttracking.services.WalkingStrategy;
+import com.sporttracking.sporttracking.strategies.CyclingStrategy;
+import com.sporttracking.sporttracking.strategies.RunningStrategy;
+import com.sporttracking.sporttracking.strategies.SwimmingStrategy;
+import com.sporttracking.sporttracking.strategies.WalkingStrategy;
 
 public class CalorieCalculatorUtility {
 

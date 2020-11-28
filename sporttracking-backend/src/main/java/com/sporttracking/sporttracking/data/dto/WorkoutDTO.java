@@ -1,5 +1,6 @@
-package com.sporttracking.sporttracking.data;
+package com.sporttracking.sporttracking.data.dto;
 
+import com.sporttracking.sporttracking.data.Point;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,4 +16,5 @@ public class WorkoutDTO {
     private long distance;
     private long calories;
     private Date date;
+    private Point[] locationPoints;
 }

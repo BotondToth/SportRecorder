@@ -10,7 +10,8 @@ import {
 } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
 import _ from 'lodash';
-import { Client } from '../../api';
+import { Client } from '../../../api';
+import { calculateDistance, getFormattedLocationPoints } from '../../../utils';
 
 const data = ['Running', 'Cycling', 'Walking', 'Swimming'];
 
@@ -35,21 +36,29 @@ const styles = StyleSheet.create({
 });
 
 export const CreateWorkoutForm = (props: any) => {
+  const locationInitialData = (props.data && props.data.locations)
+    ? calculateDistance(props.data.locations) : 0;
   const [selectedIndex, setSelectedIndex] = useState(new IndexPath(0));
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const type = data[selectedIndex.row];
-  const [duration, setDuration] = useState(0);
-  const [distance, setDistance] = useState(0);
+  const [duration, setDuration] = useState<number>((props.data && props.data.duration)
+    ? Math.floor(props.data.duration / 60) : 0);
+  const [distance, setDistance] = useState(locationInitialData);
   const client: Client = Client.getInstance();
+  const isFormEditable = _.isUndefined(props.data);
 
   const onSubmit = async () => {
+    const locationPoints = (props.data && props.data.locations)
+      ? getFormattedLocationPoints(props.data.locations) : [];
+
     const workout = {
       title,
       description,
       type,
       duration,
       distance,
+      locationPoints,
     };
 
     await client.sendRequest('workout', workout);
@@ -67,7 +76,7 @@ export const CreateWorkoutForm = (props: any) => {
     <View {...footerProps} style={[footerProps.style, styles.footerContainer]}>
       <Button
         style={styles.footerControl}
-        size="small"
+        size="large"
         status="basic"
         onPress={onSubmit}
       >
@@ -118,11 +127,12 @@ export const CreateWorkoutForm = (props: any) => {
         {data.map((element, idx) => renderWorkoutType(idx, element))}
       </Select>
       <Input
+        disabled={!isFormEditable}
         style={styles.field}
         value={_.toString(duration)}
         label="Workout duration"
         placeholder="The duration of your workout in minutes"
-        caption="You should add the length of your workout here"
+        caption="You should add the length of your workout here in minutes"
         secureTextEntry={false}
         onChangeText={(nextValue) => {
           if (nextValue === '') nextValue = String(0);
@@ -130,6 +140,7 @@ export const CreateWorkoutForm = (props: any) => {
         }}
       />
       <Input
+        disabled={!isFormEditable}
         style={styles.field}
         value={_.toString(distance)}
         label="Workout distance"

@@ -1,7 +1,7 @@
 package com.sporttracking.sporttracking.controllers;
 
 import com.sporttracking.sporttracking.data.ApplicationUser;
-import com.sporttracking.sporttracking.data.UserDTO;
+import com.sporttracking.sporttracking.data.dto.UserDTO;
 import com.sporttracking.sporttracking.exceptions.EmailAddressTakenException;
 import com.sporttracking.sporttracking.exceptions.UsernameAlreadyTakenException;
 import com.sporttracking.sporttracking.services.UserServiceImpl;

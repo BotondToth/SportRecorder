@@ -1,6 +1,8 @@
 package com.sporttracking.sporttracking.services;
 
 import com.sporttracking.sporttracking.data.*;
+import com.sporttracking.sporttracking.data.dto.BulkShareDTO;
+import com.sporttracking.sporttracking.data.dto.ShareDTO;
 import com.sporttracking.sporttracking.exceptions.NotFriendException;
 import com.sporttracking.sporttracking.exceptions.ShareAlreadyExistException;
 import com.sporttracking.sporttracking.exceptions.UserNotFoundException;
@@ -49,6 +51,20 @@ public class ShareServiceImpl implements ShareService{
     }
 
     @Override
+    public List<Share> bulkCreateShares(final HttpHeaders headers, final BulkShareDTO bulkShareDTO) throws UserNotFoundException, ShareAlreadyExistException, NotFriendException, WorkoutNotFoundException {
+        for (final String friendId: bulkShareDTO.getFriendIds()) {
+            createShare(headers, new ShareDTO(friendId, bulkShareDTO.getWorkoutId()));
+        }
+
+        return getSharesFromUser(headers);
+    }
+
+    @Override
+    public List<Share> getSharesForWorkout(final String workoutId) {
+        return shareMongoRepository.findAllByWorkoutId(workoutId);
+    }
+
+    @Override
     public Share createShare(HttpHeaders headers, ShareDTO shareDTO) throws UserNotFoundException, WorkoutNotFoundException, ShareAlreadyExistException, NotFriendException {
         final Optional<ApplicationUser> friend = userMongoRepository.findById(shareDTO.getFriendId());
         if (friend.isEmpty()) {
@@ -70,6 +86,6 @@ public class ShareServiceImpl implements ShareService{
             throw new NotFriendException();
         }
 
-        return shareMongoRepository.save(new Share(user, friend.get(), workout.get()));
+        return shareMongoRepository.save(Share.builder().user(user).friend(friend.get()).workout(workout.get()).build());
     }
 }

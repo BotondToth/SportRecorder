@@ -6,8 +6,7 @@ export class Client {
   private static instance: Client;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  private constructor () {
-  }
+  private constructor () {}
 
   public static getInstance (): Client {
     if (!Client.instance) {

@@ -1,6 +1,7 @@
 package com.sporttracking.sporttracking.data;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -8,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+@Builder
 @Data
 @Document(collection = "Friends")
 @NoArgsConstructor
@@ -21,9 +23,4 @@ public class Friend {
     @Field
     @DBRef
     private ApplicationUser friend;
-
-    public Friend(final ApplicationUser user, final ApplicationUser friend) {
-        this.user = user;
-        this.friend = friend;
-    }
 }

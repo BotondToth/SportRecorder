@@ -1,6 +1,6 @@
 import { User } from './user';
 
-export interface Friend {
+export interface Friendship {
   id: string;
   friendId: string;
   friend: User;

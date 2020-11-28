@@ -1,8 +1,7 @@
 package com.sporttracking.sporttracking.services;
 
-import com.sporttracking.sporttracking.data.ApplicationUser;
-import com.sporttracking.sporttracking.data.Friend;
-import com.sporttracking.sporttracking.data.FriendDTO;
+import com.sporttracking.sporttracking.data.*;
+import com.sporttracking.sporttracking.data.dto.FriendDTO;
 import com.sporttracking.sporttracking.exceptions.FriendNotFoundException;
 import com.sporttracking.sporttracking.exceptions.UserNotFoundException;
 import com.sporttracking.sporttracking.repositories.FriendMongoRepository;
@@ -14,12 +13,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FriendServiceImpl implements FriendService {
 
     @Autowired
     private FriendMongoRepository friendMongoRepository;
+
+    @Autowired
+    private ShareService shareService;
 
     @Autowired
     private UserMongoRepository userMongoRepository;
@@ -31,6 +34,19 @@ public class FriendServiceImpl implements FriendService {
     public List<Friend> getFriendsForUser(final HttpHeaders headers) {
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
         return friendMongoRepository.findAllByUserId(user.getId());
+    }
+
+    @Override
+    public List<Friend> getFriendsWithoutShareByWorkout(HttpHeaders headers, String workoutId) {
+        final List<Friend> friends = getFriendsForUser(headers);
+        final List<Share> sharesForWorkout = shareService.getSharesForWorkout(workoutId);
+        final List<String> friendsInSharedWorkouts = sharesForWorkout.stream()
+                .map(Share::getFriend)
+                .map(ApplicationUser::getId)
+                .collect(Collectors.toList());
+        return friends.stream()
+                .filter(friend -> !friendsInSharedWorkouts.contains(friend.getFriend().getId()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -50,7 +66,11 @@ public class FriendServiceImpl implements FriendService {
             throw new UserNotFoundException();
         }
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
-        friendMongoRepository.save(new Friend(user, userToBeAFriend.get()));
+
+        friendMongoRepository.save(Friend.builder()
+                .user(user)
+                .friend(userToBeAFriend.get())
+                .build());
 
         return friendMongoRepository.findAllByUserId(user.getId());
     }

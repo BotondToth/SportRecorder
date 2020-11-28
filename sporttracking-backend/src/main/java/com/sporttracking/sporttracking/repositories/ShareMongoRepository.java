@@ -12,5 +12,7 @@ public interface ShareMongoRepository extends MongoRepository<Share, String> {
 
     List<Share> findAllByFriendId(String friendId);
 
+    List<Share> findAllByWorkoutId(String workoutId);
+
     Optional<Share> findByUserIdAndFriendIdAndWorkoutId(String userId, String friendId, String workoutId);
 }

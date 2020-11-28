@@ -1,7 +1,7 @@
 package com.sporttracking.sporttracking.services;
 
 import com.sporttracking.sporttracking.data.ApplicationUser;
-import com.sporttracking.sporttracking.data.UserDTO;
+import com.sporttracking.sporttracking.data.dto.UserDTO;
 import com.sporttracking.sporttracking.exceptions.EmailAddressTakenException;
 import com.sporttracking.sporttracking.exceptions.UsernameAlreadyTakenException;
 import com.sporttracking.sporttracking.repositories.UserMongoRepository;
@@ -42,7 +42,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new UsernameAlreadyTakenException();
         }
         userToRegister.setPassword(bCryptPasswordEncoder.encode(userToRegister.getPassword()));
-        return userMongoRepository.save(new ApplicationUser(userToRegister));
+        final ApplicationUser newUser = ApplicationUser.builder()
+            .email(userToRegister.getEmail())
+            .username(userToRegister.getUsername())
+            .password(userToRegister.getPassword())
+            .fullName(userToRegister.getFullName())
+            .height(userToRegister.getHeight())
+            .sex(userToRegister.getSex())
+            .weight(userToRegister.getWeight())
+            .build();
+
+        return userMongoRepository.save(newUser);
     }
 
     @Override
