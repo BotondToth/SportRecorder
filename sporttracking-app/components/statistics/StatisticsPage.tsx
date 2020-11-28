@@ -6,6 +6,7 @@ import { NavigationProp } from '@react-navigation/native';
 import { DayTab } from './DayTab';
 import { MonthTab } from './MonthTab';
 import { YearTab } from './YearTab';
+import { ExportPdf } from './ExportPdf';
 
 const styles = StyleSheet.create({
   header: {
@@ -103,6 +104,7 @@ export const StatisticsPage = (
           </Navigator>
         </View>
       </View>
+      <ExportPdf />
     </>
   );
 };
