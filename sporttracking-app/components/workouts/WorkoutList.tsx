@@ -375,7 +375,7 @@ export const WorkoutList = () => {
             onSelect={(index) => setSelectedIndex(index)}
           >
             {
-              friends.map((friend, index) => (
+              friends.map((friend) => (
                 <SelectItem
                   key={friend.id}
                   title={friend.friend.username}
