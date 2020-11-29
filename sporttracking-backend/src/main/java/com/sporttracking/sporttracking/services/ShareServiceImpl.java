@@ -39,6 +39,11 @@ public class ShareServiceImpl implements ShareService{
     private AuthUtility authUtility;
 
     @Override
+    public List<Share> getSharesForFriend(final String friendId) {
+        return shareMongoRepository.findAllByFriendId(friendId);
+    }
+
+    @Override
     public List<Share> getSharesFromUser(@RequestHeader final HttpHeaders headers) {
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
         return shareMongoRepository.findAllByUserId(user.getId());
@@ -52,6 +57,11 @@ public class ShareServiceImpl implements ShareService{
 
     @Override
     public List<Share> bulkCreateShares(final HttpHeaders headers, final BulkShareDTO bulkShareDTO) throws UserNotFoundException, ShareAlreadyExistException, NotFriendException, WorkoutNotFoundException {
+        final List<Share> sharesForThisWorkout = getSharesForWorkout(bulkShareDTO.getWorkoutId());
+        if (sharesForThisWorkout.size() > 0) {
+            shareMongoRepository.deleteAll(sharesForThisWorkout);
+        }
+
         for (final String friendId: bulkShareDTO.getFriendIds()) {
             createShare(headers, new ShareDTO(friendId, bulkShareDTO.getWorkoutId()));
         }
@@ -87,5 +97,10 @@ public class ShareServiceImpl implements ShareService{
         }
 
         return shareMongoRepository.save(Share.builder().user(user).friend(friend.get()).workout(workout.get()).build());
+    }
+
+    @Override
+    public void deleteShares(List<Share> sharesToDelete) {
+        shareMongoRepository.deleteAll(sharesToDelete);
     }
 }

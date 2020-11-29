@@ -8,14 +8,12 @@ import com.sporttracking.sporttracking.exceptions.ResourceNotFoundException;
 import com.sporttracking.sporttracking.repositories.WorkoutMongoRepository;
 import com.sporttracking.sporttracking.utility.AuthUtility;
 import com.sporttracking.sporttracking.utility.CalorieCalculatorUtility;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,14 +31,31 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Autowired
     private FriendService friendService;
 
+    @Autowired
+    private ShareService shareService;
+
     @Override
     public List<Workout> getFeed(final HttpHeaders headers) {
         final List<Friend> followedUsers = friendService.getFriendsForUser(headers);
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
         final List<Workout> allWorkouts = getWorkoutsForUser(user);
-        followedUsers.forEach(followedUser -> allWorkouts.addAll(getWorkoutsForUser(followedUser.getFriend()))); // TODO: only shared workouts
+        final List<String> sharedWorkoutIds = shareService.getSharesForFriend(user.getId())
+                .stream()
+                .map(workout -> workout.getWorkout().getId())
+                .collect(Collectors.toList());
+
+        followedUsers.forEach(followedUser -> {
+            final List<Workout> workoutForFollowedUser = getWorkoutsForUser(followedUser.getFriend())
+                    .stream()
+                    .filter(workout -> sharedWorkoutIds.contains(workout.getId()))
+                    .collect(Collectors.toList());
+
+            allWorkouts.addAll(workoutForFollowedUser);
+        });
         allWorkouts.sort(Comparator.comparing(Workout::getDate));
-        return allWorkouts.stream().limit(FEED_LIMIT).collect(Collectors.toList());
+        final List<Workout> limited = allWorkouts.stream().limit(FEED_LIMIT).collect(Collectors.toList());
+        Collections.reverse(limited);
+        return limited;
     }
 
     @Override
@@ -83,7 +98,7 @@ public class WorkoutServiceImpl implements WorkoutService {
             .title(workoutDTO.getTitle())
             .description(workoutDTO.getDescription())
             .type(workoutDTO.getType())
-            .date(new Date())
+            .date(new DateTime().plusHours(1).toDate())
             .distance(workoutDTO.getDistance())
             .build());
     }

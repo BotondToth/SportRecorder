@@ -50,7 +50,9 @@ export const WorkoutDetailsForm = (props) => {
     setShareWorkoutVisible,
     getFriends,
     deleteWorkout,
-    setSelectedViewMode,
+    selectedViewMode,
+    getWorkouts,
+    getFeedData,
   } = props;
 
   useEffect(() => {
@@ -104,7 +106,11 @@ export const WorkoutDetailsForm = (props) => {
             onPress={async () => {
               await deleteWorkout(workoutInDetail.id);
               setWorkoutInDetail(undefined);
-              setSelectedViewMode('feed'); // todo
+              if (selectedViewMode === 'feed') {
+                getFeedData();
+              } else {
+                getWorkouts();
+              }
             }}
           >
             Delete

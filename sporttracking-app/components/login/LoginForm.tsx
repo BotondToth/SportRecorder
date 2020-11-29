@@ -155,7 +155,7 @@ export const LoginForm = ({ navigation }: Props) => {
         />
         {loginFailed && (
         <Text style={styles.errorMessage}>
-          Invalid login datas!
+          Invalid login data!
         </Text>
         )}
       </Card>

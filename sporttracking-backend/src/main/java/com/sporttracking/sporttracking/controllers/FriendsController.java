@@ -1,6 +1,7 @@
 package com.sporttracking.sporttracking.controllers;
 
 import com.sporttracking.sporttracking.data.Friend;
+import com.sporttracking.sporttracking.data.FriendWithShare;
 import com.sporttracking.sporttracking.data.dto.FriendDTO;
 import com.sporttracking.sporttracking.exceptions.FriendNotFoundException;
 import com.sporttracking.sporttracking.exceptions.UserNotFoundException;
@@ -40,7 +41,7 @@ public class FriendsController implements BaseController {
     }
 
     @GetMapping("/friendsForWorkout")
-    public List<Friend> getFriendsWithoutShareByWorkout(@RequestHeader final HttpHeaders headers, @RequestParam final String workoutId) {
+    public List<FriendWithShare> getFriendsWithoutShareByWorkout(@RequestHeader final HttpHeaders headers, @RequestParam final String workoutId) {
         return friendService.getFriendsWithoutShareByWorkout(headers, workoutId);
     }
 

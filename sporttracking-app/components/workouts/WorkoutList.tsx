@@ -109,8 +109,19 @@ export const WorkoutList = () => {
   const client: Client = Client.getInstance();
   let shareNameHolder = '';
   selectedIndex.forEach((index) => {
-    shareNameHolder += `${friends[index.row]?.friend.fullName}, `;
+    shareNameHolder += `${friends[index.row]?.friend.username}, `;
   });
+
+  const getSelectedFriends = (data): IndexPath[] => {
+    const selectedIndexes = [];
+    data.forEach((dataItem, i) => {
+      if (dataItem.workoutSharedWith) {
+        selectedIndexes.push(new IndexPath(i));
+      }
+    });
+
+    return selectedIndexes;
+  };
 
   const getWorkouts = async () => {
     setIsLoading(true);
@@ -140,6 +151,7 @@ export const WorkoutList = () => {
     setIsLoading(true);
     try {
       const response = await client.sendRequest<Friendship[]>(`friendsForWorkout?workoutId=${workoutId}`);
+      setSelectedIndex(getSelectedFriends(response.data));
       setFriends(response.data);
     } catch (e) {
       console.error(e);
@@ -151,7 +163,6 @@ export const WorkoutList = () => {
   const deleteWorkout = async (workoutId: string): Promise<any> => {
     try {
       const response = await client.sendRequest(`workout/${workoutId}`, null, true);
-      setSelectedViewMode('feed');
       return response.data;
     } catch (e) {
       console.error(e);
@@ -270,7 +281,11 @@ export const WorkoutList = () => {
               <CreateWorkoutForm
                 onFinish={() => {
                   setWorkoutFormVisible(false);
-                  setSelectedViewMode('workouts');
+                  if (selectedViewMode === 'feed') {
+                    getFeedData();
+                  } else {
+                    getWorkouts();
+                  }
                 }}
               />
             </Modal>
@@ -332,7 +347,9 @@ export const WorkoutList = () => {
             setShareWorkoutVisible={setShareWorkoutVisible}
             getFriends={getFriends}
             deleteWorkout={deleteWorkout}
-            setSelectedViewMode={setSelectedViewMode}
+            selectedViewMode={selectedViewMode}
+            getWorkouts={getWorkouts}
+            getFeedData={getFeedData}
           />
         </Modal>
       )}
@@ -358,8 +375,11 @@ export const WorkoutList = () => {
             onSelect={(index) => setSelectedIndex(index)}
           >
             {
-              friends.map((friend) => (
-                <SelectItem key={friend.id} title={friend.friend.fullName} />
+              friends.map((friend, index) => (
+                <SelectItem
+                  key={friend.id}
+                  title={friend.friend.username}
+                />
               ))
             }
           </Select>
@@ -369,7 +389,7 @@ export const WorkoutList = () => {
       {/* eslint-disable-next-line no-nested-ternary */}
       {isLoading
         ? (<LoadingSpinner />)
-        : selectedViewMode === 'workouts' ? (
+        : (selectedViewMode === 'workouts' ? (
           <View style={styles.workoutContainer}>
             <List
               style={styles.workoutList}
@@ -388,8 +408,7 @@ export const WorkoutList = () => {
               renderItem={renderFeedData}
             />
           </View>
-
-        )}
+        ))}
     </>
   );
 };

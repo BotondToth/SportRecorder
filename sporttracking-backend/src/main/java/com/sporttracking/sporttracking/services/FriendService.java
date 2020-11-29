@@ -1,6 +1,7 @@
 package com.sporttracking.sporttracking.services;
 
 import com.sporttracking.sporttracking.data.Friend;
+import com.sporttracking.sporttracking.data.FriendWithShare;
 import com.sporttracking.sporttracking.data.dto.FriendDTO;
 import com.sporttracking.sporttracking.exceptions.FriendNotFoundException;
 import com.sporttracking.sporttracking.exceptions.UserNotFoundException;
@@ -12,7 +13,7 @@ public interface FriendService {
 
     List<Friend> getFriendsForUser(HttpHeaders headers);
 
-    List<Friend> getFriendsWithoutShareByWorkout(HttpHeaders headers, String workoutId);
+    List<FriendWithShare> getFriendsWithoutShareByWorkout(HttpHeaders headers, String workoutId);
 
     void deleteFriendship(String friendshipId) throws FriendNotFoundException;
 
