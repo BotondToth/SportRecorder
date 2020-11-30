@@ -4,8 +4,12 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Client } from '../../api';
-import { AXIO_CANCELLED, DataType, DAYS } from '../../types/statsConstants';
+import {
+  AXIO_CANCELLED, DataType, HOURS,
+  RadialBarDataType, StatisticsTabInput, TabTypes,
+} from '../../types/statsConstants';
 import { StatisticsChart } from './StatisticsChart';
+import { parseStatisticsData, parseWorkoutsByType } from '../../utils';
 
 const styles = StyleSheet.create({
   content: {
@@ -25,12 +29,15 @@ const styles = StyleSheet.create({
   },
 });
 const monthToStr = (dateToMonth: Date) => dateToMonth.toLocaleString('default', { month: 'long' });
+const formatTitle = (dateToConvert: Date) => `${monthToStr(dateToConvert)}, ${dateToConvert.getFullYear()} - ${dateToConvert.getDate()}`;
 
-export const DayTab = ({ date: inputDate }: {date: Date}) => {
+export const DayTab = ({ date: inputDate }: StatisticsTabInput) => {
   const CURRENT_DATE = new Date();
+  const MODE = TabTypes.DAY;
   const [selectedDate, setSelectedDate] = useState(inputDate);
-  const [selectMonthAsStr, setSelectedMonthAsStr] = useState(monthToStr(inputDate));
+  const [title, setTitle] = useState(formatTitle(inputDate));
   const [data, setData] = useState<DataType[]>([]);
+  const [workoutsByType, setWorkoutsByType] = useState<RadialBarDataType[]>([]);
   const [loading, setLoading] = useState(true);
   const client: Client = Client.getInstance();
 
@@ -47,27 +54,25 @@ export const DayTab = ({ date: inputDate }: {date: Date}) => {
       from.setHours(0, 0, 0, 0);
       const to = new Date(from);
       to.setDate(to.getDate() + 1);
-      const mode = 'daily';
       try {
-        const statistics = await client.sendRequest<Map<string, number>>(`statistics?from=${from.getTime()}&to=${to.getTime()}&mode=${mode}`,
+        const statistics = await client.sendRequest<Map<string, number>>(`statistics?from=${from.getTime()}&to=${to.getTime()}&mode=${MODE}`,
           null, false, canceltoken.token);
-        const hours: DataType[] = [];
-        for (let i = 0; i < 24; i += 1) {
-          hours.push({
-            x: i.toString(), y: statistics.data[i] || 0,
-          });
-        }
-        setData(hours);
-        setLoading(false);
+        const statsByType = await client.sendRequest<Map<string, number>>(`statisticsByType?from=${from.getTime()}&to=${to.getTime()}`,
+          null, false, canceltoken.token);
+        const xTicks = Array.from(Array(24).keys());
+        setData(parseStatisticsData(statistics.data, xTicks));
+        setWorkoutsByType(parseWorkoutsByType(statsByType.data));
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    setSelectedMonthAsStr(monthToStr(selectedDate));
+    setTitle(formatTitle(selectedDate));
     getStatistics();
     return () => canceltoken.cancel(AXIO_CANCELLED);
-  }, [client, selectedDate]);
+  }, [MODE, client, selectedDate]);
 
   const disableDecrement = () => loading
         || selectedDate <= new Date(2000, 0, 1);
@@ -91,7 +96,7 @@ export const DayTab = ({ date: inputDate }: {date: Date}) => {
           {'<'}
         </Button>
         <Text category="h6">
-          {`${selectMonthAsStr}, ${selectedDate.getFullYear()} - ${selectedDate.getDate()}`}
+          {title}
         </Text>
         <Button
           disabled={disableIncrement()}
@@ -107,7 +112,14 @@ export const DayTab = ({ date: inputDate }: {date: Date}) => {
       <View style={styles.chart}>
         {loading
           ? <LoadingSpinner />
-          : <StatisticsChart data={data} xaxisLabel={DAYS} />}
+          : (
+            <StatisticsChart
+              statsData={data}
+              workoutsByType={workoutsByType}
+              xaxisLabel={HOURS}
+              title={title}
+            />
+          )}
       </View>
     </View>
   );

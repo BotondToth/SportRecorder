@@ -3,9 +3,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Axios from 'axios';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { AXIO_CANCELLED, DataType, DAYS } from '../../types/statsConstants';
+import {
+  AXIO_CANCELLED, DataType, DAYS,
+  RadialBarDataType, StatisticsTabInput, TabTypes,
+} from '../../types/statsConstants';
 import { Client } from '../../api';
 import { StatisticsChart } from './StatisticsChart';
+import { parseStatisticsData, parseWorkoutsByType } from '../../utils';
 
 const styles = StyleSheet.create({
   content: {
@@ -24,12 +28,15 @@ const styles = StyleSheet.create({
   },
 });
 const monthToStr = (dateToMonth: Date) => dateToMonth.toLocaleString('default', { month: 'long' });
+const formatTitle = (dateToConvert: Date) => `${monthToStr(dateToConvert)}, ${dateToConvert.getFullYear()}`;
 
-export const MonthTab = ({ date: inputDate, changeDate }: {date: Date, changeDate: any}) => {
+export const MonthTab = ({ date: inputDate, chartOnClick }:StatisticsTabInput) => {
   const CURRENT_DATE = new Date();
+  const MODE = TabTypes.MONTH;
   const [selectedDate, setSelectedDate] = useState(inputDate);
-  const [selectMonthAsStr, setSelectedMonthAsStr] = useState(monthToStr(inputDate));
+  const [title, setTitle] = useState(formatTitle(inputDate));
   const [data, setData] = useState<DataType[]>([]);
+  const [workoutsByType, setWorkoutsByType] = useState<RadialBarDataType[]>([]);
   const [loading, setLoading] = useState(true);
   const client: Client = Client.getInstance();
 
@@ -38,7 +45,7 @@ export const MonthTab = ({ date: inputDate, changeDate }: {date: Date, changeDat
   }, [inputDate]);
 
   useEffect(() => {
-    setSelectedMonthAsStr(monthToStr(selectedDate));
+    setTitle(formatTitle(selectedDate));
     const canceltoken = Axios.CancelToken.source();
 
     const getStatistics = async () => {
@@ -48,18 +55,15 @@ export const MonthTab = ({ date: inputDate, changeDate }: {date: Date, changeDat
       from.setHours(0, 0, 0, 0);
       const to = new Date(from);
       to.setMonth(to.getMonth() + 1);
-      const mode = 'monthly';
       try {
-        const statistics = await client.sendRequest<Map<string, number>>(`statistics?from=${from.getTime()}&to=${to.getTime()}&mode=${mode}`,
+        const statistics = await client.sendRequest<Map<string, number>>(`statistics?from=${from.getTime()}&to=${to.getTime()}&mode=${MODE}`,
           null, false, canceltoken.token);
-        const days: DataType[] = [];
+        const statsByType = await client.sendRequest<Map<string, number>>(`statisticsByType?from=${from.getTime()}&to=${to.getTime()}`,
+          null, false, canceltoken.token);
         const lastDay = new Date(to.getFullYear(), to.getMonth(), 0).getDate();
-        for (let i = 1; i <= lastDay; i += 1) {
-          days.push({
-            x: i.toString(), y: statistics.data[i] || 0,
-          });
-        }
-        setData(days);
+        const xTicks = Array.from({ length: lastDay }, (_, i) => i + 1);
+        setData(parseStatisticsData(statistics.data, xTicks));
+        setWorkoutsByType(parseWorkoutsByType(statsByType.data));
       } catch (error) {
         console.error(error);
       } finally {
@@ -69,20 +73,20 @@ export const MonthTab = ({ date: inputDate, changeDate }: {date: Date, changeDat
 
     getStatistics();
     return () => canceltoken.cancel(AXIO_CANCELLED);
-  }, [client, selectedDate]);
+  }, [MODE, client, selectedDate]);
 
   const disableDecrement = () => loading
         || (selectedDate.getFullYear() === 2000 && selectedDate.getMonth() === 0);
 
   const disableIncrement = () => loading
       || (selectedDate.getFullYear() === CURRENT_DATE.getFullYear()
-      && selectedDate.getMonth() === CURRENT_DATE.getMonth());
+          && selectedDate.getMonth() === CURRENT_DATE.getMonth());
 
   const chartClicked = useCallback((day: number) => {
     const newDate = selectedDate;
     newDate.setDate(day + 1);
-    changeDate(newDate);
-  }, [changeDate, selectedDate]);
+    chartOnClick(newDate, MODE);
+  }, [MODE, chartOnClick, selectedDate]);
 
   return (
     <View style={styles.content}>
@@ -96,7 +100,7 @@ export const MonthTab = ({ date: inputDate, changeDate }: {date: Date, changeDat
           {'<'}
         </Button>
         <Text category="h6">
-          {`${selectMonthAsStr}, ${selectedDate.getFullYear()}`}
+          {title}
         </Text>
         <Button
           disabled={disableIncrement()}
@@ -110,7 +114,15 @@ export const MonthTab = ({ date: inputDate, changeDate }: {date: Date, changeDat
       <View style={styles.chart}>
         {loading
           ? <LoadingSpinner />
-          : <StatisticsChart data={data} xaxisLabel={DAYS} onClickHandler={chartClicked} />}
+          : (
+            <StatisticsChart
+              statsData={data}
+              workoutsByType={workoutsByType}
+              xaxisLabel={DAYS}
+              title={title}
+              onClickHandler={chartClicked}
+            />
+          )}
       </View>
     </View>
   );

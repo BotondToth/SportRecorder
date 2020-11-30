@@ -9,7 +9,6 @@ import {
 import { StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { BottomTabBarOptions, BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { User } from 'types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { StatisticsPage } from '../statistics/StatisticsPage';
 import { FriendsList } from '../friends/FriendsList';
@@ -61,8 +60,8 @@ export const HomePage = ({ navigation }: Props) => {
     };
 
     const setUserName = async () => {
-      const user = await client.sendRequest<User>('currentUser');
-      setNavigationHeader(user.data.fullName);
+      const user = await client.getCurrentUser();
+      setNavigationHeader(user.username);
     };
 
     setUserName();
