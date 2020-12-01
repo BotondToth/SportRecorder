@@ -21,11 +21,11 @@ public class AggregationUtility {
 
     public static Map<String, Long> aggregate(final List<Workout> workouts, final String mode) {
         switch (mode) {
-            case "yearly":
+            case "year":
                 return groupWorkoutsBy(workouts, "MMM");
-            case "monthly":
+            case "month":
                 return groupWorkoutsBy(workouts, "d");
-            case "daily":
+            case "day":
             default:
                 return groupWorkoutsBy(workouts, "H");
         }

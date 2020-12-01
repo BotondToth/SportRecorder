@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage';
+import { COLORS, DataType, RadialBarDataType, WorkoutTypes } from '../types';
 
 const haversine = require('haversine');
 
@@ -38,4 +39,27 @@ export const getFormattedLocationPoints = (points) => {
 export const canUserEditWorkout = async (email: string) => {
   const loggedInUser = await AsyncStorage.getItem('logged-in-user');
   return loggedInUser === email;
+};
+
+// Parsing data on the Statistics page
+export const parseStatisticsData = (data: Map<string, number>, xTicks: number[] | string []) => {
+  const parsedData: DataType[] = [];
+  for (let i = 0; i < xTicks.length; i += 1) {
+    parsedData.push({
+      x: xTicks[i].toString(), y: data[i] || 0,
+    });
+  }
+  return parsedData;
+};
+
+export const parseWorkoutsByType = (data: Map<string, number>) => {
+  const parsedData: RadialBarDataType[] = [];
+  Object.values(WorkoutTypes).forEach((value) => {
+    parsedData.push({
+      name: value,
+      value: data[value] || 0,
+      fill: COLORS[value],
+    });
+  });
+  return parsedData;
 };

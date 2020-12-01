@@ -8,3 +8,20 @@ export interface DataType {
   x: string,
   y: number,
 }
+
+export interface RadialBarDataType {
+  name: string,
+  value: number,
+  fill: string,
+}
+
+export enum TabTypes{
+  DAY = 'day',
+  MONTH = 'month',
+  YEAR = 'year',
+}
+
+export interface StatisticsTabInput {
+  date?: Date,
+  chartOnClick?: (date: Date, fromTab: TabTypes) => void,
+}

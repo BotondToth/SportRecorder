@@ -25,4 +25,12 @@ public class StatisticsController implements BaseController {
             @RequestParam(name = "mode") final String mode) {
         return statisticsService.getStatisticsForUser(headers, new Date(from), new Date(to), mode);
     }
+
+    @GetMapping("/statisticsByType")
+    public Map<String, Long> getStatisticsByType(
+            @RequestHeader final HttpHeaders headers,
+            @RequestParam(name = "from") final Long from,
+            @RequestParam(name = "to") final Long to) {
+        return statisticsService.getStatisticsByType(headers, new Date(from), new Date(to));
+    }
 }
