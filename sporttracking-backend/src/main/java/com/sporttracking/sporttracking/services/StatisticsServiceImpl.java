@@ -13,6 +13,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+
 @Service
 public class StatisticsServiceImpl implements StatisticsService {
 
@@ -29,7 +32,20 @@ public class StatisticsServiceImpl implements StatisticsService {
             final Date to,
             final String mode) {
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
-        List<Workout> workouts = workoutMongoRepository.findAllByUserIdAndDateBetween(user.getId(), from, to);
+        final List<Workout> workouts = workoutMongoRepository.findAllByUserIdAndDateBetween(user.getId(), from, to);
         return AggregationUtility.aggregate(workouts, mode);
+    }
+
+    @Override
+    public Map<String, Long> getStatisticsByType(
+            final HttpHeaders headers,
+            final Date from,
+            final Date to) {
+        final ApplicationUser user = authUtility.getUserFromHeader(headers);
+        final List<Workout> workouts = workoutMongoRepository.findAllByUserIdAndDateBetween(user.getId(), from, to);
+        return workouts
+                .stream()
+                .collect(groupingBy(Workout::getType, counting()));
+
     }
 }

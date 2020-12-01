@@ -1,8 +1,10 @@
 import axios, { CancelToken } from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
+import { User } from 'types';
 
 export class Client {
   private static BASE_URL: string = 'http://localhost:8080';
+  private static user: User = undefined;
   private static instance: Client;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -14,6 +16,14 @@ export class Client {
     }
     return Client.instance;
   }
+
+  public getCurrentUser = async () => {
+    if (!Client.user) {
+      const user = await Client.instance.sendRequest<User>('currentUser');
+      Client.user = user.data;
+    }
+    return Client.user;
+  };
 
   public sendRequest = async <T = any>(
     target: string,

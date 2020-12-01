@@ -12,8 +12,9 @@ import { StyleSheet, View } from 'react-native';
 import _ from 'lodash';
 import { Client } from '../../../api';
 import { calculateDistance, getFormattedLocationPoints } from '../../../utils';
+import { WorkoutTypes } from '../../../types';
 
-const data = ['Running', 'Cycling', 'Walking', 'Swimming'];
+const data = Object.values(WorkoutTypes);
 
 const styles = StyleSheet.create({
   topContainer: {

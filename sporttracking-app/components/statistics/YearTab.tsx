@@ -3,9 +3,12 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Axios from 'axios';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { AXIO_CANCELLED, DataType, MONTHS } from '../../types/statsConstants';
+import {
+  AXIO_CANCELLED, DataType, MONTHS, RadialBarDataType, StatisticsTabInput, TabTypes,
+} from '../../types';
 import { Client } from '../../api';
 import { StatisticsChart } from './StatisticsChart';
+import { parseStatisticsData, parseWorkoutsByType } from '../../utils';
 
 const styles = StyleSheet.create({
   content: {
@@ -24,10 +27,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export const YearTab = ({ changeDate }: any) => {
+export const YearTab = ({ chartOnClick }: StatisticsTabInput) => {
   const CURRENT_YEAR = new Date().getFullYear();
+  const MODE = TabTypes.YEAR;
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [data, setData] = useState<DataType[]>([]);
+  const [workoutsByType, setWorkoutsByType] = useState<RadialBarDataType[]>([]);
   const [loading, setLoading] = useState(true);
   const client: Client = Client.getInstance();
   const monthNames = useMemo(() => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], []);
@@ -42,17 +47,13 @@ export const YearTab = ({ changeDate }: any) => {
       from.setHours(0, 0, 0, 0);
       const to = new Date(from);
       to.setFullYear(to.getFullYear() + 1);
-      const mode = 'yearly';
       try {
-        const statistics = await client.sendRequest<Map<string, number>>(`statistics?from=${from.getTime()}&to=${to.getTime()}&mode=${mode}`,
+        const statistics = await client.sendRequest<Map<string, number>>(`statistics?from=${from.getTime()}&to=${to.getTime()}&mode=${MODE}`,
           null, false, canceltoken.token);
-        const months: DataType[] = [];
-        monthNames.forEach((month) => {
-          months.push({
-            x: month, y: statistics.data[month] || 0,
-          });
-        });
-        setData(months);
+        const statsByType = await client.sendRequest<Map<string, number>>(`statisticsByType?from=${from.getTime()}&to=${to.getTime()}`,
+          null, false, canceltoken.token);
+        setData(parseStatisticsData(statistics.data, monthNames));
+        setWorkoutsByType(parseWorkoutsByType(statsByType.data));
       } catch (error) {
         console.error(error);
       } finally {
@@ -61,13 +62,12 @@ export const YearTab = ({ changeDate }: any) => {
     };
 
     getStatistics();
-
     return () => canceltoken.cancel(AXIO_CANCELLED);
-  }, [client, monthNames, selectedDate]);
+  }, [MODE, client, monthNames, selectedDate]);
 
   const chartClicked = useCallback((month: number) => {
-    changeDate(new Date(selectedDate.getFullYear(), month));
-  }, [changeDate, selectedDate]);
+    chartOnClick(new Date(selectedDate.getFullYear(), month), MODE);
+  }, [MODE, chartOnClick, selectedDate]);
 
   return (
     <View style={styles.content}>
@@ -95,7 +95,15 @@ export const YearTab = ({ changeDate }: any) => {
       <View style={styles.chart}>
         {loading
           ? <LoadingSpinner />
-          : <StatisticsChart data={data} xaxisLabel={MONTHS} onClickHandler={chartClicked} />}
+          : (
+            <StatisticsChart
+              statsData={data}
+              workoutsByType={workoutsByType}
+              xaxisLabel={MONTHS}
+              title={selectedDate.getFullYear().toString()}
+              onClickHandler={chartClicked}
+            />
+          )}
       </View>
     </View>
   );

@@ -3,65 +3,80 @@ import { View, StyleSheet } from 'react-native';
 import { Button, Text } from '@ui-kitten/components';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationProp } from '@react-navigation/native';
+import { TabTypes } from '../../types';
 import { DayTab } from './DayTab';
 import { MonthTab } from './MonthTab';
 import { YearTab } from './YearTab';
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: 'white',
+  },
   header: {
     flex: 0.1,
     justifyContent: 'space-around',
-    backgroundColor: 'white',
   },
   title: { textAlign: 'center' },
   content: { flex: 1 },
-  viewSwitchButtons: { flexDirection: 'row' },
-  switchButton: { flex: 1 },
+  exportButton: {
+    flex: 0.1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  viewSwitchButtons: {
+    flexDirection: 'row',
+    flex: 0.1,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  switchButton: { },
   viewArea: { flex: 1 },
 });
-const DAY: string = 'day';
-const MONTH: string = 'month';
-const YEAR: string = 'year';
 
 export const StatisticsPage = (
   { navigation }: {navigation: NavigationProp<any, string, any, {}, {}>},
 ) => {
   const CURRENT_DATE = new Date();
   const { Navigator, Screen } = createBottomTabNavigator();
-  const [activeView, setActiveView] = useState(DAY);
+  const [activeView, setActiveView] = useState(TabTypes.MONTH);
   const [currentDateDay, setCurrentDateDay] = useState(CURRENT_DATE);
   const [currentDateMonth, setCurrentDateMonth] = useState(CURRENT_DATE);
 
-  const navigate = useCallback((where: string) => {
+  const navigate = useCallback((where: TabTypes) => {
     navigation.navigate(where);
     setActiveView(where);
   }, [navigation]);
 
-  const monthOnClick = useCallback(
-    (date: Date) => {
-      setCurrentDateDay(new Date(date));
-      navigate(DAY);
-    }, [navigate],
-  );
-
-  const yearOnClick = useCallback(
-    (date: Date) => {
-      setCurrentDateMonth(new Date(date));
-      navigate(MONTH);
+  const chartOnClick = useCallback(
+    (date: Date, fromTab: TabTypes) => {
+      if (fromTab === TabTypes.MONTH) {
+        setCurrentDateDay(new Date(date));
+        navigate(TabTypes.DAY);
+      } else if (fromTab === TabTypes.YEAR) {
+        setCurrentDateMonth(new Date(date));
+        navigate(TabTypes.MONTH);
+      }
     }, [navigate],
   );
 
   const Day = useMemo(() => () => <DayTab date={currentDateDay} />,
     [currentDateDay]);
-  const Month = useMemo(() => () => <MonthTab changeDate={monthOnClick} date={currentDateMonth} />,
-    [monthOnClick, currentDateMonth]);
+  const Month = useMemo(() => () => (
+    <MonthTab
+      chartOnClick={chartOnClick}
+      date={currentDateMonth}
+    />
+  ),
+  [chartOnClick, currentDateMonth]);
   const Year = useMemo(
-    () => () => <YearTab changeDate={yearOnClick} />,
-    [yearOnClick],
+    () => () => <YearTab chartOnClick={chartOnClick} />,
+    [chartOnClick],
   );
 
   return (
-    <>
+    <View style={styles.container}>
       <View style={styles.header}>
         <Text category="h5" style={styles.title}>Read your statistics!</Text>
       </View>
@@ -69,40 +84,40 @@ export const StatisticsPage = (
         <View style={styles.viewSwitchButtons}>
           <Button
             appearance="outline"
-            disabled={activeView === DAY}
+            disabled={activeView === TabTypes.DAY}
             style={styles.switchButton}
-            onPress={() => navigate(DAY)}
+            onPress={() => navigate(TabTypes.DAY)}
           >
             Daily
           </Button>
           <Button
             appearance="outline"
-            disabled={activeView === MONTH}
+            disabled={activeView === TabTypes.MONTH}
             style={styles.switchButton}
-            onPress={() => navigate(MONTH)}
+            onPress={() => navigate(TabTypes.MONTH)}
           >
             Monthly
           </Button>
           <Button
             appearance="outline"
-            disabled={activeView === YEAR}
+            disabled={activeView === TabTypes.YEAR}
             style={styles.switchButton}
-            onPress={() => navigate(YEAR)}
+            onPress={() => navigate(TabTypes.YEAR)}
           >
             Yearly
           </Button>
         </View>
         <View style={styles.viewArea}>
           <Navigator
-            initialRouteName={DAY}
+            initialRouteName={TabTypes.MONTH}
             screenOptions={{ tabBarVisible: false }}
           >
-            <Screen name={DAY} component={Day} />
-            <Screen name={MONTH} component={Month} />
-            <Screen name={YEAR} component={Year} />
+            <Screen name={TabTypes.DAY} component={Day} />
+            <Screen name={TabTypes.MONTH} component={Month} />
+            <Screen name={TabTypes.YEAR} component={Year} />
           </Navigator>
         </View>
       </View>
-    </>
+    </View>
   );
 };
