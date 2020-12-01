@@ -43,10 +43,8 @@ export const canUserEditWorkout = async (email: string) => {
 
 // Parsing data on the Statistics page
 export const parseStatisticsData = (data: Map<string, number>, xTicks: number[] | string []) => {
-  console.log('DATA: ', data);
   const parsedData: DataType[] = [];
   for (let i = 0; i < xTicks.length; i += 1) {
-    console.log(xTicks[i].toString(), data[xTicks[i]]);
     parsedData.push({
       x: xTicks[i].toString(), y: data[xTicks[i]] || 0,
     });
