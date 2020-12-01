@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
-  footerControl: { marginHorizontal: 2 },
+  saveButton: { marginTop: 10 },
   field: { marginBottom: 20 },
   backdrop: { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
 });
@@ -70,14 +70,10 @@ export const CreateWorkoutForm = (props: any) => {
     <View {...headerProps}>
       <Text category="h6">SportTracking</Text>
       <Text category="s1">Add new workout</Text>
-    </View>
-  );
-
-  const Footer = (footerProps: any) => (
-    <View {...footerProps} style={[footerProps.style, styles.footerContainer]}>
       <Button
-        style={styles.footerControl}
-        size="large"
+        appearance="primary"
+        style={styles.saveButton}
+        size="small"
         status="basic"
         onPress={onSubmit}
       >
@@ -95,7 +91,6 @@ export const CreateWorkoutForm = (props: any) => {
       disabled
       style={styles.card}
       header={Header}
-      footer={Footer}
     >
       <Input
         style={styles.field}

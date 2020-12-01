@@ -30,6 +30,7 @@ export class Client {
     body: any = null,
     isItDeleteRequest: boolean = false,
     cancel?: CancelToken,
+    // eslint-disable-next-line consistent-return
   ) => {
     const url = `${Client.BASE_URL}/${target}`;
     const token = await AsyncStorage.getItem('access-token');
@@ -39,11 +40,32 @@ export class Client {
     };
 
     if (isItDeleteRequest) {
-      return await axios.delete<T>(url, config);
+      try {
+        return await axios.delete<T>(url, config);
+      } catch (error) {
+        if (error.response.status === 403) {
+          await AsyncStorage.clear();
+          window.location.reload();
+        }
+      }
     }
     if (body) {
-      return await axios.post<T>(url, body, config);
+      try {
+        return await axios.post<T>(url, body, config);
+      } catch (error) {
+        if (error.response.status === 403) {
+          await AsyncStorage.clear();
+          window.location.reload();
+        }
+      }
     }
-    return await axios.get<T>(url, config);
+    try {
+      return await axios.get<T>(url, config);
+    } catch (error) {
+      if (error.response.status === 403) {
+        await AsyncStorage.clear();
+        window.location.reload();
+      }
+    }
   };
 }

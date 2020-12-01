@@ -50,8 +50,13 @@ export const WorkoutDetailsForm = (props) => {
     setShareWorkoutVisible,
     getFriends,
     deleteWorkout,
-    setSelectedViewMode,
+    selectedViewMode,
+    getWorkouts,
+    getFeedData,
   } = props;
+  const dateFormatOptions = {
+    year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit',
+  };
 
   useEffect(() => {
     const getEditableStatus = async () => {
@@ -104,7 +109,11 @@ export const WorkoutDetailsForm = (props) => {
             onPress={async () => {
               await deleteWorkout(workoutInDetail.id);
               setWorkoutInDetail(undefined);
-              setSelectedViewMode('feed'); // todo
+              if (selectedViewMode === 'feed') {
+                getFeedData();
+              } else {
+                getWorkouts();
+              }
             }}
           >
             Delete
@@ -153,6 +162,11 @@ export const WorkoutDetailsForm = (props) => {
       <Text category="s1">Type</Text>
       <Text style={styles.lowerLine}>
         {workoutInDetail.type}
+      </Text>
+
+      <Text category="s1">Date</Text>
+      <Text style={styles.lowerLine}>
+        {new Date(workoutInDetail.date).toLocaleString('default', dateFormatOptions)}
       </Text>
 
       <Text category="s1">Duration</Text>

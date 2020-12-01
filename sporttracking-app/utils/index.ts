@@ -46,7 +46,7 @@ export const parseStatisticsData = (data: Map<string, number>, xTicks: number[] 
   const parsedData: DataType[] = [];
   for (let i = 0; i < xTicks.length; i += 1) {
     parsedData.push({
-      x: xTicks[i].toString(), y: data[i] || 0,
+      x: xTicks[i].toString(), y: data[xTicks[i]] || 0,
     });
   }
   return parsedData;

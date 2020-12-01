@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     backgroundColor: 'white',
-    overflow: 'hidden',
+    overflow: 'scroll',
   },
   dataSelector: {
     flexDirection: 'row',

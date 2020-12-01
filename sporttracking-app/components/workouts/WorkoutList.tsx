@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   workoutList: {
-    width: Dimensions.get('window').width * 0.8,
+    width: '90%',
     backgroundColor: 'white',
   },
   workoutContainer: {
@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white',
   },
+  myFeed: { backgroundColor: 'rgba(0, 0, 255, 0.1)' },
 });
 
 export const WorkoutList = () => {
@@ -108,9 +109,22 @@ export const WorkoutList = () => {
   const [selectedViewMode, setSelectedViewMode] = useState<string>('feed');
   const client: Client = Client.getInstance();
   let shareNameHolder = '';
+  const [currentUserUsername, setCurrentUserUsername] = useState('');
+
   selectedIndex.forEach((index) => {
-    shareNameHolder += `${friends[index.row]?.friend.fullName}, `;
+    shareNameHolder += `${friends[index.row]?.friend.username}, `;
   });
+
+  const getSelectedFriends = (data): IndexPath[] => {
+    const selectedIndexes = [];
+    data.forEach((dataItem, i) => {
+      if (dataItem.workoutSharedWith) {
+        selectedIndexes.push(new IndexPath(i));
+      }
+    });
+
+    return selectedIndexes;
+  };
 
   const getWorkouts = async () => {
     setIsLoading(true);
@@ -140,6 +154,7 @@ export const WorkoutList = () => {
     setIsLoading(true);
     try {
       const response = await client.sendRequest<Friendship[]>(`friendsForWorkout?workoutId=${workoutId}`);
+      setSelectedIndex(getSelectedFriends(response.data));
       setFriends(response.data);
     } catch (e) {
       console.error(e);
@@ -151,7 +166,6 @@ export const WorkoutList = () => {
   const deleteWorkout = async (workoutId: string): Promise<any> => {
     try {
       const response = await client.sendRequest(`workout/${workoutId}`, null, true);
-      setSelectedViewMode('feed');
       return response.data;
     } catch (e) {
       console.error(e);
@@ -172,6 +186,15 @@ export const WorkoutList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedViewMode]);
 
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      const user = await client.getCurrentUser();
+      setCurrentUserUsername(user.username);
+    };
+
+    fetchCurrentUser();
+  }, [client]);
+
   const onWorkOutPress = (workout: Workout) => {
     setWorkoutInDetail(workout);
     setWorkoutToReopenDetailsModalWith(workout);
@@ -189,6 +212,7 @@ export const WorkoutList = () => {
   const renderFeedData = ({ item }: { item: Workout }) => (
     <ListItem
       title={`${item.user.username}: ${item.title}`}
+      style={item.user.username === currentUserUsername && styles.myFeed}
       description={item.description}
       accessoryLeft={renderPersonIcon}
       onPress={() => onWorkOutPress(item)}
@@ -270,7 +294,11 @@ export const WorkoutList = () => {
               <CreateWorkoutForm
                 onFinish={() => {
                   setWorkoutFormVisible(false);
-                  setSelectedViewMode('workouts');
+                  if (selectedViewMode === 'feed') {
+                    getFeedData();
+                  } else {
+                    getWorkouts();
+                  }
                 }}
               />
             </Modal>
@@ -332,7 +360,9 @@ export const WorkoutList = () => {
             setShareWorkoutVisible={setShareWorkoutVisible}
             getFriends={getFriends}
             deleteWorkout={deleteWorkout}
-            setSelectedViewMode={setSelectedViewMode}
+            selectedViewMode={selectedViewMode}
+            getWorkouts={getWorkouts}
+            getFeedData={getFeedData}
           />
         </Modal>
       )}
@@ -359,7 +389,10 @@ export const WorkoutList = () => {
           >
             {
               friends.map((friend) => (
-                <SelectItem key={friend.id} title={friend.friend.fullName} />
+                <SelectItem
+                  key={friend.id}
+                  title={friend.friend.username}
+                />
               ))
             }
           </Select>
@@ -369,7 +402,7 @@ export const WorkoutList = () => {
       {/* eslint-disable-next-line no-nested-ternary */}
       {isLoading
         ? (<LoadingSpinner />)
-        : selectedViewMode === 'workouts' ? (
+        : (selectedViewMode === 'workouts' ? (
           <View style={styles.workoutContainer}>
             <List
               style={styles.workoutList}
@@ -388,8 +421,7 @@ export const WorkoutList = () => {
               renderItem={renderFeedData}
             />
           </View>
-
-        )}
+        ))}
     </>
   );
 };

@@ -12,13 +12,17 @@ import org.springframework.http.HttpHeaders;
 import java.util.List;
 
 public interface ShareService {
-    List<Share> getSharesFromUser(final HttpHeaders headers);
+    List<Share> getSharesForFriend(String friendId);
 
-    List<Share> getSharesToUser(final HttpHeaders headers);
+    List<Share> getSharesFromUser(HttpHeaders headers);
 
-    List<Share> bulkCreateShares(final HttpHeaders headers, final BulkShareDTO bulkShareDTO) throws UserNotFoundException, ShareAlreadyExistException, NotFriendException, WorkoutNotFoundException;
+    List<Share> getSharesToUser(HttpHeaders headers);
 
-    List<Share> getSharesForWorkout(final String workoutId);
+    List<Share> bulkCreateShares(HttpHeaders headers, BulkShareDTO bulkShareDTO) throws UserNotFoundException, ShareAlreadyExistException, NotFriendException, WorkoutNotFoundException;
 
-    Share createShare(final HttpHeaders headers, final ShareDTO shareDTO) throws UserNotFoundException, WorkoutNotFoundException, ShareAlreadyExistException, NotFriendException;
+    List<Share> getSharesForWorkout(String workoutId);
+
+    Share createShare(HttpHeaders headers, ShareDTO shareDTO) throws UserNotFoundException, WorkoutNotFoundException, ShareAlreadyExistException, NotFriendException;
+
+    void deleteShares(List<Share> sharesToDelete);
 }

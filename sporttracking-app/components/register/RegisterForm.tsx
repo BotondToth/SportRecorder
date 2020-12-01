@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   Text, Card, Button, Input, Modal, RadioGroup, Radio,
 } from '@ui-kitten/components';
-import { StyleSheet, View } from 'react-native';
+import { Dimensions, Platform, StyleSheet, View } from 'react-native';
 import { Props } from '@ui-kitten/components/devsupport/services/props/props.service';
 import _ from 'lodash';
 import { Client } from '../../api';
@@ -24,7 +24,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   footerControl: { marginHorizontal: 2 },
-  field: { marginBottom: 20 },
+  field: {
+    marginBottom: 20, width: Dimensions.get('window').width * (Platform.OS === 'web' ? 0.25 : 0.75),
+  },
   backdrop: { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
   emailTakenModal: {
     width: '250px',

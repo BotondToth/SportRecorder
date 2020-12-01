@@ -37,22 +37,30 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public List<Friend> getFriendsWithoutShareByWorkout(HttpHeaders headers, String workoutId) {
-        final List<Friend> friends = getFriendsForUser(headers);
+    public List<FriendWithShare> getFriendsWithoutShareByWorkout(HttpHeaders headers, String workoutId) {
         final List<Share> sharesForWorkout = shareService.getSharesForWorkout(workoutId);
         final List<String> friendsInSharedWorkouts = sharesForWorkout.stream()
                 .map(Share::getFriend)
                 .map(ApplicationUser::getId)
                 .collect(Collectors.toList());
+        final List<Friend> friends = getFriendsForUser(headers);
+
         return friends.stream()
-                .filter(friend -> !friendsInSharedWorkouts.contains(friend.getFriend().getId()))
-                .collect(Collectors.toList());
+                .map(friend -> FriendWithShare.builder()
+                        .id(friend.getId())
+                        .friend(friend.getFriend())
+                        .user(friend.getUser())
+                        .isWorkoutSharedWith(friendsInSharedWorkouts.contains(friend.getFriend().getId()))
+                        .build()).collect(Collectors.toList());
     }
 
     @Override
     public void deleteFriendship(String friendshipId) throws FriendNotFoundException {
         final Optional<Friend> friend = friendMongoRepository.findById(friendshipId);
+
         if (friend.isPresent()) {
+            final List<Share> sharedWorkoutsForFriend = shareService.getSharesForFriend(friend.get().getId());
+            shareService.deleteShares(sharedWorkoutsForFriend);
             friendMongoRepository.deleteFriendsByUserIdAndFriendId(friend.get().getUser().getId(), friend.get().getFriend().getId());
         } else {
             throw new FriendNotFoundException();
