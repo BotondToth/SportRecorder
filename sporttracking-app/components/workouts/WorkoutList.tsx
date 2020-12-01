@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   workoutList: {
-    width: Dimensions.get('window').width * 0.8,
+    width: '90%',
     backgroundColor: 'white',
   },
   workoutContainer: {
@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white',
   },
+  myFeed: { backgroundColor: 'rgba(0, 0, 255, 0.1)' },
 });
 
 export const WorkoutList = () => {
@@ -108,6 +109,8 @@ export const WorkoutList = () => {
   const [selectedViewMode, setSelectedViewMode] = useState<string>('feed');
   const client: Client = Client.getInstance();
   let shareNameHolder = '';
+  const [currentUserUsername, setCurrentUserUsername] = useState('');
+
   selectedIndex.forEach((index) => {
     shareNameHolder += `${friends[index.row]?.friend.username}, `;
   });
@@ -183,6 +186,15 @@ export const WorkoutList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedViewMode]);
 
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      const user = await client.getCurrentUser();
+      setCurrentUserUsername(user.username);
+    };
+
+    fetchCurrentUser();
+  }, [client]);
+
   const onWorkOutPress = (workout: Workout) => {
     setWorkoutInDetail(workout);
     setWorkoutToReopenDetailsModalWith(workout);
@@ -200,6 +212,7 @@ export const WorkoutList = () => {
   const renderFeedData = ({ item }: { item: Workout }) => (
     <ListItem
       title={`${item.user.username}: ${item.title}`}
+      style={item.user.username === currentUserUsername && styles.myFeed}
       description={item.description}
       accessoryLeft={renderPersonIcon}
       onPress={() => onWorkOutPress(item)}
