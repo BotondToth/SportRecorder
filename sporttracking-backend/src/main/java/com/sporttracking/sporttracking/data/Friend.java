@@ -1,18 +1,14 @@
 package com.sporttracking.sporttracking.data;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-@Builder
 @Data
 @Document(collection = "Friends")
-@NoArgsConstructor
 @AllArgsConstructor
 public class Friend {
     @Id
@@ -23,4 +19,28 @@ public class Friend {
     @Field
     @DBRef
     private ApplicationUser friend;
+
+    private Friend() {}
+
+    public static class FriendBuilder {
+        private final Friend friend;
+
+        public FriendBuilder() {
+            friend = new Friend();
+        }
+
+        public FriendBuilder setUser(final ApplicationUser user) {
+            friend.setUser(user);
+            return this;
+        }
+
+        public FriendBuilder setFriend(final ApplicationUser friend) {
+            this.friend.setFriend(friend);
+            return this;
+        }
+
+        public Friend build() {
+            return friend;
+        }
+    }
 }
