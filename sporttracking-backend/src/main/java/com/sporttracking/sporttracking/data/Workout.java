@@ -35,7 +35,17 @@ public class Workout {
     @Field
     private Point[] locationPoints;
 
-    private Workout() {}
+    private Workout() {
+        this.title = "Default workout title";
+        this.description = "Default workout ddescription";
+        this.type = "Running";
+        this.duration = 0;
+        this.distance = 0;
+        this.calories = 0;
+        this.date = new Date();
+        this.beersPerWorkout = 0;
+        this.locationPoints = new Point[0];
+    }
 
     public static class WorkoutBuilder {
         private final Workout workout;

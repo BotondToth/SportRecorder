@@ -8,7 +8,6 @@ import com.sporttracking.sporttracking.exceptions.ResourceNotFoundException;
 import com.sporttracking.sporttracking.repositories.WorkoutMongoRepository;
 import com.sporttracking.sporttracking.utility.AuthUtility;
 import com.sporttracking.sporttracking.utility.CalorieCalculatorUtility;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -99,7 +98,7 @@ public class WorkoutServiceImpl implements WorkoutService {
             .setTitle(workoutDTO.getTitle())
             .setDescription(workoutDTO.getDescription())
             .setType(workoutDTO.getType())
-            .setDate(new DateTime().plusHours(1).toDate())
+            .setDate(new Date())
             .setDistance(workoutDTO.getDistance())
             .build());
     }
