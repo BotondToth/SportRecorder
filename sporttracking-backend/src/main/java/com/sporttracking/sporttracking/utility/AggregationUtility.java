@@ -13,7 +13,7 @@ public class AggregationUtility {
 
     private static Map<String, Long> groupWorkoutsBy(final List<Workout> workouts, final String pattern) {
         final SimpleDateFormat formatter = new SimpleDateFormat(pattern);
-        formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT+1"));
         return workouts.stream()
                 .map(workout -> formatter.format(workout.getDate()))
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
