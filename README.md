@@ -16,7 +16,7 @@ Sport-nyomonkövető alkalmazás
 
 ### Implementációs nyelv + keretrendszerek
 #Backend:
-	- Spring Boot (Java)
+	- Spring Boot (Java 11)
 #Frontend:
 	- React Native (Typescript)
 	- Expo
@@ -29,6 +29,8 @@ Sport-nyomonkövető alkalmazás
 5. yarn install a sporttracking-app mappában
 6. yarn start a sporttracking-app mappában
 7. expo dashboard-on platform választás (egyelőre csak web!)
+
+Megegyzés: Java 11-es verzió esetén kellhet a -Djdk.tls.client.protocols=TLSv1.2 JVM kapcsoló beállítása futtatás esetén!
 
 ## Határidők
 * OVRT-P1-projektterv - október 13. 23:59

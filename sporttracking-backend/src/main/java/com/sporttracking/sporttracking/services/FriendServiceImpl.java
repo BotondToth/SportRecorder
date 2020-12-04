@@ -44,13 +44,13 @@ public class FriendServiceImpl implements FriendService {
                 .map(ApplicationUser::getId)
                 .collect(Collectors.toList());
         final List<Friend> friends = getFriendsForUser(headers);
-
+        final FriendWithShare.FriendWithShareBuilder builder = new FriendWithShare.FriendWithShareBuilder();
         return friends.stream()
-                .map(friend -> FriendWithShare.builder()
-                        .id(friend.getId())
-                        .friend(friend.getFriend())
-                        .user(friend.getUser())
-                        .isWorkoutSharedWith(friendsInSharedWorkouts.contains(friend.getFriend().getId()))
+                .map(friend -> builder
+                        .setId(friend.getId())
+                        .setFriend(friend.getFriend())
+                        .setUser(friend.getUser())
+                        .setIsWorkoutSharedWith(friendsInSharedWorkouts.contains(friend.getFriend().getId()))
                         .build()).collect(Collectors.toList());
     }
 
@@ -74,10 +74,10 @@ public class FriendServiceImpl implements FriendService {
             throw new UserNotFoundException();
         }
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
-
-        friendMongoRepository.save(Friend.builder()
-                .user(user)
-                .friend(userToBeAFriend.get())
+        final Friend.FriendBuilder builder = new Friend.FriendBuilder();
+        friendMongoRepository.save(builder
+                .setUser(user)
+                .setFriend(userToBeAFriend.get())
                 .build());
 
         return friendMongoRepository.findAllByUserId(user.getId());

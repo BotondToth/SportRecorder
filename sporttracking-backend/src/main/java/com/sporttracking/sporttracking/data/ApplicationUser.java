@@ -1,17 +1,13 @@
 package com.sporttracking.sporttracking.data;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-@Builder
 @Data
 @Document(collection = "Users")
-@NoArgsConstructor
 @AllArgsConstructor
 public class ApplicationUser {
     @Id
@@ -30,4 +26,53 @@ public class ApplicationUser {
     private String weight;
     @Field
     private String height;
+
+    private ApplicationUser() {}
+
+    public static class ApplicationUserBuilder {
+        private final ApplicationUser applicationUser;
+
+        public ApplicationUserBuilder() {
+            applicationUser = new ApplicationUser();
+        }
+
+        public ApplicationUserBuilder setEmail(final String email) {
+            applicationUser.setEmail(email);
+            return this;
+        }
+
+        public ApplicationUserBuilder setPassword(final String password) {
+            applicationUser.setPassword(password);
+            return this;
+        }
+
+        public ApplicationUserBuilder setUsername(final String username) {
+            applicationUser.setUsername(username);
+            return this;
+        }
+
+        public ApplicationUserBuilder setFullName(final String fullName) {
+            applicationUser.setFullName(fullName);
+            return this;
+        }
+
+        public ApplicationUserBuilder setSex(final String sex) {
+            applicationUser.setSex(sex);
+            return this;
+        }
+
+        public ApplicationUserBuilder setWeight(final String weight) {
+            applicationUser.setWeight(weight);
+            return this;
+        }
+
+        public ApplicationUserBuilder setHeight(final String height) {
+            applicationUser.setHeight(height);
+            return this;
+        }
+
+        public ApplicationUser build() {
+            return applicationUser;
+        }
+    }
 }

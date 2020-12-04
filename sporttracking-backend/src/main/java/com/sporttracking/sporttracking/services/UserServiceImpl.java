@@ -42,14 +42,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new UsernameAlreadyTakenException();
         }
         userToRegister.setPassword(bCryptPasswordEncoder.encode(userToRegister.getPassword()));
-        final ApplicationUser newUser = ApplicationUser.builder()
-            .email(userToRegister.getEmail())
-            .username(userToRegister.getUsername())
-            .password(userToRegister.getPassword())
-            .fullName(userToRegister.getFullName())
-            .height(userToRegister.getHeight())
-            .sex(userToRegister.getSex())
-            .weight(userToRegister.getWeight())
+        final ApplicationUser.ApplicationUserBuilder builder = new ApplicationUser.ApplicationUserBuilder();
+        final ApplicationUser newUser = builder
+            .setEmail(userToRegister.getEmail())
+            .setUsername(userToRegister.getUsername())
+            .setPassword(userToRegister.getPassword())
+            .setFullName(userToRegister.getFullName())
+            .setHeight(userToRegister.getHeight())
+            .setSex(userToRegister.getSex())
+            .setWeight(userToRegister.getWeight())
             .build();
 
         return userMongoRepository.save(newUser);

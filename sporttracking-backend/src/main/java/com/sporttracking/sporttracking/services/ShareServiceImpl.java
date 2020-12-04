@@ -96,7 +96,9 @@ public class ShareServiceImpl implements ShareService{
             throw new NotFriendException();
         }
 
-        return shareMongoRepository.save(Share.builder().user(user).friend(friend.get()).workout(workout.get()).build());
+        final Share.ShareBuilder builder = new Share.ShareBuilder();
+
+        return shareMongoRepository.save(builder.setUser(user).setFriend(friend.get()).setWorkout(workout.get()).build());
     }
 
     @Override

@@ -25,6 +25,10 @@ export class Client {
     return Client.user;
   };
 
+  public deleteCurrentUser = () => {
+    Client.user = undefined;
+  };
+
   public sendRequest = async <T = any>(
     target: string,
     body: any = null,

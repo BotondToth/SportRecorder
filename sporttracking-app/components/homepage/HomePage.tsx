@@ -36,6 +36,7 @@ export const HomePage = ({ navigation }: Props) => {
     const logOut = async () => {
       await AsyncStorage.removeItem('access-token');
       await AsyncStorage.removeItem('logged-in-user');
+      client.deleteCurrentUser();
       signOut();
     };
 

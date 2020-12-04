@@ -8,7 +8,6 @@ import com.sporttracking.sporttracking.exceptions.ResourceNotFoundException;
 import com.sporttracking.sporttracking.repositories.WorkoutMongoRepository;
 import com.sporttracking.sporttracking.utility.AuthUtility;
 import com.sporttracking.sporttracking.utility.CalorieCalculatorUtility;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -88,18 +87,19 @@ public class WorkoutServiceImpl implements WorkoutService {
     public Workout saveWorkout(final WorkoutDTO workoutDTO, final HttpHeaders headers) {
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
         final long calories  = CalorieCalculatorUtility.calculate(workoutDTO.getDuration(), Long.parseLong(user.getWeight()), workoutDTO.getType());
+        final Workout.WorkoutBuilder builder = new Workout.WorkoutBuilder();
 
-        return workoutMongoRepository.save(Workout.builder()
-            .user(user)
-            .calories(calories)
-            .beersPerWorkout(calculateBeersPerWorkout(calories))
-            .duration(workoutDTO.getDuration())
-            .locationPoints(workoutDTO.getLocationPoints())
-            .title(workoutDTO.getTitle())
-            .description(workoutDTO.getDescription())
-            .type(workoutDTO.getType())
-            .date(new DateTime().plusHours(1).toDate())
-            .distance(workoutDTO.getDistance())
+        return workoutMongoRepository.save(builder
+            .setUser(user)
+            .setCalories(calories)
+            .setBeersPerWorkout(calculateBeersPerWorkout(calories))
+            .setDuration(workoutDTO.getDuration())
+            .setLocationPoints(workoutDTO.getLocationPoints())
+            .setTitle(workoutDTO.getTitle())
+            .setDescription(workoutDTO.getDescription())
+            .setType(workoutDTO.getType())
+            .setDate(new Date())
+            .setDistance(workoutDTO.getDistance())
             .build());
     }
 
