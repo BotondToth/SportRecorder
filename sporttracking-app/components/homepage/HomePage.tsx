@@ -46,6 +46,7 @@ export const HomePage = ({ navigation }: Props) => {
       navigation.setOptions({
         headerRight: () => (
           <Button
+            nativeID="logoutBtn"
             style={styles.logOutButton}
             size="small"
             onPress={async () => {
