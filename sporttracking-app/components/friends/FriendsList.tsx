@@ -164,6 +164,7 @@ export const FriendsList = () => {
   return (
     <>
       <Modal
+        nativeID="users-list"
         style={styles.usersModal}
         visible={addNewFriendCardVisible}
         backdropStyle={styles.backdrop}

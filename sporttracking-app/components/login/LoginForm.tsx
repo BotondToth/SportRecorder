@@ -138,6 +138,7 @@ export const LoginForm = ({ navigation }: Props) => {
         footer={Footer}
       >
         <Input
+          nativeID="email-field"
           style={styles.field}
           value={email}
           label="Email or Username"
@@ -146,6 +147,7 @@ export const LoginForm = ({ navigation }: Props) => {
           onChangeText={(val: any) => setEmail(val)}
         />
         <Input
+          nativeID="password-field"
           style={styles.field}
           value={password}
           label="Password"
