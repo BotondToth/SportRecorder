@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Card,
@@ -9,11 +9,9 @@ import {
   Text,
 } from '@ui-kitten/components';
 import { Dimensions, StyleSheet, View } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
 import { Friendship, User } from '../../types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Client } from '../../api';
-import { AuthorizationContext } from '../../AuthorizationContext';
 
 const styles = StyleSheet.create({
   usersModal: { width: '75%' },
@@ -51,16 +49,10 @@ export const FriendsList = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [addNewFriendCardVisible, setAddNewFriendCardVisible] = useState<boolean>(false);
   const client: Client = Client.getInstance();
-  const { signOut } = useContext(AuthorizationContext);
 
   const getFriendships = async () => {
     setIsLoading(true);
     const response = await client.sendRequest<Friendship[]>('friends');
-    if (response.status === 403) {
-      await AsyncStorage.removeItem('access-token');
-      await AsyncStorage.removeItem('logged-in-user');
-      signOut();
-    }
     setIsLoading(false);
     setFriendships(response.data);
   };
@@ -140,7 +132,7 @@ export const FriendsList = () => {
     <Icon {...props} name="search" />
   );
 
-  const renderFriends = ({ item }: any) => (
+  const renderFriends = ({ item }: {item: Friendship}) => (
     <ListItem
       title={item.friend.username}
       accessoryLeft={renderProfilePicture}

@@ -23,32 +23,34 @@ public class Share {
     @Field
     private Workout workout;
 
-    private Share() {}
+    private Share(final ShareBuilder builder) {
+        user = builder.user;
+        friend = builder.friend;
+        workout = builder.workout;
+    }
 
     public static class ShareBuilder {
-        private final Share share;
-
-        public ShareBuilder() {
-            share = new Share();
-        }
+        private ApplicationUser user;
+        private ApplicationUser friend;
+        private Workout workout;
 
         public ShareBuilder setUser(final ApplicationUser user) {
-            share.setUser(user);
+            this.user = user;
             return this;
         }
 
         public ShareBuilder setFriend(final ApplicationUser friend) {
-            share.setFriend(friend);
+            this.friend = friend;
             return this;
         }
 
         public ShareBuilder setWorkout(final Workout workout) {
-            share.setWorkout(workout);
+            this.workout = workout;
             return this;
         }
 
         public Share build() {
-            return share;
+            return new Share(this);
         }
     }
 }

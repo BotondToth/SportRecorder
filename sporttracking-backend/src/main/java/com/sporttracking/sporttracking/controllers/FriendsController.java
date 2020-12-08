@@ -6,6 +6,7 @@ import com.sporttracking.sporttracking.data.dto.FriendDTO;
 import com.sporttracking.sporttracking.exceptions.FriendNotFoundException;
 import com.sporttracking.sporttracking.exceptions.UserNotFoundException;
 import com.sporttracking.sporttracking.services.FriendService;
+import com.sporttracking.sporttracking.services.ShareService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,9 @@ public class FriendsController implements BaseController {
 
     @Autowired
     private FriendService friendService;
+
+    @Autowired
+    private ShareService shareService;
 
     @GetMapping("/friends")
     public List<Friend> getFriendsForUser(@RequestHeader final HttpHeaders headers) {
@@ -34,7 +38,7 @@ public class FriendsController implements BaseController {
     public ResponseEntity<String> deleteFriends(@RequestParam final String friendshipId) {
         try {
             friendService.deleteFriendship(friendshipId);
-        } catch (FriendNotFoundException ex) {
+        } catch (final FriendNotFoundException ex) {
             return new ResponseEntity<>("Error while deleting friends", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("Friend deleted", HttpStatus.OK);

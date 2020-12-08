@@ -20,27 +20,31 @@ public class Friend {
     @DBRef
     private ApplicationUser friend;
 
-    private Friend() {}
+    private Friend(final FriendBuilder builder) {
+        user = builder.user;
+        friend = builder.friend;
+    }
 
     public static class FriendBuilder {
-        private final Friend friend;
+        private ApplicationUser user;
+        private ApplicationUser friend;
 
         public FriendBuilder() {
-            friend = new Friend();
+
         }
 
         public FriendBuilder setUser(final ApplicationUser user) {
-            friend.setUser(user);
+            this.user = user;
             return this;
         }
 
         public FriendBuilder setFriend(final ApplicationUser friend) {
-            this.friend.setFriend(friend);
+            this.friend = friend;
             return this;
         }
 
         public Friend build() {
-            return friend;
+            return new Friend(this);
         }
     }
 }

@@ -8,6 +8,7 @@ import com.sporttracking.sporttracking.data.dto.FriendDTO;
 import com.sporttracking.sporttracking.exceptions.FriendNotFoundException;
 import com.sporttracking.sporttracking.exceptions.UserNotFoundException;
 import com.sporttracking.sporttracking.repositories.FriendMongoRepository;
+import com.sporttracking.sporttracking.repositories.ShareMongoRepository;
 import com.sporttracking.sporttracking.repositories.UserMongoRepository;
 import com.sporttracking.sporttracking.utility.AuthUtility;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class FriendServiceImpl implements FriendService {
 
     @Autowired
     private FriendMongoRepository friendMongoRepository;
+
+    @Autowired
+    private ShareMongoRepository shareMongoRepository;
 
     @Autowired
     private ShareService shareService;
@@ -47,13 +51,15 @@ public class FriendServiceImpl implements FriendService {
                 .map(ApplicationUser::getId)
                 .collect(Collectors.toList());
         final List<Friend> friends = getFriendsForUser(headers);
+        final FriendWithShare.FriendWithShareBuilder builder = new FriendWithShare.FriendWithShareBuilder();
         return friends.stream()
-                .map(friend -> new FriendWithShare.FriendWithShareBuilder()
+                .map(friend -> builder
                         .setId(friend.getId())
                         .setFriend(friend.getFriend())
                         .setUser(friend.getUser())
                         .setIsWorkoutSharedWith(friendsInSharedWorkouts.contains(friend.getFriend().getId()))
-                        .build()).collect(Collectors.toList());
+                        .build()
+                ).collect(Collectors.toList());
     }
 
     @Override
@@ -61,8 +67,7 @@ public class FriendServiceImpl implements FriendService {
         final Optional<Friend> friend = friendMongoRepository.findById(friendshipId);
 
         if (friend.isPresent()) {
-            final List<Share> sharedWorkoutsForFriend = shareService.getSharesForFriend(friend.get().getId());
-            shareService.deleteShares(sharedWorkoutsForFriend);
+            shareMongoRepository.deleteByUserIdAndFriendId(friend.get().getUser().getId(), friend.get().getFriend().getId());
             friendMongoRepository.deleteFriendsByUserIdAndFriendId(friend.get().getUser().getId(), friend.get().getFriend().getId());
         } else {
             throw new FriendNotFoundException();

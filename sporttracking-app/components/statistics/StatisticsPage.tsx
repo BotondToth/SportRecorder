@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import { Button, Text } from '@ui-kitten/components';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationProp } from '@react-navigation/native';
@@ -33,6 +33,13 @@ const styles = StyleSheet.create({
   },
   switchButton: { },
   viewArea: { flex: 1 },
+  noSupportedText: {
+    backgroundColor: 'white',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+  },
 });
 
 export const StatisticsPage = (
@@ -74,6 +81,18 @@ export const StatisticsPage = (
     () => () => <YearTab chartOnClick={chartOnClick} />,
     [chartOnClick],
   );
+
+  if (Platform.OS !== 'web') {
+    return (
+      <View style={styles.noSupportedText}>
+        <Text category="h5">
+          Statistics are not supported on mobile devices!
+          {'\n'}
+          Open our application on a desktop device to access this page!
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
