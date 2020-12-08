@@ -71,10 +71,9 @@ export const CreateWorkoutForm = (props: any) => {
       <Text category="h6">SportTracking</Text>
       <Text category="s1">Add new workout</Text>
       <Button
-        appearance="primary"
+        disabled={title === ''}
         style={styles.saveButton}
         size="small"
-        status="basic"
         onPress={onSubmit}
       >
         Save
@@ -95,7 +94,12 @@ export const CreateWorkoutForm = (props: any) => {
       <Input
         style={styles.field}
         value={title}
-        label="Workout title"
+        label={(evaProps) => (
+          <Text {...evaProps}>
+            Workout title
+            <Text status="danger"> *</Text>
+          </Text>
+        )}
         placeholder="The name of your workout"
         caption="You should name your new workout here"
         secureTextEntry={false}

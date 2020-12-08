@@ -70,7 +70,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public List<Workout> getWorkoutsForUser(final ApplicationUser user) {
-        return workoutMongoRepository.findAllByUserId(user.getId());
+        return workoutMongoRepository.findAllByUserIdOrderByDateDesc(user.getId());
     }
 
     @Override
@@ -86,21 +86,21 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Override
     public Workout saveWorkout(final WorkoutDTO workoutDTO, final HttpHeaders headers) {
         final ApplicationUser user = authUtility.getUserFromHeader(headers);
-        final long calories  = CalorieCalculatorUtility.calculate(workoutDTO.getDuration(), Long.parseLong(user.getWeight()), workoutDTO.getType());
+        final long calories = CalorieCalculatorUtility.calculate(workoutDTO.getDuration(), Long.parseLong(user.getWeight()), workoutDTO.getType());
         final Workout.WorkoutBuilder builder = new Workout.WorkoutBuilder();
 
         return workoutMongoRepository.save(builder
-            .setUser(user)
-            .setCalories(calories)
-            .setBeersPerWorkout(calculateBeersPerWorkout(calories))
-            .setDuration(workoutDTO.getDuration())
-            .setLocationPoints(workoutDTO.getLocationPoints())
-            .setTitle(workoutDTO.getTitle())
-            .setDescription(workoutDTO.getDescription())
-            .setType(workoutDTO.getType())
-            .setDate(new Date())
-            .setDistance(workoutDTO.getDistance())
-            .build());
+                .setUser(user)
+                .setCalories(calories)
+                .setBeersPerWorkout(calculateBeersPerWorkout(calories))
+                .setDuration(workoutDTO.getDuration())
+                .setLocationPoints(workoutDTO.getLocationPoints())
+                .setTitle(workoutDTO.getTitle())
+                .setDescription(workoutDTO.getDescription())
+                .setType(workoutDTO.getType())
+                .setDate(new Date())
+                .setDistance(workoutDTO.getDistance())
+                .build());
     }
 
     @Override
