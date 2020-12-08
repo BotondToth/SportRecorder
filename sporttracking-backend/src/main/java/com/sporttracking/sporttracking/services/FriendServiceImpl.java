@@ -1,6 +1,9 @@
 package com.sporttracking.sporttracking.services;
 
-import com.sporttracking.sporttracking.data.*;
+import com.sporttracking.sporttracking.data.ApplicationUser;
+import com.sporttracking.sporttracking.data.Friend;
+import com.sporttracking.sporttracking.data.FriendWithShare;
+import com.sporttracking.sporttracking.data.Share;
 import com.sporttracking.sporttracking.data.dto.FriendDTO;
 import com.sporttracking.sporttracking.exceptions.FriendNotFoundException;
 import com.sporttracking.sporttracking.exceptions.UserNotFoundException;
@@ -37,16 +40,15 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public List<FriendWithShare> getFriendsWithoutShareByWorkout(HttpHeaders headers, String workoutId) {
+    public List<FriendWithShare> getFriendsWithoutShareByWorkout(final HttpHeaders headers, final String workoutId) {
         final List<Share> sharesForWorkout = shareService.getSharesForWorkout(workoutId);
         final List<String> friendsInSharedWorkouts = sharesForWorkout.stream()
                 .map(Share::getFriend)
                 .map(ApplicationUser::getId)
                 .collect(Collectors.toList());
         final List<Friend> friends = getFriendsForUser(headers);
-        final FriendWithShare.FriendWithShareBuilder builder = new FriendWithShare.FriendWithShareBuilder();
         return friends.stream()
-                .map(friend -> builder
+                .map(friend -> new FriendWithShare.FriendWithShareBuilder()
                         .setId(friend.getId())
                         .setFriend(friend.getFriend())
                         .setUser(friend.getUser())
@@ -55,7 +57,7 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public void deleteFriendship(String friendshipId) throws FriendNotFoundException {
+    public void deleteFriendship(final String friendshipId) throws FriendNotFoundException {
         final Optional<Friend> friend = friendMongoRepository.findById(friendshipId);
 
         if (friend.isPresent()) {

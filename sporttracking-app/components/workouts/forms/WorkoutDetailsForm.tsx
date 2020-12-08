@@ -75,7 +75,7 @@ export const WorkoutDetailsForm = (props) => {
     <View {...headerProps} style={[headerProps.style, styles.workoutDetailHeaderContainer]}>
       <View style={{ flex: 1 }}>
         <Text style={styles.workoutHeaderText} category="h6">Workout Details</Text>
-        <Text category="h8">
+        <Text category="s1">
           @
           {workoutInDetail.user.username}
         </Text>

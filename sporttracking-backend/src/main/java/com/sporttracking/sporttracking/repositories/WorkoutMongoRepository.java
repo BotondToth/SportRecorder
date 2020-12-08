@@ -10,7 +10,9 @@ import java.util.Optional;
 
 @Repository
 public interface WorkoutMongoRepository extends MongoRepository<Workout, String> {
-    List<Workout> findAllByUserId(String userId);
+    List<Workout> findAllByUserIdOrderByDateDesc(String userId);
+
     Optional<Workout> findByIdAndUserId(String id, String userId);
+
     List<Workout> findAllByUserIdAndDateBetween(String userId, Date from, Date to);
 }
