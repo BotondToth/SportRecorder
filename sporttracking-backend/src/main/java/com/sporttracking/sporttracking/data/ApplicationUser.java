@@ -27,6 +27,9 @@ public class ApplicationUser {
     @Field
     private String height;
 
+    private ApplicationUser() {
+    }
+
     private ApplicationUser(final ApplicationUserBuilder builder) {
         email = builder.email;
         password = builder.password;

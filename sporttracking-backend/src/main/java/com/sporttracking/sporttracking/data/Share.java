@@ -23,6 +23,9 @@ public class Share {
     @Field
     private Workout workout;
 
+    private Share() {
+    }
+
     private Share(final ShareBuilder builder) {
         user = builder.user;
         friend = builder.friend;
