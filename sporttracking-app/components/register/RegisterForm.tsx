@@ -135,6 +135,7 @@ export const RegisterForm = ({ navigation }: Props) => {
         footer={Footer}
       >
         <Input
+          nativeID="email-field"
           style={styles.field}
           value={email}
           status={!emailIsDirty || validateEmail(email) ? 'basic' : 'danger'}
@@ -150,6 +151,7 @@ export const RegisterForm = ({ navigation }: Props) => {
           onBlur={() => setEmailIsDirty(true)}
         />
         <Input
+          nativeID="name-field"
           style={styles.field}
           value={fullName}
           status={!fullNameIsDirty || validateFullName() ? 'basic' : 'danger'}
@@ -165,6 +167,7 @@ export const RegisterForm = ({ navigation }: Props) => {
           onBlur={() => setFullNameIsDirty(true)}
         />
         <Input
+          nativeID="username-field"
           style={styles.field}
           value={username}
           status={!usernameIsDirty || validateUserName() ? 'basic' : 'danger'}
@@ -180,6 +183,7 @@ export const RegisterForm = ({ navigation }: Props) => {
           onBlur={() => setUsernameIsDirty(true)}
         />
         <Input
+          nativeID="weight-field"
           style={styles.field}
           value={weight.toString()}
           status={validateWeight() ? 'basic' : 'danger'}
@@ -191,6 +195,7 @@ export const RegisterForm = ({ navigation }: Props) => {
           }}
         />
         <Input
+          nativeID="height-field"
           style={styles.field}
           value={height.toString()}
           status={validateHeight() ? 'basic' : 'danger'}
@@ -209,6 +214,7 @@ export const RegisterForm = ({ navigation }: Props) => {
           <Radio>Female</Radio>
         </RadioGroup>
         <Input
+          nativeID="password-field"
           style={styles.field}
           value={password}
           status={!passwordIsDirty || validatePassword() ? 'basic' : 'danger'}
@@ -225,6 +231,7 @@ export const RegisterForm = ({ navigation }: Props) => {
           onBlur={() => setPasswordIsDirty(true)}
         />
         <Input
+          nativeID="repeat-password-field"
           style={styles.field}
           value={repeatedPassword}
           status={!repeatedPasswordIsDirty || validateRepeatedPassword()

@@ -11,6 +11,7 @@
     "strictNullChecks": false,
     "noImplicitAny": false,
     "baseUrl": ".",
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "types": ["cypress"]
   }
 }
