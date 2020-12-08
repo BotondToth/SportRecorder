@@ -36,8 +36,8 @@ export const StatisticsChart = (inputs: StatsChartsInput) => {
     const user = await client.getCurrentUser();
     doc.text(`Hello ${user.fullName}`, 149, 15, { align: 'center' });
     doc.text(`Your statistics at ${inputs.title}`, 10, 25);
-    doc.addImage(areaPng, 'PNG', 10, 30, 270, 60);
-    doc.addImage(radialPng, 'PNG', 70, 100, 150, 60);
+    doc.addImage(areaPng, 'PNG', 10, 30, 280, 45);
+    doc.addImage(radialPng, 'PNG', 50, 100, 200, 60);
     doc.save(`${user.username} ${inputs.title}.pdf`);
   };
 
