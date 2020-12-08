@@ -27,52 +27,63 @@ public class ApplicationUser {
     @Field
     private String height;
 
-    private ApplicationUser() {}
+    private ApplicationUser(final ApplicationUserBuilder builder) {
+        email = builder.email;
+        password = builder.password;
+        fullName = builder.fullName;
+        username = builder.username;
+        sex = builder.sex;
+        weight = builder.weight;
+        height = builder.height;
+    }
 
     public static class ApplicationUserBuilder {
-        private final ApplicationUser applicationUser;
+        private String email;
+        private String password;
+        private String fullName;
+        private String username;
+        private String sex;
+        private String weight;
+        private String height;
 
-        public ApplicationUserBuilder() {
-            applicationUser = new ApplicationUser();
-        }
 
         public ApplicationUserBuilder setEmail(final String email) {
-            applicationUser.setEmail(email);
+            this.email = email;
             return this;
         }
 
         public ApplicationUserBuilder setPassword(final String password) {
-            applicationUser.setPassword(password);
+            this.password = password;
             return this;
         }
 
         public ApplicationUserBuilder setUsername(final String username) {
-            applicationUser.setUsername(username);
+            this.username = username;
             return this;
         }
 
         public ApplicationUserBuilder setFullName(final String fullName) {
-            applicationUser.setFullName(fullName);
+            this.fullName = fullName;
             return this;
         }
 
         public ApplicationUserBuilder setSex(final String sex) {
-            applicationUser.setSex(sex);
+            this.sex = sex;
             return this;
         }
 
         public ApplicationUserBuilder setWeight(final String weight) {
-            applicationUser.setWeight(weight);
+            this.weight = weight;
             return this;
         }
 
         public ApplicationUserBuilder setHeight(final String height) {
-            applicationUser.setHeight(height);
+            this.height = height;
             return this;
         }
 
         public ApplicationUser build() {
-            return applicationUser;
+            return new ApplicationUser(this);
         }
     }
 }

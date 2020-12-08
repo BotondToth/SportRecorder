@@ -35,78 +35,84 @@ public class Workout {
     @Field
     private Point[] locationPoints;
 
-    private Workout() {
-        this.title = "Default workout title";
-        this.description = "Default workout ddescription";
-        this.type = "Running";
-        this.duration = 0;
-        this.distance = 0;
-        this.calories = 0;
-        this.date = new Date();
-        this.beersPerWorkout = 0;
-        this.locationPoints = new Point[0];
+    private Workout(final WorkoutBuilder builder) {
+        title = builder.title;
+        description = builder.description;
+        type = builder.type;
+        duration = builder.duration;
+        distance = builder.distance;
+        calories = builder.calories;
+        date = builder.date;
+        beersPerWorkout = builder.beersPerWorkout;
+        locationPoints = builder.locationPoints;
+        user = builder.user;
     }
 
     public static class WorkoutBuilder {
-        private final Workout workout;
-
-        public WorkoutBuilder() {
-            workout = new Workout();
-        }
+        private String title = "Default workout title";
+        private String description = "Default workout ddescription";
+        private String type = "Running";
+        private long duration = 0;
+        private long distance = 0;
+        private long calories = 0;
+        private Date date = new Date();
+        private long beersPerWorkout = 0;
+        private Point[] locationPoints = new Point[0];
+        private ApplicationUser user;
 
         public WorkoutBuilder setType(final String type) {
-            workout.setType(type);
+            this.type = type;
             return this;
         }
 
 
         public WorkoutBuilder setTitle(final String title) {
-            workout.setTitle(title);
+            this.title = title;
             return this;
         }
 
         public WorkoutBuilder setDescription(final String description) {
-            workout.setDescription(description);
+            this.description = description;
             return this;
         }
 
         public WorkoutBuilder setDuration(final long duration) {
-            workout.setDuration(duration);
+            this.duration = duration;
             return this;
         }
 
         public WorkoutBuilder setDistance(final long distance) {
-            workout.setDistance(distance);
+            this.distance = distance;
             return this;
         }
 
         public WorkoutBuilder setCalories(final long calories) {
-            workout.setCalories(calories);
+            this.calories = calories;
             return this;
         }
 
         public WorkoutBuilder setUser(final ApplicationUser user) {
-            workout.setUser(user);
+            this.user = user;
             return this;
         }
 
         public WorkoutBuilder setLocationPoints(final Point[] points) {
-            workout.setLocationPoints(points);
+            locationPoints = points;
             return this;
         }
 
         public WorkoutBuilder setBeersPerWorkout(final long beers) {
-            workout.setBeersPerWorkout(beers);
+            beersPerWorkout = beers;
             return this;
         }
 
         public WorkoutBuilder setDate(final Date date) {
-            workout.setDate(date);
+            this.date = date;
             return this;
         }
 
         public Workout build() {
-            return workout;
+            return new Workout(this);
         }
     }
 }

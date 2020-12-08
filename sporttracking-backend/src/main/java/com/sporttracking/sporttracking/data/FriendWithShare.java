@@ -9,37 +9,44 @@ public class FriendWithShare {
     private ApplicationUser friend;
     private boolean isWorkoutSharedWith;
 
-    private FriendWithShare() {}
+    private FriendWithShare(final FriendWithShareBuilder builder) {
+        id = builder.id;
+        user = builder.user;
+        friend = builder.friend;
+        isWorkoutSharedWith = builder.isWorkoutSharedWith;
+    }
 
     public static class FriendWithShareBuilder {
-        private final FriendWithShare friendWithShare;
+        private String id;
+        private ApplicationUser user;
+        private ApplicationUser friend;
+        private boolean isWorkoutSharedWith;
 
         public FriendWithShareBuilder() {
-            friendWithShare = new FriendWithShare();
         }
 
         public FriendWithShareBuilder setId(final String id) {
-            friendWithShare.setId(id);
+            this.id = id;
             return this;
         }
 
         public FriendWithShareBuilder setUser(final ApplicationUser user) {
-            friendWithShare.setUser(user);
+            this.user = user;
             return this;
         }
 
         public FriendWithShareBuilder setFriend(final ApplicationUser friend) {
-            friendWithShare.setFriend(friend);
+            this.friend = friend;
             return this;
         }
 
         public FriendWithShareBuilder setIsWorkoutSharedWith(final boolean isWorkoutSharedWith) {
-            friendWithShare.setWorkoutSharedWith(isWorkoutSharedWith);
+            this.isWorkoutSharedWith = isWorkoutSharedWith;
             return this;
         }
 
         public FriendWithShare build() {
-            return friendWithShare;
+            return new FriendWithShare(this);
         }
     }
 }
