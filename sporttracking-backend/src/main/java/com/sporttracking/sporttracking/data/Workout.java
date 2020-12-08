@@ -35,6 +35,9 @@ public class Workout {
     @Field
     private Point[] locationPoints;
 
+    private Workout() {
+    }
+
     private Workout(final WorkoutBuilder builder) {
         title = builder.title;
         description = builder.description;

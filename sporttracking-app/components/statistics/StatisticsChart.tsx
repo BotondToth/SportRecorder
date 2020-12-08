@@ -47,7 +47,9 @@ export const StatisticsChart = (inputs: StatsChartsInput) => {
         <AreaChart
           ref={(value) => setAreaChartRef(value)}
           data={inputs.statsData}
-          onClick={(value) => inputs.onClickHandler(value.activeTooltipIndex)}
+          onClick={(value) => {
+            if (value) { inputs.onClickHandler(value.activeTooltipIndex); }
+          }}
         >
           <Area
             type="monotone"

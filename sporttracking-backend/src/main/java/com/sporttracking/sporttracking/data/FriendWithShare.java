@@ -9,6 +9,9 @@ public class FriendWithShare {
     private ApplicationUser friend;
     private boolean isWorkoutSharedWith;
 
+    private FriendWithShare() {
+    }
+
     private FriendWithShare(final FriendWithShareBuilder builder) {
         id = builder.id;
         user = builder.user;

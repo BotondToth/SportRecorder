@@ -20,6 +20,9 @@ public class Friend {
     @DBRef
     private ApplicationUser friend;
 
+    private Friend() {
+    }
+
     private Friend(final FriendBuilder builder) {
         user = builder.user;
         friend = builder.friend;
