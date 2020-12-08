@@ -60,7 +60,7 @@ export const WorkoutDetailsForm = (props) => {
 
   useEffect(() => {
     const getEditableStatus = async () => {
-      setEditable(await canUserEditWorkout(workoutInDetail.user.email));
+      setEditable(await canUserEditWorkout(workoutInDetail.user));
     };
 
     getEditableStatus();
