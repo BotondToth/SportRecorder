@@ -72,8 +72,6 @@ export const LoginForm = ({ navigation }: Props) => {
     } catch (e) {
       console.error(e);
       setLoginFailed(true);
-    } finally {
-      setIsLoading(false);
     }
   };
 
