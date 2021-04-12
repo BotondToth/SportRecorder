@@ -1,4 +1,4 @@
-# Objektumvezérelt rendszerek tervezése
+# Sport tracker application
 
 #Backend:
 	- Spring Boot (Java 11)
