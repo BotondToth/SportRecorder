@@ -7,6 +7,18 @@ on:
     branches: [ develop ]
 
 jobs:
+  backend_test:
+    name: backend_test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 1.11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.11
+    - name: Test with Maven
+      run: cd sporttracking-backend && mvn clean test
   backend_build:
     name: backend_build
     runs-on: ubuntu-latest
@@ -27,3 +39,14 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install packages
       run: cd sporttracking-app && yarn install && yarn run lint
+  jacoco-report:
+    runs-on: ubuntu-latest
+    name: jacoco-badge-generator
+    # You may pin to the exact commit or the version.
+    # uses: cicirello/jacoco-badge-generator@d1bf1a14cc2a171191fb3dc5d48cd1a9f4210008
+    steps:
+      - uses: cicirello/jacoco-badge-generator@v2.0.1
+      - with:
+          jacoco-csv-file: target/site/jacoco/jacoco.csv
+          generate-coverage-badge: true
+
