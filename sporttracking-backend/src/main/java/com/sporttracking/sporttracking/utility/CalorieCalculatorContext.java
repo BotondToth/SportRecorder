@@ -1,7 +1,9 @@
 package com.sporttracking.sporttracking.utility;
 
 import com.sporttracking.sporttracking.strategies.CalorieCalculatorStrategy;
+import lombok.Getter;
 
+@Getter
 public class CalorieCalculatorContext {
 
     private final CalorieCalculatorStrategy strategy;
