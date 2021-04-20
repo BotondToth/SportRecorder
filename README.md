@@ -1,8 +1,13 @@
 # Sport tracker application
 
+![Alt text](.github/badges/jacoco.svg)
+
 #Backend:
+
 	- Spring Boot (Java 11)
+
 #Frontend:
+
 	- React Native (Typescript)
 	- Expo
     
