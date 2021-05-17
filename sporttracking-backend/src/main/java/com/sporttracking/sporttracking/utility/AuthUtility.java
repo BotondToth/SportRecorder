@@ -6,6 +6,7 @@ import com.sporttracking.sporttracking.repositories.UserMongoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
@@ -18,7 +19,7 @@ public class AuthUtility {
     public ApplicationUser getUserFromHeader(HttpHeaders headers) {
         final String token = Objects.requireNonNull(headers.get("authorization")).get(0);
         String userID = JWTAuthorizationFilter.getUserFromToken(token);
-        if (userID == null) {
+        if (userID == null || StringUtils.isEmpty(userID)) {
             return null;
         }
         if (userID.contains("@")) {

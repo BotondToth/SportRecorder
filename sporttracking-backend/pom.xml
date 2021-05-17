@@ -30,6 +30,12 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
+        <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
             <version>0.11.1</version>
@@ -123,6 +129,18 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>com/sporttracking/sporttracking/data/dto/**/*</exclude>
+                        <exclude>com/sporttracking/sporttracking/data/ApplicationUser.class</exclude>
+                        <exclude>com/sporttracking/sporttracking/data/Friend.class</exclude>
+                        <exclude>com/sporttracking/sporttracking/data/FriendWithShare.class</exclude>
+                        <exclude>com/sporttracking/sporttracking/data/Point.class</exclude>
+                        <exclude>com/sporttracking/sporttracking/data/Share.class</exclude>
+                        <exclude>com/sporttracking/sporttracking/data/Workout.class</exclude>
+                        <exclude>com/sporttracking/sporttracking/controllers/**/*</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>

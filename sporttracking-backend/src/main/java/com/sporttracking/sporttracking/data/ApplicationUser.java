@@ -31,6 +31,7 @@ public class ApplicationUser {
     }
 
     private ApplicationUser(final ApplicationUserBuilder builder) {
+        id = builder.id;
         email = builder.email;
         password = builder.password;
         fullName = builder.fullName;
@@ -41,6 +42,7 @@ public class ApplicationUser {
     }
 
     public static class ApplicationUserBuilder {
+        private String id;
         private String email;
         private String password;
         private String fullName;
@@ -49,6 +51,10 @@ public class ApplicationUser {
         private String weight;
         private String height;
 
+        public ApplicationUserBuilder setId(final String id) {
+            this.id = id;
+            return this;
+        }
 
         public ApplicationUserBuilder setEmail(final String email) {
             this.email = email;

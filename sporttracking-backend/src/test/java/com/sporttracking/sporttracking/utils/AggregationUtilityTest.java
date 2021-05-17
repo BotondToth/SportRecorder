@@ -74,4 +74,20 @@ public class AggregationUtilityTest {
         assertEquals(Map.of("3", 1L, "15", 2L, "17", 1L, "10", 1L), groupedWorkoutsByMonth);
     }
 
+    @Test
+    public void testAggregatingByDay() {
+        final Map<String, Long> groupedWorkoutsByMonth = AggregationUtility.aggregate(WORKOUTS, "day");
+
+        assertNotNull(groupedWorkoutsByMonth);
+        assertEquals(Map.of("0", 5L), groupedWorkoutsByMonth);
+    }
+
+    @Test
+    public void testAggregatingByYear() {
+        final Map<String, Long> groupedWorkoutsByMonth = AggregationUtility.aggregate(WORKOUTS, "year");
+
+        assertNotNull(groupedWorkoutsByMonth);
+        assertEquals(Map.of("Feb", 1L, "Dec", 2L, "Jan", 2L), groupedWorkoutsByMonth);
+    }
+
 }
