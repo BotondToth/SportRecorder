@@ -17,8 +17,7 @@ import java.util.Date;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static com.sporttracking.sporttracking.security.SecurityConstants.EXPIRATION_TIME;
 import static com.sporttracking.sporttracking.security.SecurityConstants.SECRET;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -30,7 +29,7 @@ public class AuthUtilityTest {
     @InjectMocks
     private AuthUtility authUtility;
 
-    private ApplicationUser.ApplicationUserBuilder userBuilder = new ApplicationUser.ApplicationUserBuilder();
+    private final ApplicationUser.ApplicationUserBuilder userBuilder = new ApplicationUser.ApplicationUserBuilder();
 
     private final ApplicationUser TEST_USER_1 = userBuilder
             .setEmail("test@test.com")
@@ -71,6 +70,35 @@ public class AuthUtilityTest {
 
         assertNotNull(userByToken);
         assertEquals("test@test.com", userByToken.getEmail());
+    }
+
+    @Test
+    public void testGetUserByNullId() {
+        final String token = JWT.create()
+                .withSubject("")
+                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .sign(HMAC512(SECRET.getBytes()));
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        final ApplicationUser userByToken = authUtility.getUserFromHeader(headers);
+
+        assertNull(userByToken);
+    }
+
+    @Test
+    public void testGetUserByUserName() {
+        final String token = JWT.create()
+                .withSubject(TEST_USER_2.getUsername())
+                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .sign(HMAC512(SECRET.getBytes()));
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        final ApplicationUser userByToken = authUtility.getUserFromHeader(headers);
+
+        assertNotNull(userByToken);
+        assertEquals("test2", userByToken.getUsername());
     }
 
 
