@@ -13,7 +13,7 @@
 		"@expo/webpack-config": "^0.12.40",
 		"@react-native-community/async-storage": "^1.12.1",
 		"@react-native-community/masked-view": "0.1.10",
-		"@react-navigation/bottom-tabs": "^5.10.0",
+		"@react-navigation/bottom-tabs": "^5.11.15",
 		"@react-navigation/material-top-tabs": "^5.3.6",
 		"@react-navigation/native": "^5.7.6",
 		"@react-navigation/stack": "^5.9.3",
