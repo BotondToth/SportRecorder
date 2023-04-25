@@ -18,7 +18,7 @@
 		"@react-navigation/native": "^5.7.6",
 		"@react-navigation/stack": "^5.9.3",
 		"@react-pdf/renderer": "^1.6.12",
-		"@types/lodash": "^4.14.164",
+		"@types/lodash": "^4.14.192",
 		"@types/recharts": "^1.8.16",
 		"@ui-kitten/components": "^5.0.0",
 		"@ui-kitten/eva-icons": "^5.0.0",
