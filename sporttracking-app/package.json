@@ -46,7 +46,7 @@
 		"react-native-svg": "12.1.0",
 		"react-native-tab-view": "^2.15.2",
 		"react-native-vector-icons": "^7.1.0",
-		"react-native-web": "~0.13.12",
+		"react-native-web": "~0.19.1",
 		"react-native-web-maps": "^0.3.0",
 		"recharts": "^1.8.5",
 		"recharts-to-png": "^0.7.0"
@@ -68,7 +68,7 @@
 		"eslint-plugin-react-hooks": "^4.2.0",
 		"eslint-plugin-react-native": "^3.10.0",
 		"prettier": "^2.1.2",
-		"react-native-web": "~0.13.7",
+		"react-native-web": "~0.19.1",
 		"typescript": "~3.9.5"
 	},
 	"private": true
