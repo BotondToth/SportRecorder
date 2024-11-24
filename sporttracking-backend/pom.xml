@@ -59,7 +59,7 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-mongodb</artifactId>
-            <version>3.0.4.RELEASE</version>
+            <version>4.2.11</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -90,7 +90,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>5.2.9.RELEASE</version>
+            <version>6.1.14</version>
         </dependency>
         <dependency>
             <groupId>com.auth0</groupId>
